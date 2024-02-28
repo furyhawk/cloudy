@@ -52,12 +52,13 @@ http:
     #           - "*.furyhawk.lol"
 
     web-secure-router:
-      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `bai.furyhawk.lol`) || PathPrefix(`/bai`)"
+      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `bai.furyhawk.lol`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
-        - add-bai
+        - no-www
+        # - add-bai
       service: streamlit_bai_app
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -72,7 +73,7 @@ http:
         - web-secure
       middlewares:
         - csrf
-        - add-fin
+        # - add-fin
       service: streamlit_fin_app
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -119,7 +120,11 @@ http:
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ["X-CSRFToken"]
-
+    no-www:
+      redirectRegex:
+        regex: "^https?://www\\.(.+)"
+        replacement: https://${1}
+        permanent: true
     add-bai:
       addPrefix:
         prefix: "/bai"
@@ -143,11 +148,11 @@ http:
     streamlit_bai_app:
       loadBalancer:
         servers:
-          - url: http://streamlit_bai_app:8502/bai
+          - url: http://streamlit_bai_app:8502
     streamlit_fin_app:
       loadBalancer:
         servers:
-          - url: http://streamlit_fin_app:8501/fin
+          - url: http://streamlit_fin_app:8501
     blog:
       loadBalancer:
         servers:

@@ -4,12 +4,10 @@ x-environment: &default-environment
   LOG_LEVEL: "DEBUG"
   LOG_PATH: "./logs"
   ACME_PATH: "./acme.json"
-  DASHBOARD_USER: "${DASHBOARD_USER}"
-  DASHBOARD_PASSWORD: "${DASHBOARD_PASSWORD}"
   NETWORK: "${NETWORK:-web}"
-  FIN_LOCATION: "/fin"
+  FIN_LOCATION: "/"
   STREAMLIT_FIN_SERVER_PORT: "8501"
-  BAI_LOCATION: "/bai"
+  BAI_LOCATION: "/"
   STREAMLIT_BAI_SERVER_PORT: "8502"
 
 volumes:
