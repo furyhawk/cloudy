@@ -20,4 +20,14 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 3. `docker compose -f production.yml up --build -d --remove-orphans`
 
 ### Notes:
-
+```yaml
+# Declaring the user list
+#
+# Note: when used in docker-compose.yml all dollar signs in the hash need to be doubled for escaping.
+# To create user:password pair, it's possible to use this command:
+# echo $(htpasswd -nB user) | sed -e s/\\$/\\$\\$/g
+#
+# Also note that dollar signs should NOT be doubled when they not evaluated (e.g. Ansible docker_container module).
+labels:
+  - "traefik.http.middlewares.test-auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
+```
