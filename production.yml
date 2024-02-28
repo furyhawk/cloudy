@@ -30,8 +30,8 @@ services:
     image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
     container_name: osrm_backend
     restart: always
-    ports:
-      - ${OSRM_PORT:-5000}:${OSRM_PORT:-5000}
+    expose:
+      - ${OSRM_PORT:-5000}
     networks:
       - net
       - default
