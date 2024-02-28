@@ -139,7 +139,7 @@ http:
     osrm_service:
       loadBalancer:
         servers:
-          - url: http://osrm_backend:{{env "OSRM_PORT"}}
+          - url: http://osrm_backend:5000
     streamlit_bai_app:
       loadBalancer:
         servers:
@@ -147,7 +147,7 @@ http:
     streamlit_fin_app:
       loadBalancer:
         servers:
-          - url: http://streamlit_fin_app:{{env "STREAMLIT_FIN_SERVER_PORT"}}/{{env "FIN_LOCATION"}}
+          - url: http://streamlit_fin_app:8501/fin
     blog:
       loadBalancer:
         servers:
@@ -160,5 +160,5 @@ providers:
     watch: true
   docker:
     network: web
-    exposedByDefault: true
+    exposedByDefault: false
     endpoint: "unix:///var/run/docker.sock"
