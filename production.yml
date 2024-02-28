@@ -69,7 +69,7 @@ services:
       dockerfile: ./compose/traefik/Dockerfile
     image: traefik_production
     container_name: traefik
-    retart: always
+    restart: always
     volumes:
       - "${LOG_PATH:-./logs}:/logs"
       - "${ACME_PATH:-./acme.json}:/etc/traefik/acme/acme.json"
