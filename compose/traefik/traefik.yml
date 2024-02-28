@@ -1,8 +1,8 @@
 log:
   level: DEBUG
-api:
+# api:
   # Dashboard
-  dashboard: true
+  # dashboard: true
   # https://docs.traefik.io/master/operations/api/#insecure
   # insecure: true
   
@@ -36,20 +36,20 @@ certificatesResolvers:
 
 http:
   routers:
-    dashboard:
-      rule: "Host(`dashboard.furyhawk.lol`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-      entryPoints:
-        - web-secure
-      service: api@internal
-      middlewares:
-        - auth
-      tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
-        certResolver: letsencrypt
-        domains:
-          - main: "furyhawk.lol"
-            sans:
-              - "*.furyhawk.lol"
+    # dashboard:
+    #   rule: "Host(`dashboard.furyhawk.lol`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+    #   entryPoints:
+    #     - web-secure
+    #   service: api@internal
+    #   middlewares:
+    #     - auth
+    #   tls:
+    #     # https://docs.traefik.io/master/routing/routers/#certresolver
+    #     certResolver: letsencrypt
+    #     domains:
+    #       - main: "furyhawk.lol"
+    #         sans:
+    #           - "*.furyhawk.lol"
 
     web-secure-router:
       rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `bai.furyhawk.lol`) || PathPrefix(`/bai`)"
@@ -111,9 +111,9 @@ http:
               - "*.furyhawk.lol"
 
   middlewares:
-    auth:
-      basicAuth:
-        users: "{{env "DASHBOARD_USER"}}:{{env "DASHBOARD_PASSWORD"}}"
+    # auth:
+    #   basicAuth:
+    #     users: "{{env "DASHBOARD_USER"}}:{{env "DASHBOARD_PASSWORD"}}"
     csrf:
       # https://doc.traefik.io/traefik/middlewares/http/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
