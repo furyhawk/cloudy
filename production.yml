@@ -6,6 +6,7 @@ x-environment: &default-environment
   ACME_PATH: "./acme.json"
   DASHBOARD_USER: "${DASHBOARD_USER}"
   DASHBOARD_PASSWORD: "${DASHBOARD_PASSWORD}"
+  NETWORK: "${NETWORK:-web}"
   FIN_LOCATION: "/fin"
   STREAMLIT_FIN_SERVER_PORT: "8501"
   BAI_LOCATION: "/bai"
