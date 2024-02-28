@@ -62,10 +62,10 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
-        domains:
-          - main: "furyhawk.lol"
-            sans:
-              - "*.furyhawk.lol"
+        # domains:
+        #   - main: "furyhawk.lol"
+        #     sans:
+        #       - "*.furyhawk.lol"
     fin-router:
       rule: "Host(`fin.furyhawk.lol`)"
       entryPoints:
@@ -77,10 +77,10 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
-        domains:
-          - main: "furyhawk.lol"
-            sans:
-              - "*.furyhawk.lol"
+        # domains:
+        #   - main: "furyhawk.lol"
+        #     sans:
+        #       - "*.furyhawk.lol"
     blog-router:
       rule: "Host(`blog.furyhawk.lol`)"
       entryPoints:
@@ -105,10 +105,10 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
-        domains:
-          - main: "furyhawk.lol"
-            sans:
-              - "*.furyhawk.lol"
+        # domains:
+        #   - main: "furyhawk.lol"
+        #     sans:
+        #       - "*.furyhawk.lol"
 
   middlewares:
     # auth:
