@@ -56,6 +56,9 @@ services:
     image: streamlit_fin_production
     container_name: streamlit_fin_app
     restart: always
+    volumes:
+      - ${PWD}/cache/bar_cache.sqlite:/app/bar_cache.sqlite
+      - ${PWD}/cache/short_cache.sqlite:/app/short_cache.sqlite
     expose:
       - ${STREAMLIT_FIN_SERVER_PORT}
     networks:
