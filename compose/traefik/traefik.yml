@@ -114,7 +114,7 @@ http:
     auth:
       basicAuth:
         users:
-          - {{env "DASHBOARD_USER"}}:{{env "DASHBOARD_PASSWORD"}}
+          - "{{env "DASHBOARD_USER"}}:{{env "DASHBOARD_PASSWORD"}}"
     csrf:
       # https://doc.traefik.io/traefik/middlewares/http/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
