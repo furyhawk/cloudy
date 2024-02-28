@@ -1,0 +1,143 @@
+log:
+  level: DEBUG
+api:
+  # Dashboard
+  dashboard: true
+  # https://docs.traefik.io/master/operations/api/#insecure
+  # insecure: true
+  
+
+entryPoints:
+  web:
+    # http
+    address: ":80"
+    http:
+      # https://docs.traefik.io/routing/entrypoints/#entrypoint
+      redirections:
+        entryPoint:
+          to: web-secure
+
+  web-secure:
+    # https
+    address: ":443"
+
+  # osrm:
+  #   address: ":5000"
+
+certificatesResolvers:
+  letsencrypt:
+    # https://docs.traefik.io/master/https/acme/#lets-encrypt
+    acme:
+      email: "furyx@hotmail.com"
+      storage: /etc/traefik/acme/acme.json
+      # https://docs.traefik.io/master/https/acme/#httpchallenge
+      httpChallenge:
+        entryPoint: web
+
+http:
+  routers:
+    dashboard:
+      rule: "Host(`dashboard.furyhawk.lol`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      service: api@internal
+      middlewares:
+        - auth
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    web-secure-router:
+      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `bai.furyhawk.lol`) || PathPrefix(`/bai`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+        - add-bai
+      service: streamlit_bai_app
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+    fin-router:
+      rule: "Host(`fin.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+        - add-fin
+      service: streamlit_fin_app
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+    blog-router:
+      rule: "Host(`blog.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      # redirect to external blog
+      middlewares:
+        - redirect-blog
+        
+      service: blog
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    osrm-router:
+      rule: "Host(`osrm.furyhawk.lol`)"
+      entryPoints:
+        - "web-secure"
+        # - "osrm"
+      middlewares:
+        - csrf
+      service: osrm_service
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+  middlewares:
+    auth:
+      basicAuth:
+        users:
+          - "test:$apr1$2E4PEW8M$/wEgFNKX71h.YYMywV7WZ/"
+    csrf:
+      # https://doc.traefik.io/traefik/middlewares/http/headers/#hostsproxyheaders
+      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+      headers:
+        hostsProxyHeaders: ["X-CSRFToken"]
+
+    add-bai:
+      addPrefix:
+        prefix: "/bai"
+
+    add-fin:
+      addPrefix:
+        prefix: "/fin"
+
+    redirect-blog:
+      # https://docs.traefik.io/master/middlewares/redirectscheme/
+      redirectregex:
+        regex: "^https://blog.furyhawk.lol/(.*)"
+        replacement: "https://furyhawk.github.io/124c41/${1}"
+        permanent: true
+
+  services:
+    osrm_service:
+      loadBalancer:
+        servers:
+          - url: http://osrm_backend:{{env "OSRM_PORT"}}
+    streamlit_bai_app:
+      loadBalancer:
+        servers:
+          - url: http://streamlit_bai_app:8502/bai
+    streamlit_fin_app:
+      loadBalancer:
+        servers:
+          - url: http://streamlit_fin_app:{{env "STREAMLIT_FIN_SERVER_PORT"}}/{{env "FIN_LOCATION"}}
+    blog:
+      loadBalancer:
+        servers:
+          - url: https://furyhawk.github.io/124c41/
+
+providers:
+  # https://docs.traefik.io/master/providers/file/
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true

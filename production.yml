@@ -1,0 +1,68 @@
+version: '3.7'
+
+x-environment: &default-environment
+  LOG_LEVEL: "DEBUG"
+  DASHBOARD_USER: ${DASHBOARD_USER}
+  DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
+  FIN_LOCATION: "/fin"
+  STREAMLIT_FIN_SERVER_PORT: "8501"
+  BAI_LOCATION: "/bai"
+  STREAMLIT_BAI_SERVER_PORT: "8502"
+
+volumes:
+  production_traefik: {}
+
+services:
+  osrm-backend:
+    environment:
+      # OSRM manager setup
+      - OSRM_ALGORITHM=mld
+      - OSRM_THREADS=2
+      - OSRM_PORT=5000
+      - OSRM_PROFILE=/opt/car.lua
+      - OSRM_MAP_NAME=${OSRM_MAP_NAME}
+      - OSRM_GEOFABRIK_PATH=${OSRM_GEOFABRIK_PATH}
+      # Notify OSRM Manager to restart without stopping container
+      - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
+    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
+    container_name: osrm_backend
+    restart: always
+    ports:
+      - ${OSRM_PORT}:${OSRM_PORT}
+
+  streamlit-bai:
+    environment:
+      <<: *default-environment
+    image: furyhawk/beyondallinfo:latest
+    container_name: streamlit_bai_app
+    restart: always
+    expose:
+      - ${STREAMLIT_BAI_SERVER_PORT}
+    command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
+
+  streamlit-fin:
+    environment:
+      <<: *default-environment
+    build: 
+      context: .
+      dockerfile: ./compose/streamlit-fin/Dockerfile
+    image: streamlit_fin_production
+    container_name: streamlit_fin_app
+    restart: always
+    expose:
+      - ${STREAMLIT_FIN_SERVER_PORT}
+    command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
+
+  traefik:
+    environment:
+      <<: *default-environment
+    build:
+      context: .
+      dockerfile: ./compose/traefik/Dockerfile
+    image: traefik_production
+    volumes:
+      - production_traefik:/etc/traefik/acme:z
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
