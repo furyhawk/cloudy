@@ -38,12 +38,18 @@ http:
   routers:
     dashboard:
       rule: "Host(`dashboard.furyhawk.lol`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      entryPoints:
+        - web-secure
       service: api@internal
       middlewares:
         - auth
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+        domains:
+          - main: "furyhawk.lol"
+            sans:
+              - "*.furyhawk.lol"
 
     web-secure-router:
       rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `bai.furyhawk.lol`) || PathPrefix(`/bai`)"
@@ -56,6 +62,10 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+        domains:
+          - main: "furyhawk.lol"
+            sans:
+              - "*.furyhawk.lol"
     fin-router:
       rule: "Host(`fin.furyhawk.lol`)"
       entryPoints:
@@ -67,6 +77,10 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+        domains:
+          - main: "furyhawk.lol"
+            sans:
+              - "*.furyhawk.lol"
     blog-router:
       rule: "Host(`blog.furyhawk.lol`)"
       entryPoints:
@@ -91,12 +105,16 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+        domains:
+          - main: "furyhawk.lol"
+            sans:
+              - "*.furyhawk.lol"
 
   middlewares:
     auth:
       basicAuth:
         users:
-          - "test:$apr1$2E4PEW8M$/wEgFNKX71h.YYMywV7WZ/"
+          - ${DASHBOARD_USER}:${DASHBOARD_PASSWORD}
     csrf:
       # https://doc.traefik.io/traefik/middlewares/http/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
@@ -141,3 +159,7 @@ providers:
   file:
     filename: /etc/traefik/traefik.yml
     watch: true
+  docker:
+    network: {{env "NETWORK"}}
+    exposedByDefault: true
+    endpoint: "unix:///var/run/docker.sock"
