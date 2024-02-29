@@ -47,8 +47,12 @@ services:
       - net
       - default
     volumes:
-      - ${PWD}/cache/bar_cache.sqlite:/app/bar_cache.sqlite
-      - ${PWD}/cache/short_cache.sqlite:/app/short_cache.sqlite
+      - type: bind
+        source: ${PWD}/cache/bar_cache.sqlite
+        target: /app/bar_cache.sqlite
+      - type: bind
+        source: ${PWD}/cache/short_cache.sqlite
+        target: /app/short_cache.sqlite
 
   streamlit-fin:
     environment:
