@@ -46,6 +46,17 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
+    forum-router:
+      rule: "Host(`forum.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: forum_server
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
     web-secure-router:
       rule: "Host(`bai.furyhawk.lol`)"
       entryPoints:
@@ -155,6 +166,10 @@ http:
       loadBalancer:
         servers:
           - url: http://osrm_backend:5000
+    forum_server:
+      loadBalancer:
+        servers:
+          - url: http://localhost:8080
     streamlit_bai_app:
       loadBalancer:
         servers:
