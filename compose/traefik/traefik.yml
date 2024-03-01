@@ -81,7 +81,7 @@ http:
         certResolver: letsencrypt
 
     resume-router:
-      rule: "Host(`resume.furyhawk.lol`) && Path(`/resume`)"
+      rule: "Host(`resume.furyhawk.lol`) || Path(`/resume`)"
       entryPoints:
         - web-secure
       # redirect to resume
@@ -135,6 +135,7 @@ http:
         regex: "^https?://www\\.(.+)"
         replacement: https://${1}
         permanent: true
+
     add-bai:
       addPrefix:
         prefix: "/bai"
