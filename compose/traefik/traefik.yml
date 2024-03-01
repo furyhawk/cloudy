@@ -80,6 +80,15 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
+    resume-router:
+      rule: "Host(`resume.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      # redirect to external blog
+      middlewares:
+        - csrf
+      service: resume_server
+
     blog-router:
       rule: "Host(`blog.furyhawk.lol`)"
       entryPoints:
@@ -155,6 +164,10 @@ http:
       loadBalancer:
         servers:
           - url: http://site_server:80
+    resume_server:
+      loadBalancer:
+        servers:
+          - url: http://site_server:80/resume/
     blog:
       loadBalancer:
         servers:
