@@ -81,7 +81,7 @@ http:
         certResolver: letsencrypt
 
     resume-router:
-      rule: "Host(`resume.furyhawk.lol`) && PathPrefix(`/resume`)"
+      rule: "Host(`resume.furyhawk.lol`) || PathPrefix(`/resume`)"
       entryPoints:
         - web-secure
       # redirect to external blog
