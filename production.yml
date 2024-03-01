@@ -70,6 +70,18 @@ services:
       - default
     command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
 
+  site_server:
+    image: nginx:alpine
+    container_name: site_server
+    restart: unless-stopped
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+    networks:
+      - net
+      - default
+    expose:
+      - 80
+
   traefik:
     environment:
       <<: *default-environment
