@@ -172,7 +172,7 @@ http:
     resume_server:
       loadBalancer:
         servers:
-          - url: http://site_server:80/
+          - url: http://site_server:80
     blog:
       loadBalancer:
         servers:
