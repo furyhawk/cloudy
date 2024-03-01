@@ -5,7 +5,6 @@ api:
   dashboard: true
   # https://docs.traefik.io/master/operations/api/#insecure
   # insecure: true
-  
 
 entryPoints:
   web:
@@ -70,7 +69,7 @@ http:
         certResolver: letsencrypt
 
     info-router:
-      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`)"
+      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`, `124c41.furyhawk.lol`)"
       entryPoints:
         - web-secure
       middlewares:
