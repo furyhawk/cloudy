@@ -81,12 +81,13 @@ http:
         certResolver: letsencrypt
 
     resume-router:
-      rule: "Host(`resume.furyhawk.lol`)"
+      rule: "Host(`resume.furyhawk.lol`) && PathPrefix(`/resume`)"
       entryPoints:
         - web-secure
       # redirect to external blog
       middlewares:
         - csrf
+        - add-resume
       service: resume_server
 
     blog-router:
@@ -140,6 +141,10 @@ http:
       addPrefix:
         prefix: "/fin"
 
+    add-resume:
+      addPrefix:
+        prefix: "/resume"
+
     redirect-blog:
       # https://docs.traefik.io/master/middlewares/redirectscheme/
       redirectregex:
@@ -167,7 +172,7 @@ http:
     resume_server:
       loadBalancer:
         servers:
-          - url: http://site_server:80/resume/
+          - url: http://site_server:80/
     blog:
       loadBalancer:
         servers:
