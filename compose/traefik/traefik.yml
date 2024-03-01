@@ -89,6 +89,9 @@ http:
         - csrf
         - add-resume
       service: resume_server
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
 
     blog-router:
       rule: "Host(`blog.furyhawk.lol`)"
@@ -98,7 +101,6 @@ http:
       middlewares:
         - redirect-blog
       service: blog
-
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
