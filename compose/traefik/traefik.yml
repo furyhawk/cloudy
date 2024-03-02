@@ -147,6 +147,7 @@ http:
       headers:
         sslProxyHeaders:
           X-Forwarded-Proto: "https"
+        sslRedirect: true
     no-www:
       redirectRegex:
         regex: "^https?://www\\.(.+)"
