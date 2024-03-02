@@ -20,6 +20,9 @@ entryPoints:
     # https
     address: ":443"
 
+  forum-port:
+    address: ":8080"
+
   # osrm:
   #   address: ":5000"
 
