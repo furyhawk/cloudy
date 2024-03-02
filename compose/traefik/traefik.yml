@@ -52,6 +52,7 @@ http:
         - web-secure
       middlewares:
         - csrf
+        - sslheader
       service: forum_server
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -141,6 +142,11 @@ http:
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ["X-CSRFToken"]
+    sslheader:
+      # https://docs.traefik.io/master/middlewares/headers/
+      headers:
+        customrequestheaders:
+          X-Forwarded-Proto: "https"
     no-www:
       redirectRegex:
         regex: "^https?://www\\.(.+)"
