@@ -145,7 +145,7 @@ http:
     sslheader:
       # https://docs.traefik.io/master/middlewares/headers/
       headers:
-        customRequestHeaders:
+        sslProxyHeaders:
           X-Forwarded-Proto: "https"
     no-www:
       redirectRegex:
