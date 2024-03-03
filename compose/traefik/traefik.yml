@@ -52,7 +52,7 @@ http:
         - web-secure
       middlewares:
         - csrf
-        - sslheader
+        # - sslheader
       service: forum_server
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
