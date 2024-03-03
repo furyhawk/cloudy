@@ -175,8 +175,10 @@ http:
           - url: http://osrm_backend:5000
     forum_server:
       loadBalancer:
-        servers:
-          - url: http://flarum-web:8080
+        server:
+          port: 8080
+        # servers:
+        #   - url: http://flarum-web:8080
     streamlit_bai_app:
       loadBalancer:
         servers:
