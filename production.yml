@@ -90,6 +90,11 @@ services:
     environment:
       - "TZ"
     restart: always
+    expose:
+      - 2500
+    networks:
+      - net
+      - default
 
   traefik:
     environment:
