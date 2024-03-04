@@ -82,6 +82,15 @@ services:
     expose:
       - 80
 
+  msmtpd:
+    image: crazymax/msmtpd:latest
+    container_name: flarum_msmtpd
+    env_file:
+      - "./msmtpd.env"
+    environment:
+      - "TZ"
+    restart: always
+
   traefik:
     environment:
       <<: *default-environment
