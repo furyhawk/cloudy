@@ -176,7 +176,7 @@ http:
     forum_server:
       loadBalancer:
         servers:
-          - url: http://flarum-web:8080
+          - url: http://flarum-web:80
     streamlit_bai_app:
       loadBalancer:
         servers:
