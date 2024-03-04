@@ -34,6 +34,16 @@ services:
       - net
       - default
 
+  heynote-app:
+    image: furyhawk/heynote:${HEYNOTETAG:-latest}
+    container_name: heynote_app
+    restart: unless-stopped
+    expose:
+      - 5173
+    networks:
+      - net
+      - default
+
   streamlit-bai:
     environment:
       <<: *default-environment

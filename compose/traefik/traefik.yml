@@ -58,7 +58,17 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
-    web-secure-router:
+    heynote-router:
+      rule: "Host(`note.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: heynote_server
+      tls:
+        certResolver: letsencrypt
+
+    bai-router:
       rule: "Host(`bai.furyhawk.lol`)"
       entryPoints:
         - web-secure
@@ -177,6 +187,10 @@ http:
       loadBalancer:
         servers:
           - url: http://flarum-web:80
+    heynote_server:
+      loadBalancer:
+        servers:
+          - url: http://heynote_app:5173
     streamlit_bai_app:
       loadBalancer:
         servers:
