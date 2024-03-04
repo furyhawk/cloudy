@@ -38,6 +38,8 @@ services:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
     container_name: heynote_app
     restart: unless-stopped
+    environment:
+      NODE_ENV: production
     expose:
       - 5173
     networks:
