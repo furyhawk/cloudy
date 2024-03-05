@@ -1,16 +1,17 @@
 # Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
-- [Beyond All Information](https://bai.furyhawk.lol/)
-- [Forum](https://forum.furyhawk.lol/)
+- [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
+- [Forum](https://forum.furyhawk.lol/): Host your own forum.
 - [Blog](https://info.furyhawk.lol/)
-- [Note](https://note.furyhawk.lol/)
-- [Home server](https://github.com/furyhawk/cloudy)
-- [Neural Network Playground](https://furyhawk.github.io/playground)
+- [Note](https://note.furyhawk.lol/): Notepad Online.
+- [Home server](https://github.com/furyhawk/cloudy): Build for ARM64 platform
+- [Neural Network Playground](https://furyhawk.github.io/playground): Understand neural network visually.
 
 ## Requirements
 - Docker Compose
 - Python 3.11
+- Build for ARM64 platform
 
 ## Local Deployment
 #### Python:
