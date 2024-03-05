@@ -4,6 +4,7 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 - [Beyond All Information](https://bai.furyhawk.lol/)
 - [Forum](https://forum.furyhawk.lol/)
 - [Blog](https://info.furyhawk.lol/)
+- [Note](https://note.furyhawk.lol/)
 - [Home server](https://github.com/furyhawk/cloudy)
 - [Neural Network Playground](https://furyhawk.github.io/playground)
 
