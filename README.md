@@ -1,4 +1,4 @@
-# Streamlit + Traefik + Docker
+# Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
 ## Requirements
@@ -17,7 +17,8 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 ## Production Deployment
 1. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
 2. In `compose/traefik/traefik.yml`, change `example.com` to your domain.
-3. `docker compose -f production.yml up --build -d --remove-orphans`
+3. `docker compose -f production.yml -f ./flarum/docker-compose.yml up --build -d`
+4. `docker compose -f production.yml -f ./flarum/docker-compose.yml down --remove-orphans`
 
 ### Notes:
 ```yaml
