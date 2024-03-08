@@ -68,6 +68,17 @@ http:
       tls:
         certResolver: letsencrypt
 
+    mqttx-router:
+      rule: "Host(`mqttx.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: mqttx-web
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
     bai-router:
       rule: "Host(`bai.furyhawk.lol`)"
       entryPoints:
@@ -191,6 +202,10 @@ http:
       loadBalancer:
         servers:
           - url: http://heynote_app:5173
+    mqttx-web:
+      loadBalancer:
+        servers:
+          - url: http://mqttx_web:80
     streamlit_bai_app:
       loadBalancer:
         servers:

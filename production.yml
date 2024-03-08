@@ -27,9 +27,19 @@ services:
       - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
     image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
     container_name: osrm_backend
-    restart: always
+    restart: unless-stopped
     expose:
       - ${OSRM_PORT:-5000}
+    networks:
+      - net
+      - default
+
+  mqttx-web:
+    image: emqx/mqttx-web:latest
+    container_name: mqttx_web
+    restart: unless-stopped
+    expose:
+      - 80
     networks:
       - net
       - default
@@ -51,7 +61,7 @@ services:
       <<: *default-environment
     image: furyhawk/beyondallinfo:latest
     container_name: streamlit_bai_app
-    restart: always
+    restart: unless-stopped
     expose:
       - ${STREAMLIT_BAI_SERVER_PORT}
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
@@ -74,7 +84,7 @@ services:
       dockerfile: ./compose/streamlit-fin/Dockerfile
     image: streamlit_fin_production
     container_name: streamlit_fin_app
-    restart: always
+    restart: unless-stopped
     expose:
       - ${STREAMLIT_FIN_SERVER_PORT}
     networks:
