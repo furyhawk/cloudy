@@ -38,8 +38,8 @@ services:
     image: emqx/mqttx-web:latest
     container_name: mqttx_web
     restart: unless-stopped
-    expose:
-      - 80
+    ports:
+      - "9988:80"
     networks:
       - net
       - default

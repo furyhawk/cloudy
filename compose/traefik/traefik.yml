@@ -68,16 +68,16 @@ http:
       tls:
         certResolver: letsencrypt
 
-    mqttx-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
-      entryPoints:
-        - web-secure
-      middlewares:
-        - csrf
-      service: mqttx-web
-      tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
-        certResolver: letsencrypt
+    # mqttx-router:
+    #   rule: "Host(`mqttx.furyhawk.lol`)"
+    #   entryPoints:
+    #     - web-secure
+    #   middlewares:
+    #     - csrf
+    #   service: mqttx-web
+    #   tls:
+    #     # https://docs.traefik.io/master/routing/routers/#certresolver
+    #     certResolver: letsencrypt
 
     bai-router:
       rule: "Host(`bai.furyhawk.lol`)"
