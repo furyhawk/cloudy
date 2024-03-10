@@ -46,6 +46,28 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
+    portainer-router:
+      rule: "Host(`portainer.furyhawk.lol`, `port.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - auth
+      service: portainer_service
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    edge-router:
+      rule: "Host(`edge.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: edge_service
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
     forum-router:
       rule: "Host(`forum.furyhawk.lol`)"
       entryPoints:
@@ -190,6 +212,14 @@ http:
         permanent: true
 
   services:
+    portainer_service:
+      loadBalancer:
+        servers:
+          - url: http://portainer:9000
+    edge_service:
+      loadBalancer:
+        servers:
+          - url: http://portainer:8000
     osrm_service:
       loadBalancer:
         servers:

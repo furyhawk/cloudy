@@ -12,6 +12,7 @@ x-environment: &default-environment
 
 volumes:
   production_traefik: {}
+  portainer_data: {}
 
 services:
   osrm-backend:
@@ -117,6 +118,21 @@ services:
   #   networks:
   #     - net
   #     - default
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    command: -H unix:///var/run/docker.sock
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - net
+      - default
+    ports:
+      - "8000:8000"
+      - "9000:9000"
 
   traefik:
     environment:
