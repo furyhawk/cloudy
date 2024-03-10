@@ -51,7 +51,7 @@ http:
       entryPoints:
         - web-secure
       middlewares:
-        - auth
+        - csrf
       service: portainer_service
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
