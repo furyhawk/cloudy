@@ -60,7 +60,7 @@ services:
     container_name: cheatsheets_app
     restart: unless-stopped
     ports:
-      - "8811:80"
+      - "8011:80"
     networks:
       - net
       - default
@@ -107,11 +107,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./site:/usr/share/nginx/html:ro
+    expose:
+      - 80
     networks:
       - net
       - default
-    expose:
-      - 80
 
   # msmtpd:
   #   image: crazymax/msmtpd:latest
