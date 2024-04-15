@@ -59,8 +59,8 @@ services:
     image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
     container_name: cheatsheets_app
     restart: unless-stopped
-    ports:
-      - "8011:80"
+    expose:
+      - 80
     networks:
       - net
       - default

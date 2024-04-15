@@ -98,7 +98,6 @@ http:
         - csrf
       service: cheatsheets_app
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     # mqttx-router:
@@ -246,7 +245,7 @@ http:
     cheatsheets_app:
       loadBalancer:
         servers:
-          - url: http://cheatsheets_app:8011
+          - url: http://cheatsheets_app:80
     mqttx-web:
       loadBalancer:
         servers:
