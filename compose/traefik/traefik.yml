@@ -86,8 +86,19 @@ http:
         - web-secure
       middlewares:
         - csrf
-      service: heynote_server
+      service: heynote_app
       tls:
+        certResolver: letsencrypt
+
+    cheatsheets-router:
+      rule: "Host(`cheat.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: cheatsheets_app
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     # mqttx-router:
@@ -228,10 +239,14 @@ http:
       loadBalancer:
         servers:
           - url: http://flarum-web:80
-    heynote_server:
+    heynote_app:
       loadBalancer:
         servers:
           - url: http://heynote_app:5173
+    cheatsheets_app:
+      loadBalancer:
+        servers:
+          - url: http://cheatsheets-app:80
     mqttx-web:
       loadBalancer:
         servers:

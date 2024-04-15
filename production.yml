@@ -57,6 +57,15 @@ services:
       - net
       - default
 
+  cheatsheets-app:
+    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
+    restart: unless-stopped
+    ports:
+      - 80:80
+    networks:
+      - net
+      - default
+
   streamlit-bai:
     environment:
       <<: *default-environment
