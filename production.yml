@@ -60,7 +60,7 @@ services:
     container_name: cheatsheets_app
     restart: unless-stopped
     ports:
-      - 8811:80
+      - "8811:80"
     networks:
       - net
       - default
