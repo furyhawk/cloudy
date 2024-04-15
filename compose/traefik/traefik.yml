@@ -246,7 +246,7 @@ http:
     cheatsheets_app:
       loadBalancer:
         servers:
-          - url: http://cheatsheets-app:80
+          - url: http://cheatsheets-app:8811
     mqttx-web:
       loadBalancer:
         servers:

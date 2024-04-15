@@ -61,7 +61,7 @@ services:
     image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
     restart: unless-stopped
     ports:
-      - 80:80
+      - 8811:80
     networks:
       - net
       - default
