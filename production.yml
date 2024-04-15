@@ -1,5 +1,3 @@
-version: '3.7'
-
 x-environment: &default-environment
   LOG_LEVEL: "DEBUG"
   LOG_PATH: "./logs"
