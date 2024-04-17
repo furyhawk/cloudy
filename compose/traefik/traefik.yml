@@ -100,6 +100,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    thelounge-router:
+      rule: "Host(`irc.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: thelounge_app
+      tls:
+        certResolver: letsencrypt
+
     # mqttx-router:
     #   rule: "Host(`mqttx.furyhawk.lol`)"
     #   entryPoints:
@@ -246,6 +256,10 @@ http:
       loadBalancer:
         servers:
           - url: http://cheatsheets_app:80
+    thelounge_app:
+      loadBalancer:
+        servers:
+          - url: http://thelounge:9000
     mqttx-web:
       loadBalancer:
         servers:
