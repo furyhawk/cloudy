@@ -1,3 +1,6 @@
 [submodule "LibreChat"]
 	path = LibreChat
 	url = https://github.com/furyhawk/LibreChat.git
+[submodule "flarum"]
+	path = flarum
+	url = https://github.com/furyhawk/flarum.git
