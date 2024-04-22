@@ -110,6 +110,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    chat-router:
+      rule: "Host(`chat.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: librechat_app
+      tls:
+        certResolver: letsencrypt
+
     # mqttx-router:
     #   rule: "Host(`mqttx.furyhawk.lol`)"
     #   entryPoints:
@@ -260,6 +270,10 @@ http:
       loadBalancer:
         servers:
           - url: http://thelounge:9000
+    librechat_app:
+      loadBalancer:
+        servers:
+          - url: http://localhost:3080
     mqttx-web:
       loadBalancer:
         servers:
