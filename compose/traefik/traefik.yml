@@ -120,16 +120,15 @@ http:
       tls:
         certResolver: letsencrypt
 
-    # mqttx-router:
-    #   rule: "Host(`mqttx.furyhawk.lol`)"
-    #   entryPoints:
-    #     - web-secure
-    #   middlewares:
-    #     - csrf
-    #   service: mqttx-web
-    #   tls:
-    #     # https://docs.traefik.io/master/routing/routers/#certresolver
-    #     certResolver: letsencrypt
+    mqttx-router:
+      rule: "Host(`mqttx.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: mqttx-web
+      tls:
+        certResolver: letsencrypt
 
     bai-router:
       rule: "Host(`bai.furyhawk.lol`)"
@@ -139,7 +138,6 @@ http:
         - csrf
       service: streamlit_bai_app
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     fin-router:
@@ -150,7 +148,6 @@ http:
         - csrf
       service: streamlit_fin_app
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     info-router:
@@ -162,7 +159,6 @@ http:
         - no-www
       service: site_server
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     resume-router:
@@ -175,7 +171,6 @@ http:
         - redirect-resume
       service: resume_server
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     blog-router:
@@ -187,7 +182,6 @@ http:
         - redirect-blog
       service: blog
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     osrm-router:
@@ -199,7 +193,6 @@ http:
         - csrf
       service: osrm_service
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
         # domains:
         #   - main: "furyhawk.lol"
