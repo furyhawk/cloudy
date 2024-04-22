@@ -97,21 +97,21 @@ services:
         source: ${PWD}/cache/short_cache.sqlite
         target: /app/short_cache.sqlite
 
-  streamlit-fin:
-    environment:
-      <<: *default-environment
-    build: 
-      context: .
-      dockerfile: ./compose/streamlit-fin/Dockerfile
-    image: streamlit_fin_production
-    container_name: streamlit_fin_app
-    restart: unless-stopped
-    expose:
-      - ${STREAMLIT_FIN_SERVER_PORT}
-    networks:
-      - net
-      - default
-    command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
+  # streamlit-fin:
+  #   environment:
+  #     <<: *default-environment
+  #   build: 
+  #     context: .
+  #     dockerfile: ./compose/streamlit-fin/Dockerfile
+  #   image: streamlit_fin_production
+  #   container_name: streamlit_fin_app
+  #   restart: unless-stopped
+  #   expose:
+  #     - ${STREAMLIT_FIN_SERVER_PORT}
+  #   networks:
+  #     - net
+  #     - default
+  #   command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
 
   site_server:
     image: nginx:alpine
