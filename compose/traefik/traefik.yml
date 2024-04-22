@@ -273,7 +273,7 @@ http:
     librechat_app:
       loadBalancer:
         servers:
-          - url: http://host.docker.internal:3080
+          - url: http://LibreChat:3080
     mqttx-web:
       loadBalancer:
         servers:
