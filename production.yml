@@ -49,8 +49,8 @@ services:
       timeout: 25s
       retries: 5
     networks:
-      - net
-      - emqx-bridge:
+      net:
+      emqx-bridge:
           aliases:
             - node1.emqx.io
     ports:
