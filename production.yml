@@ -33,15 +33,15 @@ services:
       - net
       - default
 
-  mqttx-web:
-    image: emqx/mqttx-web:latest
-    container_name: mqttx_web
-    restart: unless-stopped
-    expose:
-      - 80
-    networks:
-      - net
-      - default
+  # mqttx-web:
+  #   image: emqx/mqttx-web:latest
+  #   container_name: mqttx_web
+  #   restart: unless-stopped
+  #   expose:
+  #     - 80
+  #   networks:
+  #     - net
+  #     - default
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
