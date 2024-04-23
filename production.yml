@@ -11,6 +11,10 @@ x-environment: &default-environment
 volumes:
   production_traefik: {}
   portainer_data: {}
+  vol-emqx-data1:
+    name: foo-emqx-data1
+  vol-emqx-data2:
+    name: foo-emqx-data2
 
 services:
   osrm-backend:
@@ -32,16 +36,61 @@ services:
     networks:
       - net
       - default
+  emqx1:
+    image: emqx:latest
+    container_name: emqx1
+    environment:
+    - "EMQX_NODE_NAME=emqx@node1.emqx.io"
+    - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+    - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      - net
+      - emqx-bridge:
+          aliases:
+            - node1.emqx.io
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      - 18083:18083 
+    volumes:
+      - vol-emqx-data1:/opt/emqx/data
 
-  # mqttx-web:
-  #   image: emqx/mqttx-web:latest
-  #   container_name: mqttx_web
-  #   restart: unless-stopped
-  #   expose:
-  #     - 80
-  #   networks:
-  #     - net
-  #     - default
+  emqx2:
+    image: emqx:latest
+    container_name: emqx2
+    environment:
+    - "EMQX_NODE_NAME=emqx@node2.emqx.io"
+    - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+    - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      emqx-bridge:
+        aliases:
+          - node2.emqx.io
+    volumes:
+      - vol-emqx-data2:/opt/emqx/data
+
+  mqttx-web:
+    image: emqx/mqttx-web:latest
+    container_name: mqttx_web
+    restart: unless-stopped
+    expose:
+      - 80
+    networks:
+      - emqx-bridge
+      - net
+      - default
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
@@ -175,6 +224,8 @@ services:
       - "443:443"
 
 networks:
+  emqx-bridge:
+    driver: bridge
   net:
     external: true
     name: ${NETWORK:-web}

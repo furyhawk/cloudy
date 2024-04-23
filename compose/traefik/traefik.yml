@@ -120,6 +120,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    mqtt-router:
+      rule: "Host(`mqtt.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: emqx-dashboard
+      tls:
+        certResolver: letsencrypt
+
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
@@ -267,6 +277,10 @@ http:
       loadBalancer:
         servers:
           - url: http://LibreChat:3080
+    emqx-dashboard:
+      loadBalancer:
+        servers:
+          - url: http://emqx1:18083
     mqttx-web:
       loadBalancer:
         servers:
