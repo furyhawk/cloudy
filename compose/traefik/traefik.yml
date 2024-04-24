@@ -42,13 +42,13 @@ certificatesResolvers:
 tcp:
   routers:
     emqx-web-socket-router:
-      rule: "HostSNI(`*.furyhawk.lol`)"
+      rule: "HostSNI(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket
       service: emqx-web-socket-service
 
     emqx-web-socket-secure-router:
-      rule: "HostSNI(`*.furyhawk.lol`)"
+      rule: "HostSNI(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
       service: emqx-web-socket-secure-service
@@ -160,13 +160,13 @@ http:
         certResolver: letsencrypt
 
     mqtt-ws-http-router:
-      rule: "Host(`*.furyhawk.lol`)"
+      rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket
       service: emqx-web-socket
 
     mqtt-wss-https-router:
-      rule: "Host(`*.furyhawk.lol`)"
+      rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
       service: emqx-web-socket-secure
