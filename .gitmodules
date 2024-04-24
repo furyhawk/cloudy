@@ -4,3 +4,7 @@
 [submodule "emqx-docker"]
 	path = emqx-docker
 	url = https://github.com/furyhawk/emqx-docker.git
+[submodule "flarum"]
+	path = flarum
+	url = https://github.com/furyhawk/flarum.git
+	branch = docker-compose
