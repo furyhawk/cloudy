@@ -39,6 +39,32 @@ certificatesResolvers:
       httpChallenge:
         entryPoint: web
 
+tcp:
+  routers:
+    emqx-web-socket-router:
+      rule: "HostSNI(`*.furyhawk.lol`)"
+      entryPoints:
+        - web-socket
+      service: emqx-web-socket-service
+
+    emqx-web-socket-secure-router:
+      rule: "HostSNI(`*.furyhawk.lol`)"
+      entryPoints:
+        - web-socket-secure
+      service: emqx-web-socket-secure-service
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    emqx-web-socket-service:
+      loadBalancer:
+        servers:
+          - url: http://emqx1:8083
+    emqx-web-socket-secure-service:
+      loadBalancer:
+        servers:
+          - url: http://emqx1:8084
+
 http:
   routers:
     dashboard:
@@ -60,7 +86,6 @@ http:
         - csrf
       service: portainer_service
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     edge-router:
@@ -71,7 +96,6 @@ http:
         - csrf
       service: edge_service
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     forum-router:
@@ -83,7 +107,6 @@ http:
         # - sslheader
       service: forum_server
       tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     heynote-router:
@@ -137,27 +160,13 @@ http:
         certResolver: letsencrypt
 
     mqtt-ws-http-router:
-      rule: "Host(`*`)"
+      rule: "Host(`*.furyhawk.lol`)"
       entryPoints:
         - web-socket
       service: emqx-web-socket
-
-    mqtt-wss-http-router:
-      rule: "Host(`*`)"
-      entryPoints:
-        - web-socket-secure
-      service: emqx-web-socket-secure
-
-    mqtt-ws-https-router:
-      rule: "Host(`*`)"
-      entryPoints:
-        - web-socket
-      service: emqx-web-socket
-      tls:
-        certResolver: letsencrypt
 
     mqtt-wss-https-router:
-      rule: "Host(`*`)"
+      rule: "Host(`*.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
       service: emqx-web-socket-secure
