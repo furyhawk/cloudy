@@ -171,7 +171,7 @@ http:
         - web-socket-secure
       service: emqx-web-socket-secure
       tls:
-        certResolver: letsencrypt
+        passthrough: true
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
