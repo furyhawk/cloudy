@@ -136,17 +136,33 @@ http:
       tls:
         certResolver: letsencrypt
 
-    mqtt-ws-router:
+    mqtt-ws-http-router:
       rule: "Host(`*`)"
       entryPoints:
         - web-socket
       service: emqx-web-socket
 
-    mqtt-wss-router:
+    mqtt-wss-http-router:
       rule: "Host(`*`)"
       entryPoints:
         - web-socket-secure
       service: emqx-web-socket-secure
+
+    mqtt-ws-https-router:
+      rule: "Host(`*`)"
+      entryPoints:
+        - web-socket
+      service: emqx-web-socket
+      tls:
+        certResolver: letsencrypt
+
+    mqtt-wss-https-router:
+      rule: "Host(`*`)"
+      entryPoints:
+        - web-socket-secure
+      service: emqx-web-socket-secure
+      tls:
+        certResolver: letsencrypt
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
