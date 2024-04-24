@@ -137,13 +137,13 @@ http:
         certResolver: letsencrypt
 
     mqtt-ws-router:
-      rule: "HostSNI(`*`)"
+      rule: "Host(`*`)"
       entryPoints:
         - web-socket
       service: emqx-web-socket
 
     mqtt-wss-router:
-      rule: "HostSNI(`*`)"
+      rule: "Host(`*`)"
       entryPoints:
         - web-socket-secure
       service: emqx-web-socket-secure
