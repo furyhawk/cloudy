@@ -20,11 +20,11 @@ entryPoints:
     # https
     address: ":443"
 
-  web-socket:
-    address: ":8083"
+  # web-socket:
+  #   address: ":8083"
 
-  web-socket-secure:
-    address: ":8084"
+  # web-socket-secure:
+  #   address: ":8084"
 
   # osrm:
   #   address: ":5000"
@@ -159,19 +159,19 @@ http:
       tls:
         certResolver: letsencrypt
 
-    mqtt-ws-http-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
-      entryPoints:
-        - web-socket
-      service: emqx-web-socket
+    # mqtt-ws-http-router:
+    #   rule: "Host(`mqttx.furyhawk.lol`)"
+    #   entryPoints:
+    #     - web-socket
+    #   service: emqx-web-socket
 
-    mqtt-wss-https-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
-      entryPoints:
-        - web-socket-secure
-      service: emqx-web-socket-secure
-      tls:
-        passthrough: true
+    # mqtt-wss-https-router:
+    #   rule: "Host(`mqttx.furyhawk.lol`)"
+    #   entryPoints:
+    #     - web-socket-secure
+    #   service: emqx-web-socket-secure
+    #   tls:
+    #     certResolver: letsencrypt
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
