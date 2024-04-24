@@ -39,31 +39,31 @@ certificatesResolvers:
       httpChallenge:
         entryPoint: web
 
-tcp:
-  routers:
-    emqx-web-socket-router:
-      rule: "HostSNI(`mqttx.furyhawk.lol`)"
-      entryPoints:
-        - web-socket
-      service: emqx-web-socket-service
+# tcp:
+#   routers:
+#     emqx-web-socket-router:
+#       rule: "HostSNI(`mqttx.furyhawk.lol`)"
+#       entryPoints:
+#         - web-socket
+#       service: emqx-web-socket-service
 
-    emqx-web-socket-secure-router:
-      rule: "HostSNI(`mqttx.furyhawk.lol`)"
-      entryPoints:
-        - web-socket-secure
-      service: emqx-web-socket-secure-service
-      tls:
-        certResolver: letsencrypt
+#     emqx-web-socket-secure-router:
+#       rule: "HostSNI(`mqttx.furyhawk.lol`)"
+#       entryPoints:
+#         - web-socket-secure
+#       service: emqx-web-socket-secure-service
+#       tls:
+#         certResolver: letsencrypt
 
-  services:
-    emqx-web-socket-service:
-      loadBalancer:
-        servers:
-          - url: http://emqx1:8083
-    emqx-web-socket-secure-service:
-      loadBalancer:
-        servers:
-          - url: http://emqx1:8084
+#   services:
+#     emqx-web-socket-service:
+#       loadBalancer:
+#         servers:
+#           - url: http://emqx1:8083
+#     emqx-web-socket-secure-service:
+#       loadBalancer:
+#         servers:
+#           - url: http://emqx1:8084
 
 http:
   routers:
