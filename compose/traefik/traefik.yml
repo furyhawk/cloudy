@@ -266,7 +266,7 @@ http:
       # https://docs.traefik.io/master/middlewares/headers/
       headers:
         sslProxyHeaders:
-          X-Forwarded-Proto: "https"
+          X-Forwarded-Proto: "https,wss"
         sslRedirect: true
     no-www:
       redirectRegex:
