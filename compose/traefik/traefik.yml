@@ -110,6 +110,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    privatebin-router:
+      rule: "Host(`bin.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: bin_app
+      tls:
+        certResolver: letsencrypt
+
     heynote-router:
       rule: "Host(`note.furyhawk.lol`)"
       entryPoints:
@@ -305,6 +315,10 @@ http:
       loadBalancer:
         servers:
           - url: http://flarum-web:80
+    bin_app:
+      loadBalancer:
+        servers:
+          - url: http://privatebin:8080
     heynote_app:
       loadBalancer:
         servers:

@@ -93,6 +93,21 @@ services:
   #     - net
   #     - default
 
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:latest
+    container_name: privatebin
+    read_only: true
+    volumes:
+      - './privatebin-data:/srv/data' # data volume for pastes allows pastes
+      # to persist after container stop or restart
+      - './conf.php:/srv/cfg/conf.php:ro' # second volume for custom configuration file
+    expose:
+      - 8080
+    restart: unless-stopped
+    networks:
+      - net
+      - default
+
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
     container_name: heynote_app
