@@ -166,3 +166,5 @@ cython_debug/
 cache/
 data-node/
 meili_data*/
+private-data/
+minio-data/
