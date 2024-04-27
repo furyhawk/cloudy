@@ -174,9 +174,9 @@ services:
     image: furyhawk/beyondallinfo:latest
     container_name: streamlit_bai_app
     restart: unless-stopped
+    command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
     expose:
       - ${STREAMLIT_BAI_SERVER_PORT}
-    command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
     networks:
       - net
       - default
