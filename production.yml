@@ -159,9 +159,9 @@ services:
     #   interval: 5s
     #   timeout: 5s
     #   retries: 5
-    ports:
-      - "8760:9000"
-      - "8761:9001"
+    expose:
+      - 9000
+      - 9001
     networks:
       - net
       - default

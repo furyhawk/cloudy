@@ -348,7 +348,7 @@ http:
     minio_server:
       loadBalancer:
         servers:
-          - url: http://minio_server:8761
+          - url: http://minio_server:9001
     emqx-web-socket:
       loadBalancer:
         servers:
