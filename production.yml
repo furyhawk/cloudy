@@ -97,7 +97,7 @@ services:
     image: privatebin/nginx-fpm-alpine:latest
     container_name: privatebin
     read_only: true
-    user: 65534:82
+    user: 1000:1000
     volumes:
       - './privatebin-data:/srv/data' # data volume for pastes allows pastes
       # to persist after container stop or restart
