@@ -154,11 +154,11 @@ services:
     user: "1000:1000"
     restart: unless-stopped
     command: server /data --console-address :9001
-    # healthcheck:
-    #   test: ["CMD", "mc", "ready", "local"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 65s
+      timeout: 5s
+      retries: 5
     expose:
       - 9000
       - 9001
