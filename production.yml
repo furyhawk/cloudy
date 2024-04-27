@@ -98,8 +98,12 @@ services:
     container_name: privatebin
     read_only: true
     volumes:
-      - './privatebin-data:/srv/data' # data volume for pastes allows pastes
-      # to persist after container stop or restart
+      - type: bind
+        source: "./privatebin-data"
+        target: "/srv/data"
+        uid: 165534
+        gid: 100082
+      # - './privatebin-data:/srv/data' # data volume for pastes allows pastes
       - './conf.php:/srv/cfg/conf.php:ro' # second volume for custom configuration file
     expose:
       - 8080
