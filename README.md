@@ -1,7 +1,9 @@
 # Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
+- [Chat](https://chat.furyhawk.lol/): Chat with AI.
 - [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
+- [pastebin](https://bin.furyhawk.lol/): Pastebin.
 - [Blog](https://info.furyhawk.lol/)
 - [CheatSheets](https://cheat.furyhawk.lol/): Collection of cheatsheets.
 - [Forum](https://forum.furyhawk.lol/): Host your own forum.
