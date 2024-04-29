@@ -33,62 +33,6 @@ services:
       - net
       - default
 
-  # emqx1:
-  #   image: emqx:latest
-  #   container_name: emqx1
-  #   environment:
-  #   - "EMQX_NODE_NAME=emqx@node1.emqx.io"
-  #   - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
-  #   - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
-  #   healthcheck:
-  #     test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
-  #     interval: 5s
-  #     timeout: 25s
-  #     retries: 5
-  #   networks:
-  #     net:
-  #     emqx-bridge:
-  #         aliases:
-  #           - node1.emqx.io
-  #   ports:
-  #     - 1883:1883
-  #     - 8083:8083
-  #     - 8084:8084
-  #     - 8883:8883
-  #     - 18083:18083 
-  #   volumes:
-  #     - vol-emqx-data1:/opt/emqx/data
-
-  # emqx2:
-  #   image: emqx:latest
-  #   container_name: emqx2
-  #   environment:
-  #   - "EMQX_NODE_NAME=emqx@node2.emqx.io"
-  #   - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
-  #   - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
-  #   healthcheck:
-  #     test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
-  #     interval: 5s
-  #     timeout: 25s
-  #     retries: 5
-  #   networks:
-  #     emqx-bridge:
-  #       aliases:
-  #         - node2.emqx.io
-  #   volumes:
-  #     - vol-emqx-data2:/opt/emqx/data
-
-  # mqttx-web:
-  #   image: emqx/mqttx-web:latest
-  #   container_name: mqttx_web
-  #   restart: unless-stopped
-  #   expose:
-  #     - 80
-  #   networks:
-  #     - emqx-bridge
-  #     - net
-  #     - default
-
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
     container_name: privatebin
@@ -217,7 +161,6 @@ services:
     user: "1000:1000"
     depends_on:
       - traefik
-    # Volumes
     volumes:
       - ./neo4j/data:/data
       - ./neo4j/logs:/logs
@@ -290,15 +233,13 @@ services:
       - "80:80"
       - "443:443"
       - "7687:7687"
-      - 1883:1883
-      - 8083:8083
-      - 8084:8084
-      - 8883:8883
+      - "1883:1883"
+      - "8083:8083"
+      - "8084:8084"
+      - "8883:8883"
       # - 18083:18083
 
 networks:
-  # emqx-bridge:
-  #   driver: bridge
   net:
     external: true
     name: ${NETWORK:-web}
