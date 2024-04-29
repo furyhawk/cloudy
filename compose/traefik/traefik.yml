@@ -227,7 +227,7 @@ http:
     #   service: emqx-mqtt-socket
 
     mqtt-ws-http-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
+      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket
       middlewares:
@@ -237,14 +237,13 @@ http:
         certResolver: letsencrypt
 
     mqtt-wss-https-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
+      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
       middlewares:
         - csrf
       service: emqx-web-socket-secure
-      tls:
-        certResolver: letsencrypt
+      tls: {}
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
