@@ -153,7 +153,7 @@ services:
       # MINIO_SERVER_URL: https://drive.furyhawk.lol
     user: "1000:1000"
     restart: unless-stopped
-    command: server /data --console-address :9001
+    command: server /data --address :9000 --console-address :9001
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 65s
