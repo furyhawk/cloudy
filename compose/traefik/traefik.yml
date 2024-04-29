@@ -240,6 +240,8 @@ http:
       rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
+      middlewares:
+        - csrf
       service: emqx-web-socket-secure
       tls:
         certResolver: letsencrypt
