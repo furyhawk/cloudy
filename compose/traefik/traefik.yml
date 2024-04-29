@@ -181,12 +181,22 @@ http:
         certResolver: letsencrypt
 
     neo4j-router:
-      rule: "Host(`graph.furyhawk.lol`, `neo4j.furyhawk.lol`)"
+      rule: "Host(`neo4j.furyhawk.lol`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
       service: neo4j-browser
+      tls:
+        certResolver: letsencrypt
+
+    graph-router:
+      rule: "Host(`graph.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: neo4j-bolt
       tls:
         certResolver: letsencrypt
 
@@ -377,14 +387,18 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7474
+    neo4j-bolt:
+      loadBalancer:
+        servers:
+          - url: bolt://neo4j_server:7687
     emqx-web-socket:
       loadBalancer:
         servers:
-          - url: http://emqx1:8083
+          - url: ws://emqx1:8083
     emqx-web-socket-secure:
       loadBalancer:
         servers:
-          - url: http://emqx1:8084
+          - url: wss://emqx1:8084
     emqx-dashboard:
       loadBalancer:
         servers:
