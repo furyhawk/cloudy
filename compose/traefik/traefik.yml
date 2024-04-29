@@ -161,12 +161,22 @@ http:
         certResolver: letsencrypt
 
     minio-router:
-      rule: "Host(`drive.furyhawk.lol`, `minio.furyhawk.lol`, `s3.furyhawk.lol`, `storage.furyhawk.lol`)"
+      rule: "Host(`drive.furyhawk.lol`, `storage.furyhawk.lol`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
       service: minio_server
+      tls:
+        certResolver: letsencrypt
+
+    minio-api-router:
+      rule: "Host(`minio.furyhawk.lol`, `s3.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: minio_service
       tls:
         certResolver: letsencrypt
 
@@ -349,6 +359,10 @@ http:
       loadBalancer:
         servers:
           - url: http://minio_server:9001
+    minio_service:
+      loadBalancer:
+        servers:
+          - url: http://minio_server:9000
     emqx-web-socket:
       loadBalancer:
         servers:
