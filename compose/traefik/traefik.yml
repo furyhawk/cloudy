@@ -395,11 +395,11 @@ http:
     neo4j-browser:
       loadBalancer:
         servers:
-          - url: neo4j_server:7474
+          - url: http://neo4j_server:7474
     neo4j-bolt:
       loadBalancer:
         servers:
-          - url: neo4j_server:7687
+          - url: http://neo4j_server:7687
     emqx-web-socket:
       loadBalancer:
         servers:
