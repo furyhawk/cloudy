@@ -180,6 +180,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    neo4j-router:
+      rule: "Host(`graph.furyhawk.lol`, `neo4j.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: neo4j-browser
+      tls:
+        certResolver: letsencrypt
+
     mqtt-router:
       rule: "Host(`mqtt.furyhawk.lol`)"
       entryPoints:
@@ -363,6 +373,10 @@ http:
       loadBalancer:
         servers:
           - url: http://minio_server:9000
+    neo4j-browser:
+      loadBalancer:
+        servers:
+          - url: http://neo4j_server:7474
     emqx-web-socket:
       loadBalancer:
         servers:
