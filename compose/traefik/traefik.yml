@@ -19,6 +19,10 @@ entryPoints:
           scheme: https
           permanent: true
 
+  mqtt:
+    # mqtt
+    address: ":1883"
+
   web-secure:
     # https
     address: ":443"
@@ -206,7 +210,7 @@ http:
       tls:
         certResolver: letsencrypt
 
-    mqtt-router:
+    mqtt-http-router:
       rule: "Host(`mqtt.furyhawk.lol`)"
       entryPoints:
         - web-secure
@@ -216,10 +220,18 @@ http:
       tls:
         certResolver: letsencrypt
 
+    mqtt-socket-router:
+      rule: "Host(`mqtt.furyhawk.lol`)"
+      entryPoints:
+        - mqtt
+      service: emqx-mqtt-socket
+
     mqtt-ws-http-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket
+      middlewares:
+        - csrf
       service: emqx-web-socket
       tls:
         certResolver: letsencrypt
@@ -405,6 +417,10 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7687
+    emqx-mqtt-socket:
+      loadBalancer:
+        servers:
+          - url: http://emqx1:1883
     emqx-web-socket:
       loadBalancer:
         servers:
