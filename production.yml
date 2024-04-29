@@ -211,7 +211,7 @@ services:
     restart: unless-stopped
     # Environment variables
     environment:
-      NEO4J_AUTH: admin/${NEO4J_PASSWORD:-12345678}
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-12345678}
       NEO4J_dbms_memory_pagecache_size: 512M
       NEO4J_server_memory_heap_max__size: 2G
     user: "1000:1000"
