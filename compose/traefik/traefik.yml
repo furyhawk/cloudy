@@ -16,6 +16,8 @@ entryPoints:
       redirections:
         entryPoint:
           to: web-secure
+          scheme: https
+          permanent: true
 
   web-secure:
     # https
@@ -181,17 +183,18 @@ http:
         certResolver: letsencrypt
 
     neo4j-router:
-      rule: "Host(`neo4j.furyhawk.lol`)"
+      rule: "Host(`neo4j.furyhawk.lol`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
+        - neo4j_strip
       service: neo4j-browser
       tls:
         certResolver: letsencrypt
 
     graph-router:
-      rule: "Host(`graph.furyhawk.lol`)"
+      rule: "Host(`neo4j.furyhawk.lol`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -338,6 +341,12 @@ http:
         replacement: "https://furyhawk.github.io/124c41/${1}"
         permanent: true
 
+    neo4j_strip:
+      # https://docs.traefik.io/master/middlewares/stripprefix/
+      stripprefix:
+        prefixes:
+          - "/neo4j"
+
   services:
     portainer_service:
       loadBalancer:
@@ -386,11 +395,11 @@ http:
     neo4j-browser:
       loadBalancer:
         servers:
-          - url: http://neo4j_server:7474
+          - url: neo4j_server:7474
     neo4j-bolt:
       loadBalancer:
         servers:
-          - url: bolt://neo4j_server:7687
+          - url: neo4j_server:7687
     emqx-web-socket:
       loadBalancer:
         servers:

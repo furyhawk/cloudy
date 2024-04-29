@@ -212,17 +212,23 @@ services:
     # Environment variables
     environment:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-12345678}
+      NEO4J_dbms.default_listen_address: "0.0.0.0"
+      NEO4J_dbms.default_advertised_address: "neo4j.furyhawk.lol"
+      NEO4J_dbms.connector.bolt.advertised_address: ":443"
+      NEO4J_dbms_security_procedures_unrestricted=apoc.*
       NEO4J_dbms_memory_pagecache_size: 512M
       NEO4J_server_memory_heap_max__size: 2G
     user: "1000:1000"
+    depends_on:
+      - traefik
     # Volumes
     volumes:
       - ./neo4j/data:/data
       - ./neo4j/logs:/logs
     # Expose ports
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+    # ports:
+    #   - "7474:7474"
+    #   - "7687:7687"
     networks:
       - net
       - default
