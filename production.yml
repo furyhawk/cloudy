@@ -11,10 +11,6 @@ x-environment: &default-environment
 volumes:
   production_traefik: {}
   portainer_data: {}
-  # vol-emqx-data1:
-  #   name: foo-emqx-data1
-  # vol-emqx-data2:
-  #   name: foo-emqx-data2
 
 services:
   osrm-backend:
@@ -293,6 +289,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "7687:7687"
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      # - 18083:18083
 
 networks:
   # emqx-bridge:

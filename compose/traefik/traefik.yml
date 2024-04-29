@@ -23,11 +23,14 @@ entryPoints:
     # https
     address: ":443"
 
-  # web-socket:
-  #   address: ":8083"
+  web-socket:
+    address: ":8083"
 
-  # web-socket-secure:
-  #   address: ":8084"
+  web-socket-secure:
+    address: ":8084"
+
+  bolt-socket:
+    address: ":7687"
 
   # osrm:
   #   address: ":5000"
@@ -196,7 +199,7 @@ http:
     graph-router:
       rule: "Host(`neo4j.furyhawk.lol`)"
       entryPoints:
-        - web-secure
+        - bolt-socket
       middlewares:
         - csrf
       service: neo4j-bolt
@@ -213,19 +216,21 @@ http:
       tls:
         certResolver: letsencrypt
 
-    # mqtt-ws-http-router:
-    #   rule: "Host(`mqttx.furyhawk.lol`)"
-    #   entryPoints:
-    #     - web-socket
-    #   service: emqx-web-socket
+    mqtt-ws-http-router:
+      rule: "Host(`mqttx.furyhawk.lol`)"
+      entryPoints:
+        - web-socket
+      service: emqx-web-socket
+      tls:
+        certResolver: letsencrypt
 
-    # mqtt-wss-https-router:
-    #   rule: "Host(`mqttx.furyhawk.lol`)"
-    #   entryPoints:
-    #     - web-socket-secure
-    #   service: emqx-web-socket-secure
-    #   tls:
-    #     certResolver: letsencrypt
+    mqtt-wss-https-router:
+      rule: "Host(`mqttx.furyhawk.lol`)"
+      entryPoints:
+        - web-socket-secure
+      service: emqx-web-socket-secure
+      tls:
+        certResolver: letsencrypt
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
@@ -415,7 +420,7 @@ http:
     mqttx-web:
       loadBalancer:
         servers:
-          - url: http://mqttx_web:8888
+          - url: http://mqttx_web:80
     streamlit_bai_app:
       loadBalancer:
         servers:
