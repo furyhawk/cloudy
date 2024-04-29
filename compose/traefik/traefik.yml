@@ -19,9 +19,9 @@ entryPoints:
           scheme: https
           permanent: true
 
-  mqtt:
-    # mqtt
-    address: ":1883"
+  # mqtt:
+  #   # mqtt
+  #   address: ":1883"
 
   web-secure:
     # https
@@ -220,11 +220,11 @@ http:
       tls:
         certResolver: letsencrypt
 
-    mqtt-socket-router:
-      rule: "Host(`mqtt.furyhawk.lol`)"
-      entryPoints:
-        - mqtt
-      service: emqx-mqtt-socket
+    # mqtt-socket-router:
+    #   rule: "Host(`mqtt.furyhawk.lol`)"
+    #   entryPoints:
+    #     - mqtt
+    #   service: emqx-mqtt-socket
 
     mqtt-ws-http-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
