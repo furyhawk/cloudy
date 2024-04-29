@@ -408,11 +408,11 @@ http:
     emqx-web-socket:
       loadBalancer:
         servers:
-          - url: ws://emqx1:8083
+          - url: http://emqx1:8083
     emqx-web-socket-secure:
       loadBalancer:
         servers:
-          - url: wss://emqx1:8084
+          - url: http://emqx1:8084
     emqx-dashboard:
       loadBalancer:
         servers:
