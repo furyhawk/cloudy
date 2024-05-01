@@ -11,10 +11,6 @@ x-environment: &default-environment
 volumes:
   production_traefik: {}
   portainer_data: {}
-  postgres-data:
-    driver: local
-  kestra-data:
-    driver: local
 
 services:
   postgres:
@@ -31,7 +27,7 @@ services:
       PUID: 1000
     user: "1000:1000"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 30s
@@ -73,7 +69,7 @@ services:
     user: "1000:1000"
     command: server standalone --worker-thread=128
     volumes:
-      - kestra-data:/app/storage
+      - ./kestra-data:/app/storage
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
     environment:
