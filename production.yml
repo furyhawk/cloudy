@@ -11,8 +11,107 @@ x-environment: &default-environment
 volumes:
   production_traefik: {}
   portainer_data: {}
+  postgres-data:
+    driver: local
+  kestra-data:
+    driver: local
 
 services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data"
+      LANG: en_US.utf8
+      TZ: Asia/Singapore
+      PGID: 1000
+      PUID: 1000
+    user: "1000:1000"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+      - default
+  adminer:
+    image: adminer
+    container_name: adminer
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGID: 1000
+      PUID: 1000
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      PYTHONPATH: "/pgadmin4"
+      TZ: Asia/Singapore
+    user: "1000:1000"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    expose:
+      - 80
+    networks:
+      - net
+      - default
+
+  kestra:
+    image: kestra/kestra:latest-full
+    container_name: kestra
+    pull_policy: always
+    # Note that this is meant for development only. Refer to the documentation for production deployments of Kestra which runs without a root user.
+    user: "1000:1000"
+    command: server standalone --worker-thread=128
+    volumes:
+      - kestra-data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
+    environment:
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: ${POSTGRES_USER}
+            password: ${POSTGRES_PASSWORD}
+        kestra:
+          server:
+            basic-auth:
+              enabled: false
+              username: ${EMAIL_FROM} # it must be a valid email address
+              password: ${EMAIL_PASSWORD}
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: "/app/storage"
+          queue:
+            type: postgres
+          tasks:
+            tmp-dir:
+              path: /tmp/kestra-wd/tmp
+          url: http://kestra.furyhawk.lol/
+    expose:
+      - "8080"
+      - "8081"
+    networks:
+      - net
+      - default
+    depends_on:
+      postgres:
+        condition: service_started
+
   osrm-backend:
     environment:
       # OSRM manager setup
@@ -37,7 +136,7 @@ services:
     image: privatebin/nginx-fpm-alpine:latest
     container_name: privatebin
     read_only: true
-    user: 1000:1000
+    user: "1000:1000"
     volumes:
       - './privatebin-data:/srv/data' # data volume for pastes allows pastes
       # to persist after container stop or restart

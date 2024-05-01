@@ -108,6 +108,26 @@ http:
       tls:
         certResolver: letsencrypt
 
+    adminer-router:
+      rule: "Host(`adminer.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: adminer_app
+      tls:
+        certResolver: letsencrypt
+    
+    kestra-router:
+      rule: "Host(`kestra.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: kestra_app
+      tls:
+        certResolver: letsencrypt
+
     forum-router:
       rule: "Host(`forum.furyhawk.lol`)"
       entryPoints:
@@ -378,6 +398,14 @@ http:
       loadBalancer:
         servers:
           - url: http://osrm_backend:5000
+    adminer_app:
+      loadBalancer:
+        servers:
+          - url: http://adminer:8080
+    kestra_app:
+      loadBalancer:
+        servers:
+          - url: http://kestra:8080
     forum_server:
       loadBalancer:
         servers:
