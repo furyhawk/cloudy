@@ -87,7 +87,7 @@ services:
         kestra:
           server:
             basic-auth:
-              enabled: false
+              enabled: true
               username: ${EMAIL_FROM} # it must be a valid email address
               password: ${EMAIL_PASSWORD}
           repository:
