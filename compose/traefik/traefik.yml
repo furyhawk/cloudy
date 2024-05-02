@@ -263,7 +263,8 @@ http:
       middlewares:
         - csrf
       service: emqx-web-socket-secure
-      tls: {}
+      tls:
+        certResolver: letsencrypt
 
     mqttx-router:
       rule: "Host(`mqttx.furyhawk.lol`)"
