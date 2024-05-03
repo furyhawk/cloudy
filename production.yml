@@ -263,6 +263,16 @@ services:
     networks:
       - net
       - default
+  
+  api_server:
+    image: furyhawk/listen:latest
+    container_name: api_server
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - net
+      - default
 
   site_server:
     image: nginx:alpine
