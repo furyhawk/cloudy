@@ -125,6 +125,31 @@ services:
       - net
       - default
 
+  minio-common:
+    image: quay.io/minio/minio:RELEASE.2024-04-18T19-09-19Z
+    container_name: minio_server
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+      # MINIO_OPTS: "--console-address :9001"
+      # MINIO_SERVER_URL: https://drive.furyhawk.lol
+    user: "1000:1000"
+    restart: unless-stopped
+    command: server /data --address :9000 --console-address :9001
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 65s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - "./minio-data:/data"
+    expose:
+      - 9000
+      - 9001
+    networks:
+      - net
+      - default
+
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
     container_name: privatebin
@@ -175,31 +200,6 @@ services:
       - net
       - default
 
-  minio-common:
-    image: quay.io/minio/minio:RELEASE.2024-04-18T19-09-19Z
-    container_name: minio_server
-    environment:
-      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
-      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
-      # MINIO_OPTS: "--console-address :9001"
-      # MINIO_SERVER_URL: https://drive.furyhawk.lol
-    user: "1000:1000"
-    restart: unless-stopped
-    command: server /data --address :9000 --console-address :9001
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 65s
-      timeout: 5s
-      retries: 5
-    expose:
-      - 9000
-      - 9001
-    networks:
-      - net
-      - default
-    volumes:
-      - "./minio-data:/data"
-
   streamlit-bai:
     environment:
       <<: *default-environment
@@ -207,11 +207,6 @@ services:
     container_name: streamlit_bai_app
     restart: unless-stopped
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
-    expose:
-      - ${STREAMLIT_BAI_SERVER_PORT}
-    networks:
-      - net
-      - default
     volumes:
       - type: bind
         source: ${PWD}/cache/bar_cache.sqlite
@@ -219,22 +214,27 @@ services:
       - type: bind
         source: ${PWD}/cache/short_cache.sqlite
         target: /app/short_cache.sqlite
+    expose:
+      - ${STREAMLIT_BAI_SERVER_PORT}
+    networks:
+      - net
+      - default
 
-  # streamlit-fin:
-  #   environment:
-  #     <<: *default-environment
-  #   build: 
-  #     context: .
-  #     dockerfile: ./compose/streamlit-fin/Dockerfile
-  #   image: streamlit_fin_production
-  #   container_name: streamlit_fin_app
-  #   restart: unless-stopped
-  #   expose:
-  #     - ${STREAMLIT_FIN_SERVER_PORT}
-  #   networks:
-  #     - net
-  #     - default
-  #   command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
+  streamlit-fin:
+    environment:
+      <<: *default-environment
+    # build: 
+    #   context: .
+    #   dockerfile: ./compose/streamlit-fin/Dockerfile
+    image: furyhawk/fin_app:latest
+    container_name: streamlit_fin_app
+    restart: unless-stopped
+    command: streamlit run --server.port=$STREAMLIT_FIN_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$FIN_LOCATION src/app.py
+    expose:
+      - ${STREAMLIT_FIN_SERVER_PORT}
+    networks:
+      - net
+      - default
 
   neo4j_server:
     # Docker image to be used
@@ -268,6 +268,8 @@ services:
     image: furyhawk/listen:latest
     container_name: api_server
     restart: always
+    depends_on:
+      - postgres
     environment:
       DATABASE__HOSTNAME: ${DATABASE__HOSTNAME}
       DATABASE__USERNAME: ${POSTGRES_USER}
