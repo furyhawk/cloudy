@@ -286,15 +286,15 @@ http:
       tls:
         certResolver: letsencrypt
 
-    # fin-router:
-    #   rule: "Host(`fin.furyhawk.lol`)"
-    #   entryPoints:
-    #     - web-secure
-    #   middlewares:
-    #     - csrf
-    #   service: streamlit_fin_app
-    #   tls:
-    #     certResolver: letsencrypt
+    fin-router:
+      rule: "Host(`fin.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: streamlit_fin_app
+      tls:
+        certResolver: letsencrypt
 
     info-router:
       rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`, `124c41.furyhawk.lol`)"
