@@ -117,6 +117,17 @@ http:
       service: adminer_app
       tls:
         certResolver: letsencrypt
+
+    api-router:
+      rule: "Host(`api.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - auth
+        - csrf
+      service: api_server
+      tls:
+        certResolver: letsencrypt
     
     kestra-router:
       rule: "Host(`kestra.furyhawk.lol`)"
@@ -403,6 +414,10 @@ http:
       loadBalancer:
         servers:
           - url: http://adminer:8080
+    api_server:
+      loadBalancer:
+        servers:
+          - url: http://api_server:8000
     kestra_app:
       loadBalancer:
         servers:
