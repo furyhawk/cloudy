@@ -142,7 +142,6 @@ http:
     jellyfin-router:
       rule: "Host(`media.furyhawk.lol`)"
       entryPoints:
-        - auth
         - web-secure
       middlewares:
         - csrf
