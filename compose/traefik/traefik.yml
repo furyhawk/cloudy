@@ -139,6 +139,17 @@ http:
       tls:
         certResolver: letsencrypt
 
+    jellyfin-router:
+      rule: "Host(`media.furyhawk.lol`)"
+      entryPoints:
+        - auth
+        - web-secure
+      middlewares:
+        - csrf
+      service: jellyfin_app
+      tls:
+        certResolver: letsencrypt
+
     forum-router:
       rule: "Host(`forum.furyhawk.lol`)"
       entryPoints:
@@ -422,6 +433,10 @@ http:
       loadBalancer:
         servers:
           - url: http://kestra:8080
+    jellyfin_app:
+      loadBalancer:
+        servers:
+          - url: http://jellyfin:8096
     forum_server:
       loadBalancer:
         servers:
