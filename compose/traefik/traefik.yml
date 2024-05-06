@@ -297,6 +297,16 @@ http:
       tls:
         certResolver: letsencrypt
 
+    syncthing-router:
+      rule: "Host(`sync.furyhawk.lol`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: syncthing_app
+      tls:
+        certResolver: letsencrypt
+
     bai-router:
       rule: "Host(`bai.furyhawk.lol`)"
       entryPoints:
@@ -496,6 +506,10 @@ http:
       loadBalancer:
         servers:
           - url: http://mqttx_web:80
+    syncthing_app:
+      loadBalancer:
+        servers:
+          - url: http://syncthing:8384
     streamlit_bai_app:
       loadBalancer:
         servers:
