@@ -493,7 +493,7 @@ http:
     neo4j-bolt:
       loadBalancer:
         servers:
-          - url: http://neo4j_server:7687
+          - url: bolt://neo4j_server:7687
     emqx-mqtt-socket:
       loadBalancer:
         servers:
