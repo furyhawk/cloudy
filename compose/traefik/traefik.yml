@@ -55,7 +55,8 @@ tcp:
       entryPoints:
         - bolt-socket
       rule: "HostSNI(`neo4j.furyhawk.lol`)"
-      tls: letsencrypt
+      tls:
+        certResolver: letsencrypt
       service: neo4j-bolt
 
 #     emqx-web-socket-router:
