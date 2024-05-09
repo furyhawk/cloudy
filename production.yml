@@ -127,9 +127,6 @@ services:
     # ports:
     #   - "7474:7474"
     #   - "7687:7687"
-    expose:
-      - 7474
-      - 7687
     networks:
       - net
       - default
