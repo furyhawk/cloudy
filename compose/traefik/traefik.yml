@@ -81,11 +81,11 @@ tcp:
 #     emqx-web-socket-service:
 #       loadBalancer:
 #         servers:
-#           - address: ws://emqx1:8083
+#           - address: "emqx1:8083"
 #     emqx-web-socket-secure-service:
 #       loadBalancer:
 #         servers:
-#           - address: wss://emqx1:8084
+#           - address: "emqx1:8084"
 
 http:
   routers:
