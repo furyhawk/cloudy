@@ -142,136 +142,136 @@ http:
       service: api_server
     
     kestra-router:
-      rule: "Host(`kestra.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`kestra.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: kestra_app
       tls:
         certResolver: letsencrypt
+      service: kestra_app
 
     jellyfin-router:
-      rule: "Host(`media.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`media.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: jellyfin_app
       tls:
         certResolver: letsencrypt
+      service: jellyfin_app
 
     forum-router:
-      rule: "Host(`forum.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`forum.furyhawk.lol`)"
       middlewares:
         - csrf
         # - sslheader
-      service: forum_server
       tls:
         certResolver: letsencrypt
+      service: forum_server
 
     privatebin-router:
-      rule: "Host(`bin.furyhawk.lol`, `paste.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`bin.furyhawk.lol`, `paste.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: bin_app
       tls:
         certResolver: letsencrypt
+      service: bin_app
 
     heynote-router:
-      rule: "Host(`note.furyhawk.lol`, `pad.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`note.furyhawk.lol`, `pad.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: heynote_app
       tls:
         certResolver: letsencrypt
+      service: heynote_app
 
     cheatsheets-router:
-      rule: "Host(`cheat.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`cheat.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: cheatsheets_app
       tls:
         certResolver: letsencrypt
+      service: cheatsheets_app
 
     thelounge-router:
-      rule: "Host(`irc.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`irc.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: thelounge_app
       tls:
         certResolver: letsencrypt
+      service: thelounge_app
 
     chat-router:
-      rule: "Host(`bot.furyhawk.lol`, `chat.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`bot.furyhawk.lol`, `chat.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: librechat_app
       tls:
         certResolver: letsencrypt
+      service: librechat_app
 
     minio-router:
-      rule: "Host(`drive.furyhawk.lol`, `storage.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`drive.furyhawk.lol`, `storage.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: minio_server
       tls:
         certResolver: letsencrypt
+      service: minio_server
 
     minio-api-router:
-      rule: "Host(`minio.furyhawk.lol`, `s3.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`minio.furyhawk.lol`, `s3.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: minio_service
       tls:
         certResolver: letsencrypt
+      service: minio_service
 
     neo4j-router:
-      rule: "Host(`neo4j.furyhawk.lol`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
       entryPoints:
         - web-secure
+      rule: "Host(`neo4j.furyhawk.lol`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
       middlewares:
         - csrf
         - neo4j_strip
-      service: neo4j-browser
       tls:
         certResolver: letsencrypt
+      service: neo4j-browser
 
-    # graph-router:
-    #   rule: "Host(`neo4j.furyhawk.lol`)"
-    #   entryPoints:
-    #     - bolt-socket
-    #   middlewares:
-    #     - csrf
-    #   service: neo4j-bolt
-    #   tls:
-    #     certResolver: letsencrypt
-
-    mqtt-http-router:
-      rule: "Host(`mqtt.furyhawk.lol`)"
+    graph-router:
       entryPoints:
-        - web-secure
+        - bolt-socket
+      rule: "Host(`neo4j.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: emqx-dashboard
       tls:
         certResolver: letsencrypt
+      service: neo4j-bolt
+
+    mqtt-http-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`mqtt.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: emqx-dashboard
 
     # mqtt-socket-router:
     #   rule: "Host(`mqtt.furyhawk.lol`)"
@@ -280,113 +280,109 @@ http:
     #   service: emqx-mqtt-socket
 
     mqtt-ws-http-router:
-      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket
+      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: emqx-web-socket
       tls:
         certResolver: letsencrypt
+      service: emqx-web-socket
 
     mqtt-wss-https-router:
-      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       entryPoints:
         - web-socket-secure
+      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: emqx-web-socket-secure
       tls:
         certResolver: letsencrypt
+      service: emqx-web-socket-secure
 
     mqttx-router:
-      rule: "Host(`mqttx.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: mqttx-web
       tls:
         certResolver: letsencrypt
+      service: mqttx-web
+
+    osrm-router:
+      entryPoints:
+        - "web-secure"
+      rule: "Host(`osrm.furyhawk.lol`)"
+        # - "osrm"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: osrm_service
 
     syncthing-router:
-      rule: "Host(`sync.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`sync.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: syncthing_app
       tls:
         certResolver: letsencrypt
+      service: syncthing_app
 
     bai-router:
-      rule: "Host(`bai.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`bai.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: streamlit_bai_app
       tls:
         certResolver: letsencrypt
+      service: streamlit_bai_app
 
     fin-router:
-      rule: "Host(`fin.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`fin.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: streamlit_fin_app
       tls:
         certResolver: letsencrypt
+      service: streamlit_fin_app
 
     info-router:
-      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`, `124c41.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`, `124c41.furyhawk.lol`)"
       middlewares:
         - csrf
         - no-www
-      service: site_server
       tls:
         certResolver: letsencrypt
+      service: site_server
 
     resume-router:
-      rule: "Host(`resume.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`resume.furyhawk.lol`)"
       # redirect to resume
       middlewares:
         - csrf
         - redirect-resume
-      service: resume_server
       tls:
         certResolver: letsencrypt
+      service: resume_server
 
     blog-router:
-      rule: "Host(`blog.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`blog.furyhawk.lol`)"
       # redirect to external blog
       middlewares:
         - redirect-blog
+      tls:
+        certResolver: letsencrypt
       service: blog
-      tls:
-        certResolver: letsencrypt
-
-    osrm-router:
-      rule: "Host(`osrm.furyhawk.lol`)"
-      entryPoints:
-        - "web-secure"
-        # - "osrm"
-      middlewares:
-        - csrf
-      service: osrm_service
-      tls:
-        certResolver: letsencrypt
-        # domains:
-        #   - main: "furyhawk.lol"
-        #     sans:
-        #       - "*.furyhawk.lol"
 
   middlewares:
     auth:
@@ -494,10 +490,10 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7474
-    # neo4j-bolt:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://neo4j_server:7687
+    neo4j-bolt:
+      loadBalancer:
+        servers:
+          - url: http://neo4j_server:7687
     emqx-mqtt-socket:
       loadBalancer:
         servers:
