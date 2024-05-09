@@ -49,8 +49,15 @@ certificatesResolvers:
       httpChallenge:
         entryPoint: web
 
-# tcp:
-#   routers:
+tcp:
+  routers:
+    neo4j-bolt-router:
+      entryPoints:
+        - bolt-socket
+      rule: "HostSNI(`neo4j.furyhawk.lol`)"
+      tls: {}
+      service: neo4j-bolt
+
 #     emqx-web-socket-router:
 #       rule: "HostSNI(`mqttx.furyhawk.lol`)"
 #       entryPoints:
@@ -65,38 +72,42 @@ certificatesResolvers:
 #       tls:
 #         certResolver: letsencrypt
 
-#   services:
+  services:
+    neo4j-bolt:
+      loadBalancer:
+        servers:
+          - address: "neo4j_server:7687"
 #     emqx-web-socket-service:
 #       loadBalancer:
 #         servers:
-#           - url: http://emqx1:8083
+#           - address: ws://emqx1:8083
 #     emqx-web-socket-secure-service:
 #       loadBalancer:
 #         servers:
-#           - url: http://emqx1:8084
+#           - address: wss://emqx1:8084
 
 http:
   routers:
     dashboard:
-      rule: "Host(`dashboard.furyhawk.lol`) && PathPrefix(`/api`, `/dashboard`)"
       entryPoints:
         - web-secure
+      rule: "Host(`dashboard.furyhawk.lol`) && PathPrefix(`/api`, `/dashboard`)"
       middlewares:
         - auth
-      service: api@internal
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+      service: api@internal
 
     portainer-router:
-      rule: "Host(`portainer.furyhawk.lol`, `port.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`portainer.furyhawk.lol`, `port.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: portainer_service
       tls:
         certResolver: letsencrypt
+      service: portainer_service
 
     edge-router:
       rule: "Host(`edge.furyhawk.lol`)"
@@ -104,30 +115,30 @@ http:
         - web-secure
       middlewares:
         - csrf
-      service: edge_service
       tls:
         certResolver: letsencrypt
+      service: edge_service
 
     adminer-router:
-      rule: "Host(`adminer.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`adminer.furyhawk.lol`)"
       middlewares:
         - csrf
-      service: adminer_app
       tls:
         certResolver: letsencrypt
+      service: adminer_app
 
     api-router:
-      rule: "Host(`api.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`api.furyhawk.lol`)"
       middlewares:
         - auth
         - csrf
-      service: api_server
       tls:
         certResolver: letsencrypt
+      service: api_server
     
     kestra-router:
       rule: "Host(`kestra.furyhawk.lol`)"
@@ -241,15 +252,15 @@ http:
       tls:
         certResolver: letsencrypt
 
-    graph-router:
-      rule: "Host(`neo4j.furyhawk.lol`)"
-      entryPoints:
-        - bolt-socket
-      middlewares:
-        - csrf
-      service: neo4j-bolt
-      tls:
-        certResolver: letsencrypt
+    # graph-router:
+    #   rule: "Host(`neo4j.furyhawk.lol`)"
+    #   entryPoints:
+    #     - bolt-socket
+    #   middlewares:
+    #     - csrf
+    #   service: neo4j-bolt
+    #   tls:
+    #     certResolver: letsencrypt
 
     mqtt-http-router:
       rule: "Host(`mqtt.furyhawk.lol`)"
@@ -482,10 +493,10 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7474
-    neo4j-bolt:
-      loadBalancer:
-        servers:
-          - url: http://neo4j_server:7687
+    # neo4j-bolt:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://neo4j_server:7687
     emqx-mqtt-socket:
       loadBalancer:
         servers:
