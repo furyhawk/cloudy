@@ -54,38 +54,38 @@ tcp:
     neo4j-bolt-router:
       entryPoints:
         - bolt-socket
-      rule: "HostSNI(`neo4j.furyhawk.lol`)"
+      rule: "HostSNI(`*`)"
       tls:
         certResolver: letsencrypt
       service: neo4j-bolt
 
-#     emqx-web-socket-router:
-#       rule: "HostSNI(`mqttx.furyhawk.lol`)"
-#       entryPoints:
-#         - web-socket
-#       service: emqx-web-socket-service
+    emqx-web-socket-router:
+      entryPoints:
+        - web-socket
+      rule: "HostSNI(`*`)"
+      service: emqx-web-socket-service
 
-#     emqx-web-socket-secure-router:
-#       rule: "HostSNI(`mqttx.furyhawk.lol`)"
-#       entryPoints:
-#         - web-socket-secure
-#       service: emqx-web-socket-secure-service
-#       tls:
-#         certResolver: letsencrypt
+    emqx-web-socket-secure-router:
+      entryPoints:
+        - web-socket-secure
+      rule: "HostSNI(`*`)"
+      service: emqx-web-socket-secure-service
+      tls:
+        certResolver: letsencrypt
 
   services:
     neo4j-bolt:
       loadBalancer:
         servers:
           - address: "neo4j_server:7687"
-#     emqx-web-socket-service:
-#       loadBalancer:
-#         servers:
-#           - address: "emqx1:8083"
-#     emqx-web-socket-secure-service:
-#       loadBalancer:
-#         servers:
-#           - address: "emqx1:8084"
+    emqx-web-socket-service:
+      loadBalancer:
+        servers:
+          - address: "emqx1:8083"
+    emqx-web-socket-secure-service:
+      loadBalancer:
+        servers:
+          - address: "emqx1:8084"
 
 http:
   routers:
@@ -111,9 +111,9 @@ http:
       service: portainer_service
 
     edge-router:
-      rule: "Host(`edge.furyhawk.lol`)"
       entryPoints:
         - web-secure
+      rule: "Host(`edge.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -253,15 +253,15 @@ http:
         certResolver: letsencrypt
       service: neo4j-browser
 
-    # graph-router:
-    #   entryPoints:
-    #     - bolt-socket
-    #   rule: "Host(`neo4j.furyhawk.lol`)"
-    #   middlewares:
-    #     - csrf
-    #   tls:
-    #     certResolver: letsencrypt
-    #   service: neo4j-bolt
+    graph-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`neo4j.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: neo4j-bolt
 
     mqtt-http-router:
       entryPoints:
@@ -490,10 +490,10 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7474
-    # neo4j-bolt:
-    #   loadBalancer:
-    #     servers:
-    #       - url: bolt://neo4j_server:7687
+    neo4j-bolt:
+      loadBalancer:
+        servers:
+          - url: http://neo4j_server:7687
     emqx-mqtt-socket:
       loadBalancer:
         servers:
