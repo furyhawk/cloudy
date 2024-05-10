@@ -56,7 +56,7 @@ tcp:
         - bolt-socket
       rule: "HostSNI(`*`)"
       tls:
-        passthrough: true
+        certResolver: letsencrypt
       service: neo4j-bolt
 
     emqx-web-socket-router:
