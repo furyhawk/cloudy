@@ -56,7 +56,7 @@ tcp:
         - bolt-socket
       rule: "HostSNI(`*`)"
       tls:
-        certResolver: letsencrypt
+        passthrough: true
       service: neo4j-bolt
 
     emqx-web-socket-router:
@@ -71,7 +71,7 @@ tcp:
       rule: "HostSNI(`*`)"
       service: emqx-web-socket-secure-service
       tls:
-        certResolver: letsencrypt
+        passthrough: true
 
   services:
     neo4j-bolt:
@@ -82,10 +82,12 @@ tcp:
       loadBalancer:
         servers:
           - address: "emqx1:8083"
+          - address: "emqx2:8083"
     emqx-web-socket-secure-service:
       loadBalancer:
         servers:
           - address: "emqx1:8084"
+          - address: "emqx2:8084"
 
 http:
   routers:
@@ -295,8 +297,6 @@ http:
       rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
-      tls:
-        certResolver: letsencrypt
       service: emqx-web-socket-secure
 
     mqttx-router:
@@ -502,10 +502,12 @@ http:
       loadBalancer:
         servers:
           - url: http://emqx1:8083
+          - url: http://emqx2:8083
     emqx-web-socket-secure:
       loadBalancer:
         servers:
           - url: http://emqx1:8084
+          - url: http://emqx2:8084
     emqx-dashboard:
       loadBalancer:
         servers:
