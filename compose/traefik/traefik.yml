@@ -297,6 +297,8 @@ http:
       rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
+      tls:
+        certResolver: letsencrypt
       service: emqx-web-socket-secure
 
     mqttx-router:
