@@ -126,9 +126,6 @@ services:
       - ./neo4j/data:/data
       - ./neo4j/logs:/logs
     # Expose ports
-    # ports:
-    #   - "7474:7474"
-    #   - "7687:7687"
     expose:
       - 7474
       - 7687
