@@ -284,7 +284,7 @@ http:
     mqtt-ws-http-router:
       entryPoints:
         - web-socket
-      rule: "Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
+      rule: "Host(`broker.furyhawk.lol`) || Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -294,7 +294,7 @@ http:
     mqtt-wss-https-router:
       entryPoints:
         - web-socket-secure
-      rule: "Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
+      rule: "Host(`broker.furyhawk.lol`) || Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
       service: emqx-web-socket-secure
