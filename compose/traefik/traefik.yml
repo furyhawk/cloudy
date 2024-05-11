@@ -94,7 +94,7 @@ http:
     dashboard:
       entryPoints:
         - web-secure
-      rule: "Host(`dashboard.furyhawk.lol`) && PathPrefix(`/api`, `/dashboard`)"
+      rule: "Host(`dashboard.furyhawk.lol`) && PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
       middlewares:
         - auth
       tls:
@@ -105,7 +105,7 @@ http:
     portainer-router:
       entryPoints:
         - web-secure
-      rule: "Host(`portainer.furyhawk.lol`, `port.furyhawk.lol`)"
+      rule: "Host(`portainer.furyhawk.lol`) || Host(`port.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -177,7 +177,7 @@ http:
     privatebin-router:
       entryPoints:
         - web-secure
-      rule: "Host(`bin.furyhawk.lol`, `paste.furyhawk.lol`)"
+      rule: "Host(`bin.furyhawk.lol`) || Host(`paste.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -187,7 +187,7 @@ http:
     heynote-router:
       entryPoints:
         - web-secure
-      rule: "Host(`note.furyhawk.lol`, `pad.furyhawk.lol`)"
+      rule: "Host(`note.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -217,7 +217,7 @@ http:
     chat-router:
       entryPoints:
         - web-secure
-      rule: "Host(`bot.furyhawk.lol`, `chat.furyhawk.lol`)"
+      rule: "Host(`bot.furyhawk.lol`) || Host(`chat.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -227,7 +227,7 @@ http:
     minio-router:
       entryPoints:
         - web-secure
-      rule: "Host(`drive.furyhawk.lol`, `storage.furyhawk.lol`)"
+      rule: "Host(`drive.furyhawk.lol`) || Host(`storage.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -237,7 +237,7 @@ http:
     minio-api-router:
       entryPoints:
         - web-secure
-      rule: "Host(`minio.furyhawk.lol`, `s3.furyhawk.lol`)"
+      rule: "Host(`minio.furyhawk.lol`) || Host(`s3.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -284,7 +284,7 @@ http:
     mqtt-ws-http-router:
       entryPoints:
         - web-socket
-      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
+      rule: "Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
@@ -294,7 +294,7 @@ http:
     mqtt-wss-https-router:
       entryPoints:
         - web-socket-secure
-      rule: "Host(`mqtt.furyhawk.lol`, `mqttx.furyhawk.lol`)"
+      rule: "Host(`mqtt.furyhawk.lol`) || Host(`mqttx.furyhawk.lol`)"
       middlewares:
         - csrf
       service: emqx-web-socket-secure
@@ -353,7 +353,7 @@ http:
     info-router:
       entryPoints:
         - web-secure
-      rule: "Host(`furyhawk.lol`, `www.furyhawk.lol`, `info.furyhawk.lol`, `124c41.furyhawk.lol`)"
+      rule: "Host(`furyhawk.lol`) || Host(`www.furyhawk.lol`) || Host(`info.furyhawk.lol`) || Host(`124c41.furyhawk.lol`)"
       middlewares:
         - csrf
         - no-www
