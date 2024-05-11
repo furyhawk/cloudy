@@ -65,13 +65,13 @@ tcp:
       rule: "HostSNI(`*`)"
       service: emqx-web-socket-service
 
-    emqx-web-socket-secure-router:
-      entryPoints:
-        - web-socket-secure
-      rule: "HostSNI(`*`)"
-      service: emqx-web-socket-secure-service
-      tls:
-        passthrough: true
+    # emqx-web-socket-secure-router:
+    #   entryPoints:
+    #     - web-socket-secure
+    #   rule: "HostSNI(`*`)"
+    #   service: emqx-web-socket-secure-service
+    #   tls:
+    #     passthrough: true
 
   services:
     neo4j-bolt:
