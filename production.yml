@@ -356,7 +356,7 @@ services:
   #     - default
 
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:sts
     command: -H unix:///var/run/docker.sock
     container_name: portainer
     restart: always
