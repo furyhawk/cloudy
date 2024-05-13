@@ -2,6 +2,7 @@
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
 - [Chat](https://chat.furyhawk.lol/): Chat with AI.
+- [Stock Analysis Assistant](https://fin.furyhawk.lol/): AI assistant using GROQ and llama3.
 - [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
 - [pastebin](https://bin.furyhawk.lol/): Pastebin.
 - [Blog](https://info.furyhawk.lol/)
