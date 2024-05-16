@@ -204,15 +204,15 @@ http:
         certResolver: letsencrypt
       service: kestra_app
 
-    # plane-router:
-    #   entryPoints:
-    #     - web-secure
-    #   rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
-    #   middlewares:
-    #     - csrf
-    #   tls:
-    #     certResolver: letsencrypt
-    #   service: plane_app
+    plane-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: plane_app
 
     privatebin-router:
       entryPoints:
@@ -507,7 +507,7 @@ http:
     plane_app:
       loadBalancer:
         servers:
-          - url: http://node01.local:80
+          - url: node01:80
     streamlit_bai_app:
       loadBalancer:
         servers:
