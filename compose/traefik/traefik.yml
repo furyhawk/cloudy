@@ -174,6 +174,16 @@ http:
         certResolver: letsencrypt
       service: forum_server
 
+    plane-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`plan.furyhawk.lol`)" # || Host(`plane.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: plane_app
+
     privatebin-router:
       entryPoints:
         - web-secure
@@ -446,38 +456,38 @@ http:
       loadBalancer:
         servers:
           - url: http://api_server:8000
-    kestra_app:
-      loadBalancer:
-        servers:
-          - url: http://kestra:8080
-    jellyfin_app:
-      loadBalancer:
-        servers:
-          - url: http://jellyfin:8096
-    forum_server:
-      loadBalancer:
-        servers:
-          - url: http://flarum-web:80
     bin_app:
       loadBalancer:
         servers:
           - url: http://privatebin:8080
-    heynote_app:
-      loadBalancer:
-        servers:
-          - url: http://heynote_app:5173
     cheatsheets_app:
       loadBalancer:
         servers:
           - url: http://cheatsheets_app:80
-    thelounge_app:
+    forum_server:
       loadBalancer:
         servers:
-          - url: http://thelounge:9000
+          - url: http://flarum-web:80
+    heynote_app:
+      loadBalancer:
+        servers:
+          - url: http://heynote_app:5173
+    jellyfin_app:
+      loadBalancer:
+        servers:
+          - url: http://jellyfin:8096
+    kestra_app:
+      loadBalancer:
+        servers:
+          - url: http://kestra:8080
     librechat_app:
       loadBalancer:
         servers:
           - url: http://LibreChat:3080
+    thelounge_app:
+      loadBalancer:
+        servers:
+          - url: http://thelounge:9000
     minio_server:
       loadBalancer:
         servers:
@@ -494,6 +504,18 @@ http:
       loadBalancer:
         servers:
           - url: http://neo4j_server:7687
+    plane_app:
+      loadBalancer:
+        servers:
+          - url: http://node01.local
+    streamlit_bai_app:
+      loadBalancer:
+        servers:
+          - url: http://streamlit_bai_app:8502
+    streamlit_fin_app:
+      loadBalancer:
+        servers:
+          - url: http://streamlit_fin_app:8501
     emqx-mqtt-socket:
       loadBalancer:
         servers:
@@ -520,14 +542,6 @@ http:
       loadBalancer:
         servers:
           - url: http://syncthing:8384
-    streamlit_bai_app:
-      loadBalancer:
-        servers:
-          - url: http://streamlit_bai_app:8502
-    streamlit_fin_app:
-      loadBalancer:
-        servers:
-          - url: http://streamlit_fin_app:8501
     site_server:
       loadBalancer:
         servers:
