@@ -204,15 +204,15 @@ http:
         certResolver: letsencrypt
       service: kestra_app
 
-    plane-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: plane_app
+    # plane-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: plane_app
 
     privatebin-router:
       entryPoints:
