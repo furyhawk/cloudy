@@ -142,26 +142,26 @@ http:
       tls:
         certResolver: letsencrypt
       service: api_server
-    
-    kestra-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`kestra.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: kestra_app
 
-    jellyfin-router:
+    chat-router:
       entryPoints:
         - web-secure
-      rule: "Host(`media.furyhawk.lol`)"
+      rule: "Host(`bot.furyhawk.lol`) || Host(`chat.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:
         certResolver: letsencrypt
-      service: jellyfin_app
+      service: librechat_app
+
+    cheatsheets-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`cheat.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: cheatsheets_app
 
     forum-router:
       entryPoints:
@@ -173,6 +173,36 @@ http:
       tls:
         certResolver: letsencrypt
       service: forum_server
+
+    heynote-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`note.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: heynote_app
+
+    jellyfin-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`media.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: jellyfin_app
+    
+    kestra-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`kestra.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: kestra_app
 
     plane-router:
       entryPoints:
@@ -194,26 +224,6 @@ http:
         certResolver: letsencrypt
       service: bin_app
 
-    heynote-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`note.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: heynote_app
-
-    cheatsheets-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`cheat.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: cheatsheets_app
-
     thelounge-router:
       entryPoints:
         - web-secure
@@ -223,16 +233,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: thelounge_app
-
-    chat-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`bot.furyhawk.lol`) || Host(`chat.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: librechat_app
 
     minio-router:
       entryPoints:
@@ -507,7 +507,7 @@ http:
     plane_app:
       loadBalancer:
         servers:
-          - url: http://node01.local
+          - url: http://node01.local:80
     streamlit_bai_app:
       loadBalancer:
         servers:
