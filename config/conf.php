@@ -5,7 +5,7 @@
 
 [main]
 ; (optional) set a project name to be displayed on the website
-name = "bin"
+name = "124c41"
 
 ; The full URL, with the domain name and directories that point to the
 ; PrivateBin files, including an ending slash (/). This URL is essential to
@@ -22,7 +22,7 @@ opendiscussion = false
 password = true
 
 ; enable or disable the file upload feature, defaults to false
-fileupload = false
+fileupload = true
 
 ; preselect the burn-after-reading feature, defaults to false
 burnafterreadingselected = false
@@ -65,11 +65,11 @@ languageselection = false
 
 ; (optional) Let users create a QR code for sharing the paste URL with one click.
 ; It works both when a new paste is created and when you view a paste.
-; qrcode = true
+qrcode = true
 
 ; (optional) Let users send an email sharing the paste URL with one click.
 ; It works both when a new paste is created and when you view a paste.
-; email = true
+email = true
 
 ; (optional) IP based icons are a weak mechanism to detect if a comment was from
 ; a different user when the same username was used in a comment. It might get
@@ -131,7 +131,7 @@ default = "3days"
 ; Well this is not *exactly* one month, it's 30 days:
 1month = 2592000
 1year = 31536000
-never = 0
+; never = 0
 
 [formatter_options]
 ; Set available formatters, their order and their labels
@@ -158,7 +158,7 @@ limit = 10
 
 ; (optional) if your website runs behind a reverse proxy or load balancer,
 ; set the HTTP header containing the visitors IP address, i.e. X_FORWARDED_FOR
-; header = "X_FORWARDED_FOR"
+header = "X_FORWARDED_FOR"
 
 [purge]
 ; minimum time limit between two purgings of expired pastes, it is only
