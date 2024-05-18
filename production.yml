@@ -2,7 +2,7 @@ x-environment: &default-environment
   LOG_LEVEL: "DEBUG"
   LOG_PATH: "./logs"
   ACME_PATH: "./acme.json"
-  NETWORK: "${NETWORK:-web}"
+  NETWORK: "${NETWORK:-host}"
   FIN_LOCATION: ""
   STREAMLIT_FIN_SERVER_PORT: "8501"
   GROQ_API_KEY: "${GROQ_API_KEY}"

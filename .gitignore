@@ -170,3 +170,4 @@ meili_data*/
 privatebin-data/
 minio-data/
 usersfile
+.DS_Store
