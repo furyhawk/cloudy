@@ -278,7 +278,7 @@ services:
     networks:
       - net
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://localhost:3080/settings"]
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://127.0.0.1:3080/settings"]
       interval: 5m
       timeout: 3s
 
