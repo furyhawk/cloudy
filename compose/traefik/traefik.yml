@@ -497,7 +497,7 @@ http:
     redlib_app:
       loadBalancer:
         servers:
-          - url: http://redlib:8080
+          - url: http://redlib:3080
     thelounge_app:
       loadBalancer:
         servers:

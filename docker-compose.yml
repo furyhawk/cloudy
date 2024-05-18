@@ -266,7 +266,7 @@ services:
     restart: unless-stopped
     container_name: redlib
     expose:
-      - 8080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
+      - 3080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
     user: nobody
     read_only: true
     security_opt:
