@@ -54,7 +54,7 @@ tcp:
     neo4j-bolt-router:
       entryPoints:
         - bolt-socket
-      rule: "HostSNIRegexp(`^.+\.furyhawk\.lol$`)"
+      rule: "HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
       tls:
         certResolver: letsencrypt
       service: neo4j-bolt
