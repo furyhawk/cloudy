@@ -224,6 +224,16 @@ http:
         certResolver: letsencrypt
       service: bin_app
 
+    redlib-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`redlib.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: redlib_app
+
     thelounge-router:
       entryPoints:
         - web-secure
@@ -484,6 +494,10 @@ http:
       loadBalancer:
         servers:
           - url: http://LibreChat:3080
+    redlib_app:
+      loadBalancer:
+        servers:
+          - url: http://redlib:8080
     thelounge_app:
       loadBalancer:
         servers:

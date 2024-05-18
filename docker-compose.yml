@@ -202,6 +202,28 @@ services:
       postgres:
         condition: service_started
 
+  cheatsheets-app:
+    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
+    container_name: cheatsheets_app
+    restart: unless-stopped
+    expose:
+      - 80
+    networks:
+      - net
+      - default
+
+  heynote-app:
+    image: furyhawk/heynote:${HEYNOTETAG:-latest}
+    container_name: heynote_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    expose:
+      - 5173
+    networks:
+      - net
+      - default
+
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
@@ -239,45 +261,26 @@ services:
       - net
       - default
 
-  heynote-app:
-    image: furyhawk/heynote:${HEYNOTETAG:-latest}
-    container_name: heynote_app
+  redlib:
+    image: quay.io/redlib/redlib:latest-arm
     restart: unless-stopped
-    environment:
-      NODE_ENV: production
+    container_name: redlib
     expose:
-      - 5173
+      - 8080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
+    user: nobody
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+      # - seccomp=seccomp-redlib.json
+    cap_drop:
+      - ALL
+    env_file: .env
     networks:
       - net
-      - default
-
-  cheatsheets-app:
-    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
-    container_name: cheatsheets_app
-    restart: unless-stopped
-    expose:
-      - 80
-    networks:
-      - net
-      - default
-
-  syncthing:
-    image: syncthing/syncthing
-    container_name: syncthing
-    environment:
-      - PUID=1000
-      - PGID=1000
-    restart: unless-stopped
-    volumes:
-      - ~/st-sync:/var/syncthing
-    ports:
-      - 8384:8384 # Web UI
-      - 22000:22000/tcp # TCP file transfers
-      - 22000:22000/udp # QUIC file transfers
-      - 21027:21027/udp # Receive local discovery broadcasts
-    networks:
-      - net
-      - default
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://localhost:8080/settings"]
+      interval: 5m
+      timeout: 3s
 
   thelounge:
     image: ghcr.io/thelounge/thelounge:latest
@@ -319,6 +322,24 @@ services:
     restart: unless-stopped
     expose:
       - ${STREAMLIT_FIN_SERVER_PORT}
+    networks:
+      - net
+      - default
+
+  syncthing:
+    image: syncthing/syncthing
+    container_name: syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+    restart: unless-stopped
+    volumes:
+      - ~/st-sync:/var/syncthing
+    ports:
+      - 8384:8384 # Web UI
+      - 22000:22000/tcp # TCP file transfers
+      - 22000:22000/udp # QUIC file transfers
+      - 21027:21027/udp # Receive local discovery broadcasts
     networks:
       - net
       - default
