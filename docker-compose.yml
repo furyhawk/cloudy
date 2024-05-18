@@ -377,6 +377,8 @@ services:
       - "${LOG_PATH:-./logs}:/logs"
       - production_traefik:/etc/traefik/acme:z
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
     networks:
       - net
       - default
@@ -393,4 +395,4 @@ services:
 networks:
   net:
     external: true
-    name: ${NETWORK:-host}
+    name: ${NETWORK:-web}
