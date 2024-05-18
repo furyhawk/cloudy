@@ -394,4 +394,4 @@ networks:
   net:
     driver: host
     external: true
-    name: ${NETWORK:-web}
+    name: ${NETWORK:-host}
