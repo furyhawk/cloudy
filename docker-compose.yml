@@ -348,6 +348,7 @@ services:
     image: nginx:alpine
     container_name: site_server
     restart: unless-stopped
+    user: "1000:1000"
     volumes:
       - ./site:/usr/share/nginx/html:ro
     expose:
