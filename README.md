@@ -1,3 +1,5 @@
+[![Activity](https://img.shields.io/github/commit-activity/m/cloudy/distribution?color=FF5555&style=flat-square)]
+
 # Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
