@@ -1,4 +1,4 @@
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/furyhawk/cloudly)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/furyhawk/cloudy)
 
 # Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
