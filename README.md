@@ -5,13 +5,14 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 
 - [Chat](https://chat.furyhawk.lol/): Chat with AI.
 - [Stock Analysis Assistant](https://fin.furyhawk.lol/): AI assistant using GROQ and llama3.
-- [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
-- [pastebin](https://bin.furyhawk.lol/): Pastebin.
+- [Redlib](https://redlib.furyhawk.lol/): Reddit libre.
 - [Blog](https://info.furyhawk.lol/)
+- [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
 - [CheatSheets](https://cheat.furyhawk.lol/): Collection of cheatsheets.
 - [Forum](https://forum.furyhawk.lol/): Host your own forum.
 - [Neural Network Playground](https://furyhawk.github.io/playground): Understand neural network visually.
 - [Note](https://note.furyhawk.lol/): Notepad Online.
+- [pastebin](https://bin.furyhawk.lol/): Pastebin.
 - [Home server](https://github.com/furyhawk/cloudy): Build for ARM64 platform
 
 ## Requirements
