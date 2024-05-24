@@ -163,16 +163,16 @@ http:
         certResolver: letsencrypt
       service: cheatsheets_app
 
-    forum-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`forum.furyhawk.lol`)"
-      middlewares:
-        - csrf
-        # - sslheader
-      tls:
-        certResolver: letsencrypt
-      service: forum_server
+    # forum-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`forum.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #     # - sslheader
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: forum_server
 
     heynote-router:
       entryPoints:
@@ -474,10 +474,10 @@ http:
       loadBalancer:
         servers:
           - url: http://cheatsheets_app:80
-    forum_server:
-      loadBalancer:
-        servers:
-          - url: http://flarum-web:80
+    # forum_server:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://flarum-web:80
     heynote_app:
       loadBalancer:
         servers:
