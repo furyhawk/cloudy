@@ -168,6 +168,7 @@ cache/
 data-node/
 meili_data*/
 privatebin-data/
+# postgres-data/
 minio-data/
 usersfile
 .DS_Store

@@ -190,7 +190,7 @@ services:
           url: http://kestra.furyhawk.lol/
     volumes:
       - ./kestra-data:/app/storage
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
     expose:
       - "8080"
@@ -375,7 +375,7 @@ services:
     container_name: portainer
     restart: always
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     networks:
       - net
@@ -396,7 +396,7 @@ services:
     volumes:
       - "${LOG_PATH:-./logs}:/logs"
       - production_traefik:/etc/traefik/acme:z
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock:ro"
     extra_hosts:
     - "host.docker.internal:host-gateway"
     networks:
