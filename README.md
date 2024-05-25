@@ -17,17 +17,7 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 
 ## Requirements
 - Docker Compose
-- Python 3.11
 - Build for ARM64 platform
-
-## Local Deployment
-#### Python:
-1. `cd src`
-2. `pip install -r requirements.txt`
-3. `streamlit run app.py`
-
-#### Docker:
-1. `docker compose -f local.yml up --build`
 
 ## Production Deployment
 1. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
@@ -37,7 +27,9 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 5. `mdkir ~/.thelounge`
 6. `touch cache/bar_cache.sqlite`
 7. `touch cache/short_cache.sqlite`
-8. `make serve`
+8. `cp .env.example .env`
+9. `cp usersfile.example usersfile`
+10. `make serve`
 
 ### Notes:
 ```yaml
