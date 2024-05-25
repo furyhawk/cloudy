@@ -275,7 +275,7 @@ services:
       - type: bind
         source: ~/media
         target: /media
-        read_only: true
+        read_only: false
     restart: 'unless-stopped'
     # Optional - alternative address used for autodiscovery
     environment:
