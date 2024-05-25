@@ -12,6 +12,8 @@ x-environment: &default-environment
 volumes:
   production_traefik: {}
   portainer_data: {}
+  ghost_content: {}
+  ghost_mysql: {}
 
 services:
   postgres:
@@ -36,6 +38,7 @@ services:
     networks:
       - net
       - default
+
   adminer:
     image: adminer
     container_name: adminer
@@ -57,7 +60,6 @@ services:
       - 80
     networks:
       - net
-      - default
 
   osrm-backend:
     environment:
@@ -192,15 +194,15 @@ services:
       - ./kestra-data:/app/storage
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
+    depends_on:
+      postgres:
+        condition: service_started
     expose:
       - "8080"
       - "8081"
     networks:
       - net
       - default
-    depends_on:
-      postgres:
-        condition: service_started
 
   cheatsheets-app:
     image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
@@ -210,6 +212,44 @@ services:
       - 80
     networks:
       - net
+
+  ghost-server:
+    image: ghost
+    container_name: ghost_server
+    cap_add:
+      - CAP_SYS_NICE
+    security_opt:
+      - seccomp:unconfined
+    restart: always
+    depends_on:
+      - ghost-db
+    environment:
+      url: https://ghost.furyhawk.lol
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: root
+      database__connection__password: ${POSTGRES_PASSWORD}
+      database__connection__database: ghost
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+    expose:
+      - 2368
+    networks:
+      - db-bridge
+      - net
+
+  ghost-db:
+    image: mysql:8
+    security_opt:
+    - seccomp:unconfined
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ghost_mysql:/var/lib/mysql
+    networks:
+      - db-bridge
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
@@ -271,8 +311,6 @@ services:
     image: quay.io/redlib/redlib:latest-arm
     restart: unless-stopped
     container_name: redlib
-    expose:
-      - 3080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
     user: nobody
     read_only: true
     security_opt:
@@ -281,12 +319,14 @@ services:
     cap_drop:
       - ALL
     env_file: .env
-    networks:
-      - net
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://127.0.0.1:3080/settings"]
       interval: 5m
       timeout: 3s
+    expose:
+      - 3080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
+    networks:
+      - net
 
   thelounge:
     image: ghcr.io/thelounge/thelounge:latest
@@ -366,12 +406,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    networks:
-      - net
-      - default
     expose:
       - 8000
       - 9000
+    networks:
+      - net
+      - default
 
   traefik:
     environment:
@@ -388,9 +428,6 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     extra_hosts:
     - "host.docker.internal:host-gateway"
-    networks:
-      - net
-      - default
     ports:
       - "80:80"
       - "443:443"
@@ -400,8 +437,13 @@ services:
       - "8883:8883"
       # - "1883:1883"
       # - 18083:18083
+    networks:
+      - net
+      - default
 
 networks:
+  db-bridge:
+    driver: bridge
   net:
     external: true
     name: ${NETWORK:-web}
