@@ -240,10 +240,11 @@ services:
 
   ghost-db:
     image: mysql:8
+    container_name: ghost-db
     security_opt:
     - seccomp:unconfined
     restart: always
-    command: --default-authentication-plugin=mysql_native_password
+    command: --mysql-native-password=ON
     environment:
       MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
