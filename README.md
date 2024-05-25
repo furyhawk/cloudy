@@ -32,8 +32,12 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 ## Production Deployment
 1. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
 2. In `compose/traefik/traefik.yml`, change `example.com` to your domain.
-3. `docker compose -f production.yml -f ./flarum/docker-compose.yml -f ./emqx-docker/docker-compose.yml -f ./LibreChat/docker-compose.yml -f ./LibreChat/docker-compose.override.yml up --build -d`
-4. `docker compose -f production.yml -f ./flarum/docker-compose.yml -f ./emqx-docker/docker-compose.yml -f ./LibreChat/docker-compose.yml -f ./LibreChat/docker-compose.override.yml down --remove-orphans`
+3. `sudo apt-get install build-essential`
+4. `mdkir ~/st-sync`
+5. `mdkir ~/.thelounge`
+6. `touch cache/bar_cache.sqlite`
+7. `touch cache/short_cache.sqlite`
+8. `make serve`
 
 ### Notes:
 ```yaml

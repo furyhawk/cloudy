@@ -355,20 +355,6 @@ services:
     networks:
       - net
 
-  # msmtpd:
-  #   image: crazymax/msmtpd:latest
-  #   container_name: flarum_msmtpd
-  #   env_file:
-  #     - "./msmtpd.env"
-  #   environment:
-  #     - "TZ"
-  #   restart: always
-  #   expose:
-  #     - 2500
-  #   networks:
-  #     - net
-  #     - default
-
   portainer:
     image: portainer/portainer-ce:sts
     command: -H unix:///var/run/docker.sock
