@@ -210,7 +210,6 @@ services:
       - 80
     networks:
       - net
-      - default
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
@@ -222,7 +221,6 @@ services:
       - 5173
     networks:
       - net
-      - default
 
   jellyfin:
     image: jellyfin/jellyfin
@@ -243,7 +241,16 @@ services:
       - 8096
     networks:
       - net
-      - default
+
+  meshtastic_web:
+    image: ghcr.io/meshtastic/web
+    container_name: meshtastic_web
+    restart: unless-stopped
+    expose:
+      - 8080
+      - 8443
+    networks:
+      - net
 
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
@@ -259,7 +266,6 @@ services:
     restart: unless-stopped
     networks:
       - net
-      - default
 
   redlib:
     image: quay.io/redlib/redlib:latest-arm
@@ -292,7 +298,6 @@ services:
       - ~/.thelounge:/var/opt/thelounge # bind lounge config from the host's file system
     networks:
       - net
-      - default
 
   streamlit-bai:
     environment:
@@ -312,7 +317,6 @@ services:
       - ${STREAMLIT_BAI_SERVER_PORT}
     networks:
       - net
-      - default
 
   streamlit-fin:
     environment:
@@ -324,7 +328,6 @@ services:
       - ${STREAMLIT_FIN_SERVER_PORT}
     networks:
       - net
-      - default
 
   syncthing:
     image: syncthing/syncthing

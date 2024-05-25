@@ -204,6 +204,16 @@ http:
         certResolver: letsencrypt
       service: kestra_app
 
+    meshtastic-router:
+      entryPoints:
+        - web-secure
+      rule: "Host(`mesh.furyhawk.lol`)"
+      middlewares:
+        - csrf
+      tls:
+        certResolver: letsencrypt
+      service: meshtastic_app
+
     plane-router:
       entryPoints:
         - web-secure
@@ -502,6 +512,10 @@ http:
       loadBalancer:
         servers:
           - url: http://thelounge:9000
+    meshtastic_app:
+      loadBalancer:
+        servers:
+          - url: http://meshtastic_web:8080
     minio_server:
       loadBalancer:
         servers:
