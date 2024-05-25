@@ -249,6 +249,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ghost_mysql:/var/lib/mysql
+    expose:
+      - 3306
     networks:
       - db-bridge
 
