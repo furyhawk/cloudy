@@ -428,8 +428,8 @@ services:
       - "${LOG_PATH:-./logs}:/logs"
       - production_traefik:/etc/traefik/acme:z
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    extra_hosts:
-    - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    # - "host.docker.internal:host-gateway"
     ports:
       - "80:80"
       - "443:443"
