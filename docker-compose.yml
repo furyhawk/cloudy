@@ -445,7 +445,7 @@ services:
 
 networks:
   db-bridge:
-    driver: bridge
+    driver: overlay
   net:
     external: true
     name: ${NETWORK:-web}
