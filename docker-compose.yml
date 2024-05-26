@@ -249,6 +249,8 @@ services:
       - ghost_mysql:/var/lib/mysql
     expose:
       - 3306
+    networks:
+      - net
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
