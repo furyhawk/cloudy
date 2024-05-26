@@ -195,8 +195,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
     depends_on:
-      postgres:
-        condition: service_started
+      - postgres
     expose:
       - "8080"
       - "8081"
