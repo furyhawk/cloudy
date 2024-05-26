@@ -234,7 +234,6 @@ services:
     expose:
       - 2368
     networks:
-      - db-bridge
       - net
 
   ghost-db:
@@ -250,8 +249,6 @@ services:
       - ghost_mysql:/var/lib/mysql
     expose:
       - 3306
-    networks:
-      - db-bridge
 
   heynote-app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
@@ -444,8 +441,6 @@ services:
       - default
 
 networks:
-  db-bridge:
-    driver: overlay
   net:
     external: true
     name: ${NETWORK:-web}
