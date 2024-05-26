@@ -204,15 +204,15 @@ http:
         certResolver: letsencrypt
       service: jellyfin_app
     
-    kestra-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`kestra.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: kestra_app
+    # kestra-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`kestra.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: kestra_app
 
     meshtastic-router:
       entryPoints:
@@ -510,10 +510,10 @@ http:
       loadBalancer:
         servers:
           - url: http://jellyfin:8096
-    kestra_app:
-      loadBalancer:
-        servers:
-          - url: http://kestra:8080
+    # kestra_app:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://kestra:8080
     librechat_app:
       loadBalancer:
         servers:
