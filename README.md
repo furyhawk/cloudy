@@ -22,13 +22,12 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 ## Production Deployment
 1. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
 2. In `compose/traefik/traefik.yml`, change `example.com` to your domain.
-3. `sudo apt-get install build-essential`
-4. `mdkir ~/st-sync`
-5. `mdkir ~/.thelounge`
-6. `touch cache/bar_cache.sqlite`
-7. `touch cache/short_cache.sqlite`
-8. `cp .env.example .env`
-9. `cp usersfile.example usersfile`
+3. `sudo apt-get install build-essential` (if not already installed) to use makefile.
+4. `mdkir ~/st-sync` syncthing folder.
+5. `cd ~/site` public site folder.
+5. `mkdir ./compose/config` to store config.
+8. `cp .env.example ./compose/.env`
+9. `cp usersfile.example ./compose/usersfile`
 10. `make serve`
 
 ### Notes:
