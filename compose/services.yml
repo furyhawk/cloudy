@@ -138,11 +138,12 @@ services:
     
   dozzle:
     image: amir20/dozzle:latest
+    container_name: dozzle
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     networks:
       - net
     # labels:
