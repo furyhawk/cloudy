@@ -505,7 +505,7 @@ http:
     heynote_app:
       loadBalancer:
         servers:
-          - url: http://heynote_app:5173
+          - url: http://heynote-app:5173
     jellyfin_app:
       loadBalancer:
         servers:
