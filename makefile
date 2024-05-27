@@ -1,4 +1,3 @@
-
 # Makefile for the project
 
 # Variables
