@@ -1,4 +1,7 @@
 networks:
+  default:
+    external: true
+    name: ${NETWORK:-web}
   net:
     external: true
     name: ${NETWORK:-web}
@@ -9,4 +12,3 @@ include:
   - compose/apps.yml
   - emqx-docker/docker-compose.yml
   - LibreChat/docker-compose.yml
-  - LibreChat/docker-compose.override.yml
