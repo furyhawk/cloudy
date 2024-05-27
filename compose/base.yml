@@ -34,7 +34,7 @@ services:
       <<: *default-environment
     build:
       context: .
-      dockerfile: ./compose/traefik/Dockerfile
+      dockerfile: ./traefik/Dockerfile
     image: traefik_production
     container_name: traefik
     restart: always
