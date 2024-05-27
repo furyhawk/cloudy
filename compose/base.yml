@@ -54,5 +54,4 @@ services:
       # - "1883:1883"
       # - 18083:18083
     networks:
-      - host
       - net
