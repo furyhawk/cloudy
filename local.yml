@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: ./compose/streamlit-fin/Dockerfile
     image: streamlit_fin_local
-    container_name: streamlit_fin_app
     restart: always
     ports:
       - 8501:8501

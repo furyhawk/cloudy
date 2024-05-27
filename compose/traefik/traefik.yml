@@ -557,7 +557,7 @@ http:
     streamlit_fin_app:
       loadBalancer:
         servers:
-          - url: http://streamlit_fin_app:8501
+          - url: http://streamlit-fin:8501
     emqx-mqtt-socket:
       loadBalancer:
         servers:
