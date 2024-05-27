@@ -1,4 +1,4 @@
-x-environment: &default-environment
+x-environment: &app-environment
   STREAMLIT_FIN_SERVER_PORT: "8501"
   GROQ_API_KEY: "${GROQ_API_KEY}"
   BAI_LOCATION: ""
@@ -169,7 +169,7 @@ services:
 
   streamlit-bai:
     environment:
-      <<: *default-environment
+      <<: *app-environment
     image: furyhawk/beyondallinfo:latest
     restart: unless-stopped
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
@@ -182,7 +182,7 @@ services:
 
   streamlit-fin:
     environment:
-      <<: *default-environment
+      <<: *app-environment
     image: furyhawk/llama3toolsfin:main
     restart: unless-stopped
     expose:
