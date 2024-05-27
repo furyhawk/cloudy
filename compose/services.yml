@@ -137,7 +137,6 @@ services:
       - net
     
   dozzle:
-    container_name: dozzle
     image: amir20/dozzle:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -147,7 +146,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.entrypoints=web-secure"
       - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
+      - "traefik.http.routers.dozzle.middlewares=auth, csrf"
       - "traefik.http.routers.dozzle.tls=true"
       - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.dozzle.middlewares=auth,csrf"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
