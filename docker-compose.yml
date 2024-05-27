@@ -304,7 +304,6 @@ services:
 
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
-    container_name: privatebin
     read_only: true
     user: "1000:1000"
     volumes:
@@ -320,7 +319,6 @@ services:
   redlib:
     image: quay.io/redlib/redlib:latest-arm
     restart: unless-stopped
-    container_name: redlib
     user: nobody
     read_only: true
     security_opt:
@@ -334,7 +332,7 @@ services:
       interval: 5m
       timeout: 3s
     expose:
-      - 3080 # Specify `127.0.0.1:8080:8080` instead if using a reverse proxy
+      - 3080 # Specify `127.0.0.1:8080:3080` instead if using a reverse proxy
     networks:
       - net
 
