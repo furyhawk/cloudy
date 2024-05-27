@@ -148,4 +148,4 @@ services:
       - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
       - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
       - "traefik.http.routers.dozzle.middlewares=auth,csrf"
-      - "traefik.http.services.dozzle.loadbalancer.port=8080"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
