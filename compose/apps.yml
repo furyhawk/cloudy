@@ -37,7 +37,7 @@ services:
     networks:
       - net
 
-  cheatsheets-app:
+  cheatsheets_app:
     image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
     restart: unless-stopped
     expose:
@@ -85,7 +85,7 @@ services:
     networks:
       - net
 
-  heynote-app:
+  heynote_app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
     restart: unless-stopped
     environment:
