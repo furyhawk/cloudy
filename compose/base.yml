@@ -41,7 +41,7 @@ services:
     volumes:
       - logs:/logs
       - production_traefik:/etc/traefik/acme:z
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock
     extra_hosts:
     - "host.docker.internal:host-gateway"
     ports:

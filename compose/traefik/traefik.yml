@@ -187,7 +187,7 @@ http:
     heynote-router:
       entryPoints:
         - web-secure
-      rule: "Host(`note.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
+      rule: "HostRegexp(`note[0-9]{0,2}.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
       middlewares:
         - csrf
       tls:

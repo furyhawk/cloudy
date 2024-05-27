@@ -135,3 +135,21 @@ services:
       - "21027:21027/udp" # Receive local discovery broadcasts
     networks:
       - net
+    
+    dozzle:
+      image: amir20/dozzle:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      expose:
+        - 8080
+      networks:
+        - net
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.dozzle.entrypoints=web-secure"
+        - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
+        - "traefik.http.routers.dozzle.tls=true"
+        - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.dozzle.middlewares=auth"
+        - "traefik.http.routers.dozzle.middlewares=csrf"
+        - "traefik.http.services.dozzle.loadbalancer.port=8080"
