@@ -1,0 +1,195 @@
+volumes:
+  bai_cache: {}
+  ghost_content: {}
+  ghost_mysql: {}
+  jellyfin_config: {}
+  jellyfin_cache: {}
+  pgadmin: {}
+  privatebin_data: {}
+  thelounge_data: {}
+
+services:
+
+  adminer:
+    image: adminer
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGID: 1000
+      PUID: 1000
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      PYTHONPATH: "/pgadmin4"
+      TZ: Asia/Singapore
+    user: "1000:1000"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    expose:
+      - 80
+    networks:
+      - net
+
+  cheatsheets-app:
+    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
+    restart: unless-stopped
+    expose:
+      - 80
+    networks:
+      - net
+
+  ghost-db:
+    image: mysql:8
+    container_name: ghost-db
+    security_opt:
+    - seccomp:unconfined
+    restart: always
+    command: --mysql-native-password=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ghost_mysql:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - net
+
+  ghost-server:
+    image: ghost
+    container_name: ghost_server
+    cap_add:
+      - CAP_SYS_NICE
+    security_opt:
+      - seccomp:unconfined
+    restart: always
+    depends_on:
+      - ghost-db
+    environment:
+      url: https://ghost.furyhawk.lol
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: root
+      database__connection__password: ${POSTGRES_PASSWORD}
+      database__connection__database: ghost
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+    expose:
+      - 2368
+    networks:
+      - net
+
+  heynote-app:
+    image: furyhawk/heynote:${HEYNOTETAG:-latest}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    expose:
+      - 5173
+    networks:
+      - net
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    user: 1000:1000
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - type: bind
+        source: ~/media
+        target: /media
+        read_only: false
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://media.furyhawk.lol
+    expose:
+      - 8096
+    networks:
+      - net
+
+  meshtastic_web:
+    image: ghcr.io/meshtastic/web
+    restart: unless-stopped
+    expose:
+      - 8080
+      - 8443
+    networks:
+      - net
+
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:latest
+    read_only: true
+    user: "1000:1000"
+    volumes:
+      - privatebin_data:/srv/data # data volume for pastes allows pastes
+      # to persist after container stop or restart
+      - './config/conf.php:/srv/cfg/conf.php:ro' # second volume for custom configuration file
+    expose:
+      - 8080
+    restart: unless-stopped
+    networks:
+      - net
+
+  redlib:
+    image: quay.io/redlib/redlib:latest-arm
+    restart: unless-stopped
+    user: nobody
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+      # - seccomp=seccomp-redlib.json
+    cap_drop:
+      - ALL
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://127.0.0.1:3080/settings"]
+      interval: 5m
+      timeout: 3s
+    expose:
+      - 3080 # Specify `127.0.0.1:8080:3080` instead if using a reverse proxy
+    networks:
+      - net
+
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:latest
+    restart: unless-stopped
+    volumes:
+      - thelounge_data:/var/opt/thelounge # bind lounge config from the host's file system
+    expose:
+      - 9000
+    networks:
+      - net
+
+  streamlit-bai:
+    environment:
+      <<: *default-environment
+    image: furyhawk/beyondallinfo:latest
+    restart: unless-stopped
+    command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
+    volumes:
+      - bai_cache:/app/cache
+    expose:
+      - ${STREAMLIT_BAI_SERVER_PORT}
+    networks:
+      - net
+
+  streamlit-fin:
+    environment:
+      <<: *default-environment
+    image: furyhawk/llama3toolsfin:main
+    restart: unless-stopped
+    expose:
+      - ${STREAMLIT_FIN_SERVER_PORT}
+    networks:
+      - net
+
+  site_server:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+    expose:
+      - 80
+    networks:
+      - net

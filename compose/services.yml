@@ -1,0 +1,137 @@
+volumes:
+  minio_data: {}
+  neo4j_data: {}
+  neo4j_logs: {}
+  postgres_data: {}
+
+services:
+  api_server:
+    image: furyhawk/listen:latest
+    container_name: api_server
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE__HOSTNAME: ${DATABASE__HOSTNAME}
+      DATABASE__USERNAME: ${POSTGRES_USER}
+      DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE__PORT: ${DATABASE__PORT}
+      DATABASE__DB: ${DATABASE__DB}
+      SECURITY__JWT_SECRET_KEY: ${SECURITY__JWT_SECRET_KEY}
+      SECURITY__BACKEND_CORS_ORIGINS: ${SECURITY__BACKEND_CORS_ORIGINS}
+      SECURITY__ALLOWED_HOSTS: ${SECURITY__ALLOWED_HOSTS}
+    ports:
+      - "8000:8000"
+    networks:
+      - net
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data"
+      LANG: en_US.utf8
+      TZ: Asia/Singapore
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+
+  osrm-backend:
+    environment:
+      # OSRM manager setup
+      - OSRM_ALGORITHM=mld
+      - OSRM_THREADS=2
+      - OSRM_PORT=${OSRM_PORT:-5000}
+      - OSRM_PROFILE=/opt/car.lua
+      - OSRM_MAP_NAME=${OSRM_MAP_NAME}
+      - OSRM_GEOFABRIK_PATH=${OSRM_GEOFABRIK_PATH}
+      # Notify OSRM Manager to restart without stopping container
+      - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
+    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
+    container_name: osrm_backend
+    restart: unless-stopped
+    expose:
+      - ${OSRM_PORT:-5000}
+    networks:
+      - net
+
+  minio-common:
+    image: minio/minio:latest
+    container_name: minio_server
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+      MINIO_OPTS: "--console-address :9001"
+      MINIO_SERVER_URL: https://drive.furyhawk.lol
+    # user: "1000:1000"
+    restart: unless-stopped
+    command: server /data --address :9000 --console-address :9001
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 65s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - minio_data:/data
+    expose:
+      - 9000
+      - 9001
+    networks:
+      - net
+
+  neo4j_server:
+    # Docker image to be used
+    image: ${NEO4J_DOCKER_IMAGE:-neo4j:latest}
+    container_name: neo4j_server
+    restart: unless-stopped
+    # Environment variables
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-12345678}
+      NEO4J_dbms.default_listen_address: "0.0.0.0"
+      NEO4J_dbms.default_advertised_address: "neo4j.furyhawk.lol"
+      NEO4J_dbms.connector.bolt.advertised_address: ":443"
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+      NEO4J_server_memory_pagecache_size: 512M
+      NEO4J_server_memory_heap_max__size: 2G
+    user: "1000:1000"
+    depends_on:
+      - traefik
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    # Expose ports
+    expose:
+      - 7474
+      - 7687
+    networks:
+      - net
+
+  syncthing:
+    image: syncthing/syncthing
+    container_name: syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+    restart: unless-stopped
+    volumes:
+      - ~/st-sync:/var/syncthing
+    ports:
+      - "8384:8384" # Web UI
+      - "22000:22000/tcp" # TCP file transfers
+      - "22000:22000/udp" # QUIC file transfers
+      - "21027:21027/udp" # Receive local discovery broadcasts
+    networks:
+      - net

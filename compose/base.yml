@@ -1,0 +1,48 @@
+
+volumes:
+  logs: {}
+  production_traefik: {}
+  portainer_data: {}
+
+services:
+
+  portainer:
+    image: portainer/portainer-ce:sts
+    command: -H unix:///var/run/docker.sock
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    expose:
+      - 8000
+      - 9000
+    networks:
+      - net
+
+  traefik:
+    environment:
+      <<: *default-environment
+    build:
+      context: .
+      dockerfile: ./compose/traefik/Dockerfile
+    image: traefik_production
+    container_name: traefik
+    restart: always
+    volumes:
+      - logs:/logs
+      - production_traefik:/etc/traefik/acme:z
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "7687:7687"
+      - "8083:8083"
+      - "8084:8084"
+      - "8883:8883"
+      # - "1883:1883"
+      # - 18083:18083
+    networks:
+      - net

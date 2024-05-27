@@ -5,10 +5,10 @@
 # Commands
 serve: down
 	@echo "Serving the project..."
-	docker compose -f docker-compose.yml -f ./emqx-docker/docker-compose.yml -f ./LibreChat/docker-compose.yml -f ./LibreChat/docker-compose.override.yml up --build -d
+	docker compose -f compose.yml up --build -d
 down: pull
 	@echo "Stopping the project..."
-	docker compose -f docker-compose.yml -f ./emqx-docker/docker-compose.yml -f ./LibreChat/docker-compose.yml -f ./LibreChat/docker-compose.override.yml down --remove-orphans
+	docker compose -f compose.yml down --remove-orphans
 
 pull:
 	@echo "Pulling the project..."
