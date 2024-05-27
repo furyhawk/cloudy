@@ -553,7 +553,7 @@ http:
     streamlit_bai_app:
       loadBalancer:
         servers:
-          - url: http://streamlit_bai_app:8502
+          - url: http://streamlit-bai:8502
     streamlit_fin_app:
       loadBalancer:
         servers:
