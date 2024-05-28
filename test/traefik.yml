@@ -1,0 +1,25 @@
+
+api:
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+  # ssh:
+  #   address: ":222"
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+
+certificatesResolver:
+  letsEncrypt:
+    acme:
+      email: wteckmeng@outlook.com
+      storage: /tls/acme.json
+      httpChallenge:
+        entryPoint: web

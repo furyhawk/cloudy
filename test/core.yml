@@ -1,0 +1,25 @@
+services:
+  reverse-proxy:
+    image: traefik:latest
+    ports:
+      - "80:80"
+      - "8080:8080"
+      # - "443:443"
+    volumes:
+      - ./traefik.yml:/traefik.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - tls:/tls
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.entrypoints=web"
+      - "traefik.http.routers.dozzle.rule=Host(`mac`)"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+
+# volumes:
+#   tls:
