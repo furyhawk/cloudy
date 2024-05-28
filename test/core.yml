@@ -18,7 +18,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.entrypoints=web"
-      - "traefik.http.routers.dozzle.rule=Host(`mac`)"
+      - "traefik.http.routers.dozzle.rule=Host(`$HOSTNAME`)"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
 
 # volumes:
