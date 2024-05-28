@@ -35,7 +35,7 @@ services:
       PGDATA: "/var/lib/postgresql/data"
       LANG: en_US.utf8
       TZ: Asia/Singapore
-    command: ["postgres", "-c", "log_statement=all", "log_destination=stderr"]
+    command: ["postgres", "-c", "log_statement=all"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
