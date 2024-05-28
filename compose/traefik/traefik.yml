@@ -94,7 +94,7 @@ http:
     dashboard:
       entryPoints:
         - web-secure
-      rule: "Host(`dashboard.furyhawk.lol`) && PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      rule: "Host(`dashboard.furyhawk.lol`)"
       middlewares:
         - auth
       tls:
@@ -456,6 +456,12 @@ http:
         replacement: https://${1}
         permanent: true
 
+    rate-limit:
+      rateLimit:
+        average: 384
+        burst: 64
+        period: 10s
+
     # redirect to resume
     redirect-resume:
       redirectRegex:
@@ -475,6 +481,27 @@ http:
       stripprefix:
         prefixes:
           - "/neo4j"
+    secure-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlMaxAge: 100
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        # forceSTSHeader: true # This is a good thing but it can be tricky. Enable after everything works.
+        customFrameOptionsValue: SAMEORIGIN # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "same-origin"
+        permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex," # disable search engines from indexing home server
+          server: "" # hide server info from visitors
 
   services:
     portainer_service:

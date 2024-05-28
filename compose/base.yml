@@ -1,7 +1,8 @@
 x-environment: &default-environment
-  LOG_LEVEL: "INFO"
+  LOG_LEVEL: "ERROR"
   ACME_PATH: "./acme.json"
   NETWORK: "${NETWORK:-host}"
+  TZ: "${TZ:-Asia/Singapore}"
   FIN_LOCATION: ""
   STREAMLIT_FIN_SERVER_PORT: "8501"
   GROQ_API_KEY: "${GROQ_API_KEY}"
@@ -19,6 +20,10 @@ services:
     image: portainer/portainer-ce:sts
     command: -H unix:///var/run/docker.sock
     container_name: portainer
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ="${TZ:-Asia/Singapore}"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -37,6 +42,8 @@ services:
       dockerfile: ./traefik/Dockerfile
     image: traefik_production
     container_name: traefik
+    security_opt:
+      - no-new-privileges:true
     restart: always
     volumes:
       - logs:/logs
@@ -45,8 +52,14 @@ services:
     extra_hosts:
     - "host.docker.internal:host-gateway"
     ports:
-      - "80:80"
-      - "443:443"
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
       - "7687:7687"
       - "8083:8083"
       - "8084:8084"
@@ -56,3 +69,10 @@ services:
       # - 18083:18083
     networks:
       - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=web-secure"
+      - "traefik.http.routers.traefik.rule=Host(`dashboard.${DOMAINNAME}`)"
+      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"

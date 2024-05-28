@@ -2,8 +2,15 @@ services:
   reverse-proxy:
     image: traefik:latest
     ports:
-      - "80:80"
-      - "8080:8080"
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      # - "8080:8080"
       # - "443:443"
     volumes:
       - ./traefik.yml:/traefik.yml:ro
@@ -15,11 +22,36 @@ services:
     image: amir20/dozzle:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "8081:8080"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.entrypoints=web"
-      - "traefik.http.routers.dozzle.rule=Host(`$HOSTNAME`)"
-      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+      - "traefik.http.routers.dozzle.rule=Host(`$HOSTNAME`) && PathPrefix(`/dozzle`)"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8081"
+  # Homepage - Application Dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+     - "3000:3000"
+    # volumes:
+    #   - $DOCKERDIR/appdata/homepage:/app/config
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.homepage-rtr.entrypoints=web"
+      - "traefik.http.routers.homepage-rtr.rule=Host(`$HOSTNAME`) && PathPrefix(`/home`)" # Both domain.com and www.domain.com
+      # HTTP Services
+      - "traefik.http.routers.homepage-rtr.service=homepage-svc"
+      - "traefik.http.services.homepage-svc.loadbalancer.server.port=3000"
 
 # volumes:
 #   tls:
