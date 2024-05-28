@@ -1,5 +1,5 @@
 x-environment: &default-environment
-  LOG_LEVEL: "DEBUG"
+  LOG_LEVEL: "INFO"
   ACME_PATH: "./acme.json"
   NETWORK: "${NETWORK:-host}"
   FIN_LOCATION: ""

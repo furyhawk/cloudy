@@ -35,9 +35,10 @@ services:
       PGDATA: "/var/lib/postgresql/data"
       LANG: en_US.utf8
       TZ: Asia/Singapore
-    command: ["postgres", "-c", "log_statement=all"]
+    command: ["postgres", "-c", "log_connections=on", "log_min_messages=info"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # - ./config/postgresql.conf:/etc/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 30s
