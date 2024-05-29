@@ -134,16 +134,6 @@ http:
         certResolver: letsencrypt
       service: cheatsheets_app
 
-    dozzle-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`log.furyhawk.lol`)"
-      middlewares:
-        - auth
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: dozzle_app
 
     # forum-router:
     #   entryPoints:
@@ -496,10 +486,6 @@ http:
       loadBalancer:
         servers:
           - url: http://cheatsheets_app:80
-    dozzle_app:
-      loadBalancer:
-        servers:
-          - url: http://dozzle:8080
     # forum_server:
     #   loadBalancer:
     #     servers:

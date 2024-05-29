@@ -136,10 +136,12 @@ services:
       - "21027:21027/udp" # Receive local discovery broadcasts
     networks:
       - net
-    
+
   dozzle:
     image: amir20/dozzle:latest
     restart: always
+    environment:
+      - DOMAINNAME=${DOMAINNAME}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     expose:
@@ -150,7 +152,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.entrypoints=web-secure"
       - "traefik.http.routers.dozzle.rule=Host(`log.${DOMAINNAME}`)"
-      - "traefik.http.routers.dozzle.middlewares=auth, csrf"
+      - "traefik.http.routers.dozzle.middlewares=auth@file, csrf@file"
       - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
       - "traefik.http.routers.dozzle.service=dozzle_service"
       - "traefik.http.services.dozzle_service.loadbalancer.server.port=8080"
