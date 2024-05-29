@@ -53,20 +53,23 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-    ports:
-      - "5432:5432"
-    # expose:
-    #   - 5432
+    # ports:
+    #   - "5432:5432"
+    expose:
+      - 5432
     networks:
       - net
-    # labels:
-    #   - "traefik.enable=true"
+    labels:
+      - "traefik.enable=true"
     #   - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
-    #   - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
-    #   - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.tls=true"
+      - "traefik.tcp.routers.postgres.tls.certresolver=letsencrypt"
+      # - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
     #   - "traefik.tcp.routers.postgres.middlewares=test-inflightconn"
-    #   - "traefik.tcp.routers.postgres.service=postgres_service"
-    #   - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
+      - "traefik.tcp.routers.postgres.service=postgres_service"
+      - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
     #   - "traefik.http.routers.postgres.entrypoints=web-secure"
     #   - "traefik.http.routers.postgres.rule=Host(`db.${DOMAINNAME}`)"
     #   - "traefik.http.routers.postgres.middlewares=rate-limit@file, csrf@file"
