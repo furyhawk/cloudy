@@ -43,6 +43,7 @@ services:
       PGDATA: "/var/lib/postgresql/data"
       LANG: en_US.utf8
       TZ: Asia/Singapore
+      # DOMAINNAME: ${DOMAINNAME}
     command: ["postgres", "-c", "log_connections=on"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
