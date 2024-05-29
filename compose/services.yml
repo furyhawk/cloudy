@@ -6,7 +6,7 @@ volumes:
 
 services:
   api_server:
-    image: furyhawk/listen:v0.1.8
+    image: furyhawk/listen:latest
     restart: always
     depends_on:
       - postgres
@@ -28,7 +28,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.api_server.entrypoints=web-secure"
       - "traefik.http.routers.api_server.rule=Host(`api.${DOMAINNAME}`)"
-      - "traefik.http.routers.api_server.middlewares=auth@file, csrf@file, rate-limit@file"
+      - "traefik.http.routers.api_server.middlewares=csrf@file, rate-limit@file"
       - "traefik.http.routers.api_server.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api_server.service=api_server_service"
       - "traefik.http.services.api_server_service.loadbalancer.server.port=8000"
