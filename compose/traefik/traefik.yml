@@ -266,14 +266,14 @@ http:
     redirect-resume:
       redirectRegex:
         regex: "^https://resume.furyhawk.lol/(.*)"
-        replacement: "https://info.furyhawk.lol/resume/"
+        replacement: "https://info.furyhawk.lol/resume/${1}"
         permanent: true
 
     redirect-blog:
       # https://docs.traefik.io/master/middlewares/redirectscheme/
       redirectregex:
         regex: "^https://blog.furyhawk.lol/(.*)"
-        replacement: "https://furyhawk.github.io/124c41/"
+        replacement: "https://furyhawk.github.io/124c41/${1}"
         permanent: true
 
     neo4j_strip:
