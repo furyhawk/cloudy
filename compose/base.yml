@@ -39,7 +39,7 @@ services:
       - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAINNAME}`) || Host(`port.${DOMAINNAME}`)"
       - "traefik.http.routers.portainer.middlewares=csrf@file"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
-      - "traefik.http.router.portainer.service=portainer_service"
+      - "traefik.http.routers.portainer.service=portainer_service"
       - "traefik.http.services.portainer_service.loadbalancer.server.port=9000"
 
   traefik:
