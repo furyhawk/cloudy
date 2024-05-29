@@ -33,6 +33,14 @@ services:
       - 9000
     networks:
       - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=web-secure"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAINNAME}`)||Host(`port.${DOMAINNAME}`)"
+      - "traefik.http.router.portainer.middlewares=csrf"
+      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+      - "traefik.http.router.portainer.service=portainer_service"
+      - "traefik.http.services.portainer_service.loadbalancer.server.port=9000"
 
   traefik:
     environment:

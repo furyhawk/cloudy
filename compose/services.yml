@@ -123,7 +123,6 @@ services:
 
   syncthing:
     image: syncthing/syncthing
-    container_name: syncthing
     environment:
       - PUID=1000
       - PGID=1000
@@ -140,7 +139,6 @@ services:
     
   dozzle:
     image: amir20/dozzle:latest
-    container_name: dozzle
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -148,14 +146,14 @@ services:
       - 8080
     networks:
       - net
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.dozzle.entrypoints=web-secure"
-  #     - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
-  #     - "traefik.http.routers.dozzle.middlewares=auth, csrf"
-  #     - "traefik.http.routers.dozzle.tls=true"
-  #     - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
-  #     - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.entrypoints=web-secure"
+      - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
+      - "traefik.http.routers.dozzle.middlewares=auth, csrf"
+      - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dozzle.service=dozzle_service"
+      - "traefik.http.services.dozzle_service.loadbalancer.server.port=8080"
 
   # kestra:
   #   image: kestra/kestra:latest-full

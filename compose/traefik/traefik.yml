@@ -91,16 +91,16 @@ tcp:
 
 http:
   routers:
-    dashboard:
-      entryPoints:
-        - web-secure
-      rule: "Host(`dashboard.furyhawk.lol`)"
-      middlewares:
-        - auth
-      tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
-        certResolver: letsencrypt
-      service: api@internal
+    # dashboard:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`dashboard.furyhawk.lol`)"
+    #   middlewares:
+    #     - auth
+    #   tls:
+    #     # https://docs.traefik.io/master/routing/routers/#certresolver
+    #     certResolver: letsencrypt
+    #   service: api@internal
 
     portainer-router:
       entryPoints:
