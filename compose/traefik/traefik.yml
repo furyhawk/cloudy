@@ -36,9 +36,6 @@ entryPoints:
   bolt-socket:
     address: ":7687"
 
-  # osrm:
-  #   address: ":5000"
-
 certificatesResolvers:
   letsencrypt:
     # https://docs.traefik.io/master/https/acme/#lets-encrypt
@@ -102,17 +99,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: adminer_app
-
-    api-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`api.furyhawk.lol`)"
-      middlewares:
-        - auth
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: api_server
 
     chat-router:
       entryPoints:
@@ -236,26 +222,6 @@ http:
         certResolver: letsencrypt
       service: thelounge_app
 
-    minio-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`drive.furyhawk.lol`) || Host(`storage.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: minio_server
-
-    minio-api-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`minio.furyhawk.lol`) || Host(`s3.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: minio_service
-
     neo4j-router:
       entryPoints:
         - web-secure
@@ -320,27 +286,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: mqttx-web
-
-    osrm-router:
-      entryPoints:
-        - "web-secure"
-      rule: "Host(`osrm.furyhawk.lol`)"
-        # - "osrm"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: osrm_service
-
-    syncthing-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`sync.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: syncthing_app
 
     bai-router:
       entryPoints:
@@ -420,7 +365,7 @@ http:
     rate-limit:
       rateLimit:
         average: 384
-        burst: 64
+        burst: 128
         period: 10s
 
     # redirect to resume
@@ -466,10 +411,6 @@ http:
 
   services:
 
-    osrm_service:
-      loadBalancer:
-        servers:
-          - url: http://osrm_backend:5000
     adminer_app:
       loadBalancer:
         servers:
@@ -522,14 +463,6 @@ http:
       loadBalancer:
         servers:
           - url: http://meshtastic_web:8080
-    minio_server:
-      loadBalancer:
-        servers:
-          - url: http://minio_server:9001
-    minio_service:
-      loadBalancer:
-        servers:
-          - url: http://minio_server:9000
     neo4j-browser:
       loadBalancer:
         servers:
@@ -572,10 +505,6 @@ http:
       loadBalancer:
         servers:
           - url: http://mqttx_web:80
-    syncthing_app:
-      loadBalancer:
-        servers:
-          - url: http://syncthing:8384
     site_server:
       loadBalancer:
         servers:
