@@ -23,8 +23,7 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      DOMAINNAME: "${DOMAINNAME:-furyhawk.lol}"
-      TZ: "${TZ:-Asia/Singapore}"
+      <<: *default-environment
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -37,8 +36,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoints=web-secure"
-      - traefik.http.routers.portainer.rule="Host(`portainer.${DOMAINNAME}`) || Host(`port.${DOMAINNAME}`)"
-      - "traefik.http.router.portainer.middlewares=csrf@file"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAINNAME}`) || Host(`port.${DOMAINNAME}`)"
+      - "traefik.http.routers.portainer.middlewares=csrf@file"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
       - "traefik.http.router.portainer.service=portainer_service"
       - "traefik.http.services.portainer_service.loadbalancer.server.port=9000"
