@@ -51,13 +51,13 @@ certificatesResolvers:
 
 tcp:
   routers:
-    neo4j-bolt-router:
-      entryPoints:
-        - bolt-socket
-      rule: "HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
-      tls:
-        certResolver: letsencrypt
-      service: neo4j-bolt
+    # neo4j-bolt-router:
+    #   entryPoints:
+    #     - bolt-socket
+    #   rule: "HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: neo4j-bolt
 
     emqx-web-socket-router:
       entryPoints:
@@ -76,10 +76,10 @@ tcp:
     #     passthrough: true
 
   services:
-    neo4j-bolt:
-      loadBalancer:
-        servers:
-          - address: "neo4j_server:7687"
+    # neo4j-bolt:
+    #   loadBalancer:
+    #     servers:
+    #       - address: "neo4j_server:7687"
     emqx-web-socket-service:
       loadBalancer:
         servers:
@@ -136,26 +136,15 @@ http:
         certResolver: letsencrypt
       service: plane_app
 
-    neo4j-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`neo4j.furyhawk.lol`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
-      middlewares:
-        - csrf
-        - neo4j_strip
-      tls:
-        certResolver: letsencrypt
-      service: neo4j-browser
-
-    graph-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`neo4j.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: neo4j-bolt
+    # graph-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`neo4j.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: neo4j-bolt
 
     mqtt-http-router:
       entryPoints:
@@ -200,40 +189,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: mqttx-web
-
-    # info-router:
-    #   entryPoints:
-    #     - web-secure
-    #   rule: "Host(`furyhawk.lol`) || Host(`www.furyhawk.lol`) || Host(`info.furyhawk.lol`) || Host(`124c41.furyhawk.lol`)"
-    #   middlewares:
-    #     - csrf
-    #     - no-www
-    #   tls:
-    #     certResolver: letsencrypt
-    #   service: site_server
-
-    # resume-router:
-    #   entryPoints:
-    #     - web-secure
-    #   rule: "Host(`resume.furyhawk.lol`)"
-    #   # redirect to resume
-    #   middlewares:
-    #     - csrf
-    #     - redirect-resume
-    #   tls:
-    #     certResolver: letsencrypt
-    #   service: resume_server
-
-    # blog-router:
-    #   entryPoints:
-    #     - web-secure
-    #   rule: "Host(`blog.furyhawk.lol`)"
-    #   # redirect to external blog
-    #   middlewares:
-    #     - redirect-blog
-    #   tls:
-    #     certResolver: letsencrypt
-    #   service: blog
 
   middlewares:
     auth:
@@ -317,14 +272,10 @@ http:
       loadBalancer:
         servers:
           - url: http://LibreChat:3080
-    neo4j-browser:
-      loadBalancer:
-        servers:
-          - url: http://neo4j_server:7474
-    neo4j-bolt:
-      loadBalancer:
-        servers:
-          - url: http://neo4j_server:7687
+    # neo4j-bolt:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://neo4j_server:7687
     plane_app:
       loadBalancer:
         servers:
@@ -351,14 +302,6 @@ http:
       loadBalancer:
         servers:
           - url: http://mqttx_web:80
-    # resume_server:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://site_server:80
-    # blog:
-    #   loadBalancer:
-    #     servers:
-    #       - url: https://furyhawk.github.io/124c41/
 
 providers:
   # https://docs.traefik.io/master/providers/file/

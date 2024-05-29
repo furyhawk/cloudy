@@ -90,7 +90,7 @@ services:
     depends_on:
       - ghost-db
     environment:
-      url: https://ghost.furyhawk.lol
+      url: https://ghost.${DOMAINNAME}
       database__client: mysql
       database__connection__host: ghost-db
       database__connection__user: root
@@ -183,7 +183,7 @@ services:
     volumes:
       - privatebin_data:/srv/data # data volume for pastes allows pastes
       # to persist after container stop or restart
-      - './config/conf.php:/srv/cfg/conf.php:ro' # second volume for custom configuration file
+      - "~/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
     expose:
       - 8080
     restart: unless-stopped

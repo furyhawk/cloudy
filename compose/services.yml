@@ -35,7 +35,7 @@ services:
 
   postgres:
     image: postgres
-    container_name: postgres
+    # container_name: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -63,10 +63,10 @@ services:
       - "traefik.enable=true"
     #   - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
       - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
-      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      # - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
       - "traefik.tcp.routers.postgres.tls=true"
       - "traefik.tcp.routers.postgres.tls.certresolver=letsencrypt"
-      # - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
     #   - "traefik.tcp.routers.postgres.middlewares=test-inflightconn"
       - "traefik.tcp.routers.postgres.service=postgres_service"
       - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
@@ -110,7 +110,7 @@ services:
       MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
       MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
       MINIO_OPTS: "--console-address :9001"
-      MINIO_SERVER_URL: https://drive.furyhawk.lol
+      MINIO_SERVER_URL: https://minio.${DOMAINNAME}
       DOMAINNAME: ${DOMAINNAME}
     # user: "1000:1000"
     restart: unless-stopped
@@ -145,19 +145,19 @@ services:
   neo4j_server:
     # Docker image to be used
     image: ${NEO4J_DOCKER_IMAGE:-neo4j:latest}
-    container_name: neo4j_server
     restart: unless-stopped
     # Environment variables
     environment:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-12345678}
       NEO4J_dbms.default_listen_address: "0.0.0.0"
-      NEO4J_dbms.default_advertised_address: "neo4j.furyhawk.lol"
+      NEO4J_dbms.default_advertised_address: "neo4j.${DOMAINNAME}"
       NEO4J_dbms.connector.bolt.advertised_address: ":443"
       NEO4J_PLUGINS: '["apoc"]'
       NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
       NEO4J_dbms_security_procedures_allowlist: "apoc.*"
       NEO4J_server_memory_pagecache_size: 512M
       NEO4J_server_memory_heap_max__size: 2G
+      DOMAINNAME: ${DOMAINNAME}
     user: "1000:1000"
     depends_on:
       - traefik
@@ -170,6 +170,26 @@ services:
       - 7687
     networks:
       - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.neo4j-router.entrypoints=web-secure"
+      - "traefik.http.routers.neo4j-router.rule=Host(`neo4j.${DOMAINNAME}`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
+      - "traefik.http.routers.neo4j-router.middlewares=csrf@file, neo4j_strip@file"
+      - "traefik.http.routers.neo4j-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.neo4j-router.service=neo4j_browser"
+      - "traefik.http.services.neo4j_browser.loadbalancer.server.port=7474"
+      - "traefik.http.routers.neo4j-bolt-router.entrypoints=web-secure"
+      - "traefik.http.routers.neo4j-bolt-router.rule=Host(`neo4j.${DOMAINNAME}`)"
+      - "traefik.http.routers.neo4j-bolt-router.middlewares=csrf@file"
+      - "traefik.http.routers.neo4j-bolt-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.neo4j-bolt-router.service=neo4j_bolt"
+      - "traefik.http.services.neo4j_bolt.loadbalancer.server.port=7687"
+      - "traefik.tcp.routers.neo4j-bolt-router.entrypoints=bolt-socket"
+      - "traefik.tcp.routers.neo4j-bolt-router.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      - "traefik.tcp.routers.neo4j-bolt-router.tls=true"
+      - "traefik.tcp.routers.neo4j-bolt-router.tls.certresolver=letsencrypt"
+      - "traefik.tcp.routers.neo4j-bolt-router.service=neo4j_bolt"
+      - "traefik.tcp.services.neo4j_bolt.loadbalancer.server.port=7687"
 
   syncthing:
     image: syncthing/syncthing
@@ -265,7 +285,7 @@ services:
   #         tasks:
   #           tmp-dir:
   #             path: /tmp/kestra-wd/tmp
-  #         url: http://kestra.furyhawk.lol/
+  #         url: http://kestra.${DOMAINNAME}/
   #   volumes:
   #     - kestra_data:/app/storage
   #     - /var/run/docker.sock:/var/run/docker.sock
