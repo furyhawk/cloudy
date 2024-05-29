@@ -35,6 +35,7 @@ services:
 
   postgres:
     image: postgres
+    container_name: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -119,7 +120,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.minio-router.entrypoints=web-secure"
       - "traefik.http.routers.minio-router.rule=Host(`drive.${DOMAINNAME}`) || Host(`storage.${DOMAINNAME}`)"
-      - "traefik.http.routers.minio-router.middlewares=auth@file, csrf@file"
+      - "traefik.http.routers.minio-router.middlewares=csrf@file"
       - "traefik.http.routers.minio-router.tls.certresolver=letsencrypt"
       - "traefik.http.routers.minio-router.service=minio_common_service"
       - "traefik.http.services.minio_common_service.loadbalancer.server.port=9001"
