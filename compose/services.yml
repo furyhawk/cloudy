@@ -106,7 +106,7 @@ services:
     command: server /data --address :9000 --console-address :9001
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
-      interval: 65s
+      interval: 60s
       timeout: 5s
       retries: 5
     volumes:
