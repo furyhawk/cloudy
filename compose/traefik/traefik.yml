@@ -95,16 +95,6 @@ http:
 
   routers:
 
-    adminer-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`adminer.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: adminer_app
-
     chat-router:
       entryPoints:
         - web-secure
@@ -114,17 +104,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: librechat_app
-
-    cheatsheets-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`cheat.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: cheatsheets_app
-
 
     # forum-router:
     #   entryPoints:
@@ -136,36 +115,6 @@ http:
     #   tls:
     #     certResolver: letsencrypt
     #   service: forum_server
-
-    ghost-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`ghost.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: ghost_app
-
-    heynote-router:
-      entryPoints:
-        - web-secure
-      rule: "HostRegexp(`note[0-9]{0,2}.furyhawk.lol`) || Host(`pad.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: heynote_app
-
-    jellyfin-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`media.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: jellyfin_app
     
     # kestra-router:
     #   entryPoints:
@@ -177,16 +126,6 @@ http:
     #     certResolver: letsencrypt
     #   service: kestra_app
 
-    meshtastic-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`mesh.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: meshtastic_app
-
     plane-router:
       entryPoints:
         - web-secure
@@ -196,36 +135,6 @@ http:
       tls:
         certResolver: letsencrypt
       service: plane_app
-
-    privatebin-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`bin.furyhawk.lol`) || Host(`paste.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: bin_app
-
-    redlib-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`redlib.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: redlib_app
-
-    thelounge-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`irc.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: thelounge_app
 
     neo4j-router:
       entryPoints:
@@ -292,59 +201,16 @@ http:
         certResolver: letsencrypt
       service: mqttx-web
 
-    bai-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`bai.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: streamlit_bai_app
-
-    fin-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`fin.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: streamlit_fin_app
-
-    info-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`furyhawk.lol`) || Host(`www.furyhawk.lol`) || Host(`info.furyhawk.lol`) || Host(`124c41.furyhawk.lol`)"
-      middlewares:
-        - csrf
-        - no-www
-      tls:
-        certResolver: letsencrypt
-      service: site_server
-
-    resume-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`resume.furyhawk.lol`)"
-      # redirect to resume
-      middlewares:
-        - csrf
-        - redirect-resume
-      tls:
-        certResolver: letsencrypt
-      service: resume_server
-
-    blog-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`blog.furyhawk.lol`)"
-      # redirect to external blog
-      middlewares:
-        - redirect-blog
-      tls:
-        certResolver: letsencrypt
-      service: blog
+    # blog-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`blog.furyhawk.lol`)"
+    #   # redirect to external blog
+    #   middlewares:
+    #     - redirect-blog
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: blog
 
   middlewares:
     auth:
@@ -416,38 +282,10 @@ http:
 
   services:
 
-    adminer_app:
-      loadBalancer:
-        servers:
-          - url: http://adminer:8080
-    api_server:
-      loadBalancer:
-        servers:
-          - url: http://api_server:8000
-    bin_app:
-      loadBalancer:
-        servers:
-          - url: http://privatebin:8080
-    cheatsheets_app:
-      loadBalancer:
-        servers:
-          - url: http://cheatsheets_app:80
     # forum_server:
     #   loadBalancer:
     #     servers:
     #       - url: http://flarum-web:80
-    ghost_app:
-      loadBalancer:
-        servers:
-          - url: http://ghost-server:2368
-    heynote_app:
-      loadBalancer:
-        servers:
-          - url: http://heynote_app:5173
-    jellyfin_app:
-      loadBalancer:
-        servers:
-          - url: http://jellyfin:8096
     # kestra_app:
     #   loadBalancer:
     #     servers:
@@ -456,18 +294,6 @@ http:
       loadBalancer:
         servers:
           - url: http://LibreChat:3080
-    redlib_app:
-      loadBalancer:
-        servers:
-          - url: http://redlib:3080
-    thelounge_app:
-      loadBalancer:
-        servers:
-          - url: http://thelounge:9000
-    meshtastic_app:
-      loadBalancer:
-        servers:
-          - url: http://meshtastic_web:8080
     neo4j-browser:
       loadBalancer:
         servers:
@@ -480,14 +306,6 @@ http:
       loadBalancer:
         servers:
           - url: http://node01:80
-    streamlit_bai_app:
-      loadBalancer:
-        servers:
-          - url: http://streamlit-bai:8502
-    streamlit_fin_app:
-      loadBalancer:
-        servers:
-          - url: http://streamlit-fin:8501
     emqx-mqtt-socket:
       loadBalancer:
         servers:
@@ -510,18 +328,10 @@ http:
       loadBalancer:
         servers:
           - url: http://mqttx_web:80
-    site_server:
-      loadBalancer:
-        servers:
-          - url: http://site_server:80
-    resume_server:
-      loadBalancer:
-        servers:
-          - url: http://site_server:80
-    blog:
-      loadBalancer:
-        servers:
-          - url: https://furyhawk.github.io/124c41/
+    # blog:
+    #   loadBalancer:
+    #     servers:
+    #       - url: https://furyhawk.github.io/124c41/
 
 providers:
   # https://docs.traefik.io/master/providers/file/
