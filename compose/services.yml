@@ -149,7 +149,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.entrypoints=web-secure"
-      - "traefik.http.routers.dozzle.rule=Host(`log.furyhawk.lol`)"
+      - "traefik.http.routers.dozzle.rule=Host(`log.${DOMAINNAME}`)"
       - "traefik.http.routers.dozzle.middlewares=auth, csrf"
       - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
       - "traefik.http.routers.dozzle.service=dozzle_service"
