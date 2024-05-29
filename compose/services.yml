@@ -56,14 +56,14 @@ services:
       - "5432:5432"
     networks:
       - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.postgres.entrypoints=web-secure"
-      - "traefik.http.routers.postgres.rule=Host(`db.${DOMAINNAME}`)"
-      - "traefik.http.routers.postgres.middlewares=rate-limit@file, csrf@file"
-      - "traefik.http.routers.postgres.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.postgres.service=postgres_service"
-      - "traefik.http.services.postgres_service.loadbalancer.server.port=5432"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.postgres.entrypoints=web-secure"
+    #   - "traefik.http.routers.postgres.rule=Host(`db.${DOMAINNAME}`)"
+    #   - "traefik.http.routers.postgres.middlewares=rate-limit@file, csrf@file"
+    #   - "traefik.http.routers.postgres.tls.certresolver=letsencrypt"
+    #   - "traefik.http.routers.postgres.service=postgres_service"
+    #   - "traefik.http.services.postgres_service.loadbalancer.server.port=5432"
 
   osrm-backend:
     environment:
@@ -207,7 +207,6 @@ services:
   # WhoAmI - For Testing and Troubleshooting
   whoami:
     image: traefik/whoami
-    container_name: whoami
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -218,6 +217,7 @@ services:
       - "traefik.http.routers.whoami-rtr.entrypoints=web-secure"
       - "traefik.http.routers.whoami-rtr.rule=Host(`whoami.$DOMAINNAME`)"
       - "traefik.http.routers.whoami-rtr.middlewares=csrf@file"
+      - "traefik.http.routers.whoami-rtr.tls.certresolver=letsencrypt"
       - "traefik.http.routers.whoami-rtr.service=whoami-svc"
       - "traefik.http.services.whoami-svc.loadbalancer.server.port=80"
 
