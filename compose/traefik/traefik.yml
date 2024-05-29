@@ -59,16 +59,18 @@ tcp:
         certResolver: letsencrypt
       service: neo4j-bolt
 
-    # emqx-web-socket-router:
-    #   entryPoints:
-    #     - web-socket
-    #   rule: "HostSNI(`*.furyhawk.lol`)"
-    #   service: emqx-web-socket-service
+    emqx-web-socket-router:
+      entryPoints:
+        - web-socket
+      rule: "HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      tls:
+        certResolver: letsencrypt
+      service: emqx-web-socket-service
 
     # emqx-web-socket-secure-router:
     #   entryPoints:
     #     - web-socket-secure
-    #   rule: "HostSNI(`*.furyhawk.lol`)"
+    #   rule: "HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
     #   service: emqx-web-socket-secure-service
     #   tls:
     #     passthrough: true
