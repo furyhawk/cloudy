@@ -6,7 +6,7 @@ volumes:
 
 services:
   api_server:
-    image: furyhawk/listen:latest
+    image: furyhawk/listen:v0.1.8
     restart: always
     depends_on:
       - postgres
