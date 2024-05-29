@@ -1,5 +1,5 @@
 log:
-  level: DEBUG
+  level: INFO
 accessLog: {}
 api:
   # Dashboard
@@ -90,37 +90,8 @@ tcp:
           # - address: "emqx2:8084"
 
 http:
+
   routers:
-    # dashboard:
-    #   entryPoints:
-    #     - web-secure
-    #   rule: "Host(`dashboard.furyhawk.lol`)"
-    #   middlewares:
-    #     - auth
-    #   tls:
-    #     # https://docs.traefik.io/master/routing/routers/#certresolver
-    #     certResolver: letsencrypt
-    #   service: api@internal
-
-    portainer-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`portainer.furyhawk.lol`) || Host(`port.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: portainer_service
-
-    edge-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`edge.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: edge_service
 
     adminer-router:
       entryPoints:
@@ -504,14 +475,7 @@ http:
           server: "" # hide server info from visitors
 
   services:
-    portainer_service:
-      loadBalancer:
-        servers:
-          - url: http://portainer:9000
-    edge_service:
-      loadBalancer:
-        servers:
-          - url: http://portainer:8000
+
     osrm_service:
       loadBalancer:
         servers:

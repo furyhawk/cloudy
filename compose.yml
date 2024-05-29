@@ -6,6 +6,10 @@ networks:
     external: true
     name: ${NETWORK:-web}
 
+# secrets:
+#   basic_auth_credentials:
+#     file: ./secrets/basic_auth_credentials
+
 include:
   - compose/base.yml
   - compose/services.yml
