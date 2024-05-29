@@ -36,7 +36,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoints=web-secure"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAINNAME}`)||Host(`port.${DOMAINNAME}`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAINNAME}`) || Host(`port.${DOMAINNAME}`)"
       - "traefik.http.router.portainer.middlewares=csrf@file"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
       - "traefik.http.router.portainer.service=portainer_service"
