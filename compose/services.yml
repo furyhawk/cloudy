@@ -60,7 +60,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
-      - "traefik.tcp.middlewares.test-inflightconn.inflightconn.burst=10"
       - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
       - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
       - "traefik.tcp.routers.postgres.middlewares=test-inflightconn"
