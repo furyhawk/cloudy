@@ -201,6 +201,29 @@ http:
         certResolver: letsencrypt
       service: mqttx-web
 
+    # info-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`furyhawk.lol`) || Host(`www.furyhawk.lol`) || Host(`info.furyhawk.lol`) || Host(`124c41.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #     - no-www
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: site_server
+
+    # resume-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`resume.furyhawk.lol`)"
+    #   # redirect to resume
+    #   middlewares:
+    #     - csrf
+    #     - redirect-resume
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: resume_server
+
     # blog-router:
     #   entryPoints:
     #     - web-secure
@@ -243,14 +266,14 @@ http:
     redirect-resume:
       redirectRegex:
         regex: "^https://resume.furyhawk.lol/(.*)"
-        replacement: "https://info.furyhawk.lol/resume/${1}"
+        replacement: "https://info.furyhawk.lol/resume/"
         permanent: true
 
     redirect-blog:
       # https://docs.traefik.io/master/middlewares/redirectscheme/
       redirectregex:
         regex: "^https://blog.furyhawk.lol/(.*)"
-        replacement: "https://furyhawk.github.io/124c41/${1}"
+        replacement: "https://furyhawk.github.io/124c41/"
         permanent: true
 
     neo4j_strip:
@@ -328,6 +351,10 @@ http:
       loadBalancer:
         servers:
           - url: http://mqttx_web:80
+    # resume_server:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://site_server:80
     # blog:
     #   loadBalancer:
     #     servers:
