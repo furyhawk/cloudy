@@ -59,9 +59,10 @@ services:
       - net
     labels:
       - "traefik.enable=true"
+      - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
       - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
       - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
-      - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
+      - "traefik.tcp.routers.postgres.middlewares=test-inflightconn"
       - "traefik.tcp.routers.postgres.service=postgres_service"
       - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
     #   - "traefik.http.routers.postgres.entrypoints=web-secure"
