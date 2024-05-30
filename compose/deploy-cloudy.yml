@@ -609,37 +609,6 @@ services:
       - "traefik.http.routers.privatebin.service=privatebin_app"
       - "traefik.http.services.privatebin_app.loadbalancer.server.port=8080"
 
-  redlib:
-    # disable container temporarily
-    profiles:
-      - donotstart
-    image: quay.io/redlib/redlib:latest-arm
-    restart: unless-stopped
-    user: nobody
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-      # - seccomp=seccomp-redlib.json
-    cap_drop:
-      - ALL
-    env_file: .env
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://127.0.0.1:3080/settings"]
-      interval: 5m
-      timeout: 3s
-    expose:
-      - 3080 # Specify `127.0.0.1:8080:3080` instead if using a reverse proxy
-    networks:
-      - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.redlib.entrypoints=web-secure"
-      - "traefik.http.routers.redlib.rule=Host(`redlib.${DOMAINNAME}`)"
-      - "traefik.http.routers.redlib.middlewares=csrf@file"
-      - "traefik.http.routers.redlib.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.redlib.service=redlib_app"
-      - "traefik.http.services.redlib_app.loadbalancer.server.port=3080"
-
   thelounge:
     image: ghcr.io/thelounge/thelounge:latest
     restart: unless-stopped
