@@ -1,3 +1,0 @@
-[submodule "emqx-docker"]
-	path = emqx-docker
-	url = https://github.com/furyhawk/emqx-docker.git
