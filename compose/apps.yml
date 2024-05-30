@@ -12,6 +12,7 @@ volumes:
   jellyfin_config: {}
   jellyfin_cache: {}
   pgadmin: {}
+  pgadmin_data: {}
   privatebin_data: {}
   thelounge_data: {}
 
@@ -65,7 +66,6 @@ services:
 
   ghost-db:
     image: mysql:8
-    container_name: ghost-db
     security_opt:
     - seccomp:unconfined
     restart: always
@@ -81,7 +81,6 @@ services:
 
   ghost-server:
     image: ghost
-    container_name: ghost_server
     cap_add:
       - CAP_SYS_NICE
     security_opt:
@@ -182,7 +181,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
       PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
     volumes:
-      - pgadmin-data:/var/lib/pgadmin/
+      - pgadmin_data:/var/lib/pgadmin/
     restart: unless-stopped
     expose:
       - 80
