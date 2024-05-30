@@ -30,7 +30,7 @@ services:
       - DOMAINNAME=${DOMAINNAME}
     volumes:
       - type: bind
-        source: ./.env
+        source: ~/config/.env
         target: /app/.env
       - libre-images:/app/client/public/images
       - libre-logs:/app/api/logs
@@ -86,5 +86,5 @@ services:
     depends_on:
       - vectordb
     env_file:
-      - .env
+      - ~/config/.env
 
