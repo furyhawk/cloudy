@@ -58,12 +58,12 @@ services:
       - 5432
     networks:
       - net
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
-    #   - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
-    #   - "traefik.tcp.routers.postgres.service=postgres_service"
-    #   - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.service=postgres_service"
+      - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
     #   - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
       # - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
       # - "traefik.tcp.routers.postgres.tls=true"
