@@ -9,7 +9,6 @@ volumes:
 services:
   emqx1:
     image: emqx:latest
-    container_name: emqx1
     # environment:
     # - "EMQX_NODE_NAME=emqx@node1.emqx.io"
     # - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
@@ -62,7 +61,6 @@ services:
 
   mqttx-web:
     image: emqx/mqttx-web:latest
-    container_name: mqttx_web
     restart: unless-stopped
     networks:
       - net
