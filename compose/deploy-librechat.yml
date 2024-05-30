@@ -9,8 +9,8 @@ volumes:
   meili_data:
 
 services:
-  api:
-    container_name: LibreChat
+  librechat_api:
+    container_name: librechat_api
     ports:
       - "${PORT}:${PORT}"
     depends_on:
@@ -36,6 +36,14 @@ services:
       - type: bind
         source: ./config/librechat.yaml
         target: /app/librechat.yaml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.librechat.entrypoints=web-secure"
+      - "traefik.http.routers.librechat.rule=Host(`chat.${DOMAINNAME}`) || Host(`bot.${DOMAINNAME}`)"
+      - "traefik.http.routes.librechat.middlewares=csrf@file"
+      - "traefik.http.routers.librechat.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.librechat.service=librechat_app"
+      - "traefik.http.services.librechat_app.loadbalancer.server.port=${PORT}"
   mongodb:
     container_name: chat-mongodb
     image: mongo

@@ -95,15 +95,15 @@ http:
 
   routers:
 
-    chat-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`bot.furyhawk.lol`) || Host(`chat.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: librechat_app
+    # chat-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`bot.furyhawk.lol`) || Host(`chat.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: librechat_app
 
     # forum-router:
     #   entryPoints:
@@ -258,10 +258,10 @@ http:
     #   loadBalancer:
     #     servers:
     #       - url: http://kestra:8080
-    librechat_app:
-      loadBalancer:
-        servers:
-          - url: http://LibreChat:3080
+    # librechat_app:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://LibreChat:3080
     # neo4j-bolt:
     #   loadBalancer:
     #     servers:
