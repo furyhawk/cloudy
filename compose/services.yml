@@ -62,7 +62,7 @@ services:
       - "traefik.enable=true"
     #   - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
       - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
-      # - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
       # - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
       # - "traefik.tcp.routers.postgres.tls=true"
       # - "traefik.tcp.routers.postgres.tls.certresolver=letsencrypt"
