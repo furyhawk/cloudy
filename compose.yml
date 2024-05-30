@@ -14,5 +14,5 @@ include:
   - compose/base.yml
   - compose/services.yml
   - compose/apps.yml
-  - emqx-docker/docker-compose.yml
+  - compose/deploy-emqx.yml
   - compose/deploy-librechat.yml

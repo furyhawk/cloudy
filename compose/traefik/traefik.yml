@@ -126,15 +126,15 @@ http:
     #     certResolver: letsencrypt
     #   service: kestra_app
 
-    plane-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: plane_app
+    # plane-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`plan.furyhawk.lol`) || Host(`plane.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: plane_app
 
     # graph-router:
     #   entryPoints:
@@ -146,15 +146,15 @@ http:
     #     certResolver: letsencrypt
     #   service: neo4j-bolt
 
-    mqtt-http-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`mqtt.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: emqx-dashboard
+    # mqtt-http-router:
+    #   entryPoints:
+    #     - web-secure
+    #   rule: "Host(`mqtt.furyhawk.lol`)"
+    #   middlewares:
+    #     - csrf
+    #   tls:
+    #     certResolver: letsencrypt
+    #   service: emqx-dashboard
 
     # mqtt-socket-router:
     #   rule: "Host(`mqtt.furyhawk.lol`)"
@@ -179,16 +179,6 @@ http:
       middlewares:
         - csrf
       service: emqx-web-socket-secure
-
-    mqttx-router:
-      entryPoints:
-        - web-secure
-      rule: "Host(`mqttx.furyhawk.lol`)"
-      middlewares:
-        - csrf
-      tls:
-        certResolver: letsencrypt
-      service: mqttx-web
 
   middlewares:
     auth:
@@ -276,14 +266,14 @@ http:
     #   loadBalancer:
     #     servers:
     #       - url: http://neo4j_server:7687
-    plane_app:
-      loadBalancer:
-        servers:
-          - url: http://node01:80
-    emqx-mqtt-socket:
-      loadBalancer:
-        servers:
-          - url: http://emqx1:1883
+    # plane_app:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://node01:80
+    # emqx-mqtt-socket:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://emqx1:1883
     emqx-web-socket:
       loadBalancer:
         servers:
@@ -294,14 +284,10 @@ http:
         servers:
           - url: http://emqx1:8084
           # - url: http://emqx2:8084
-    emqx-dashboard:
-      loadBalancer:
-        servers:
-          - url: http://emqx1:18083
-    mqttx-web:
-      loadBalancer:
-        servers:
-          - url: http://mqttx_web:80
+    # emqx-dashboard:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://emqx1:18083
 
 providers:
   # https://docs.traefik.io/master/providers/file/
