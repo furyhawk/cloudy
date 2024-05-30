@@ -183,6 +183,8 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin/
     restart: unless-stopped
+    depends_on:
+      - postgres
     expose:
       - 80
     networks:
