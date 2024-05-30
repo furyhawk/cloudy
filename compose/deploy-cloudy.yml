@@ -763,7 +763,7 @@ services:
 
   librechat_api:
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT:-3080}:${PORT:-3080}"
     depends_on:
       - mongodb
       - rag_api
@@ -795,7 +795,7 @@ services:
       - "traefik.http.routers.librechat.middlewares=csrf@file"
       - "traefik.http.routers.librechat.tls.certresolver=letsencrypt"
       - "traefik.http.routers.librechat.service=librechat_app"
-      - "traefik.http.services.librechat_app.loadbalancer.server.port=${PORT}"
+      - "traefik.http.services.librechat_app.loadbalancer.server.port=${PORT:-3080}"
   mongodb:
     image: mongo
     restart: always
