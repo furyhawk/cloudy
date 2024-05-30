@@ -297,7 +297,7 @@ services:
       - "traefik.http.routers.neo4j-bolt-router.service=neo4j_bolt"
       - "traefik.http.services.neo4j_bolt.loadbalancer.server.port=7687"
       - "traefik.tcp.routers.neo4j-bolt-router.entrypoints=bolt-socket"
-      - "traefik.tcp.routers.neo4j-bolt-router.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      - "traefik.tcp.routers.neo4j-bolt-router.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$$`)"
       - "traefik.tcp.routers.neo4j-bolt-router.tls=true"
       - "traefik.tcp.routers.neo4j-bolt-router.tls.certresolver=letsencrypt"
       - "traefik.tcp.routers.neo4j-bolt-router.service=neo4j_bolt"
