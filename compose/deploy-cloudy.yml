@@ -833,7 +833,7 @@ services:
     depends_on:
       - vectordb
     env_file:
-      - ~/config/.env
+      - .env
 
 
 
