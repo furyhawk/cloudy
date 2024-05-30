@@ -35,7 +35,7 @@ services:
     depends_on:
       - postgres
     expose:
-      - 80
+      - 8080
     networks:
       - net
     labels:
@@ -199,6 +199,9 @@ services:
       - "traefik.http.services.privatebin_app.loadbalancer.server.port=8080"
 
   redlib:
+    # disable container temporarily
+    profiles:
+      - donotstart
     image: quay.io/redlib/redlib:latest-arm
     restart: unless-stopped
     user: nobody
