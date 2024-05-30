@@ -1,6 +1,3 @@
-[submodule "LibreChat"]
-	path = LibreChat
-	url = https://github.com/furyhawk/LibreChat.git
 [submodule "emqx-docker"]
 	path = emqx-docker
 	url = https://github.com/furyhawk/emqx-docker.git
