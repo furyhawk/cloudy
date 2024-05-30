@@ -20,17 +20,19 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 - Build for ARM64 platform
 
 ## Production Deployment
-1. `git clone 
-1. `git submodule update --init --recursive`
-1. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
-2. In `compose/traefik/traefik.yml`, change `example.com` to your domain.
-3. `sudo apt-get install build-essential` (if not already installed) to use makefile.
-4. `mdkir ~/st-sync` syncthing folder.
-5. `cd ~/site` public site folder.
-5. `mkdir ./compose/config` to store config.
-8. `cp .env.example ./compose/.env`
-9. `cp usersfile.example ./compose/usersfile`
-10. `make serve`
+1. `git clone https://github.com/furyhawk/cloudy.git`
+2. `cd cloudy`
+3. `git submodule update --init --recursive`
+4. In `compose/traefik/traefik.yml`, change `example@test.com` to your email.
+5. In `compose/traefik/traefik.yml`, change `example.com` to your domain.
+6. `sudo apt-get install build-essential` (if not already installed) to use makefile.
+7. `mkdir ~/st-sync` syncthing folder.
+8. `mkdir ~/site` public site folder.
+9. `mkdir ./compose/config` to store config.
+10. `cp .env.example ./compose/.env && cp .env ~/config/.env`
+11. `cp ./compose/config/conf.php ~/config/conf.php`
+12. `cp usersfile.example ./compose/usersfile`
+13. `make serve`
 
 ### Notes:
 ```yaml

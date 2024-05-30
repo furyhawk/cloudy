@@ -10,7 +10,6 @@ volumes:
 
 services:
   librechat_api:
-    # container_name: librechat_api
     ports:
       - "${PORT}:${PORT}"
     depends_on:
@@ -46,7 +45,6 @@ services:
       - "traefik.http.routers.librechat.service=librechat_app"
       - "traefik.http.services.librechat_app.loadbalancer.server.port=${PORT}"
   mongodb:
-    # container_name: chat-mongodb
     image: mongo
     restart: always
     user: "${UID}:${GID}"
@@ -54,7 +52,6 @@ services:
       - data-node:/data/db
     command: mongod --noauth
   meilisearch:
-    # container_name: chat-meilisearch
     image: getmeili/meilisearch:v1.7.3
     restart: always
     user: "${UID}:${GID}"
@@ -64,7 +61,6 @@ services:
     volumes:
       - meili_data:/meili_data
   vectordb:
-    # container_name: vectordb
     image: ankane/pgvector:latest
     environment:
       POSTGRES_DB: mydatabase
@@ -74,7 +70,6 @@ services:
     volumes:
       - pgdata2:/var/lib/postgresql/data
   rag_api:
-    # container_name: rag_api
     image: ghcr.io/danny-avila/librechat-rag-api-dev:latest
     environment:
       POSTGRES_DB: mydatabase
