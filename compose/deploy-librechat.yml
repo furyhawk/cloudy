@@ -27,6 +27,7 @@ services:
       - MEILI_HOST=http://meilisearch:7700
       - RAG_PORT=${RAG_PORT:-8000}
       - RAG_API_URL=http://rag_api:${RAG_PORT:-8000}
+      - DOMAINNAME=${DOMAINNAME}
     volumes:
       - type: bind
         source: ./.env
@@ -40,7 +41,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.librechat.entrypoints=web-secure"
       - "traefik.http.routers.librechat.rule=Host(`chat.${DOMAINNAME}`) || Host(`bot.${DOMAINNAME}`)"
-      - "traefik.http.routes.librechat.middlewares=csrf@file"
+      - "traefik.http.routers.librechat.middlewares=csrf@file"
       - "traefik.http.routers.librechat.tls.certresolver=letsencrypt"
       - "traefik.http.routers.librechat.service=librechat_app"
       - "traefik.http.services.librechat_app.loadbalancer.server.port=${PORT}"
