@@ -312,6 +312,6 @@ providers:
     network: web
     exposedByDefault: false
     endpoint: "unix:///var/run/docker.sock"
-  swarm:
-    # docker swarm mode (1.12+)
-    endpoint: "tcp://127.0.0.1:2377"
+  # swarm:
+  #   # docker swarm mode (1.12+)
+  #   endpoint: "tcp://127.0.0.1:2377"
