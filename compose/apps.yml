@@ -176,6 +176,27 @@ services:
       - "traefik.http.routers.meshtastic.service=meshtastic_app"
       - "traefik.http.services.meshtastic_app.loadbalancer.server.port=8080"
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin/
+    restart: unless-stopped
+    expose:
+      - 80
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.entrypoints=web-secure"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.${DOMAINNAME}`)"
+      - "traefik.http.routers.pgadmin.middlewares=csrf@file"
+      - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pgadmin.service=pgadmin_app"
+      - "traefik.http.services.pgadmin_app.loadbalancer.server.port=80"
+
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
     read_only: true
