@@ -46,6 +46,7 @@ certificatesResolvers:
       email: "furyx@hotmail.com"
       storage: /etc/traefik/acme/acme.json
       # https://docs.traefik.io/master/https/acme/#httpchallenge
+      tlsChallenge: {}
       httpChallenge:
         entryPoint: web
 
