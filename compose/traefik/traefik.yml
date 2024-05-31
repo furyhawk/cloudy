@@ -179,7 +179,7 @@ http:
       # https://doc.traefik.io/traefik/middlewares/http/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
-        hostsProxyHeaders: ["X-CSRFToken"]
+        hostsProxyHeaders: ["X-CSRF-Token"]
     sslheader:
       # https://docs.traefik.io/master/middlewares/headers/
       headers:
