@@ -1,0 +1,336 @@
+x-environment: &app-environment
+  DOMAINNAME: "${DOMAINNAME:-furyhawk.lol}"
+  STREAMLIT_FIN_SERVER_PORT: "8501"
+  GROQ_API_KEY: "${GROQ_API_KEY}"
+  BAI_LOCATION: ""
+  STREAMLIT_BAI_SERVER_PORT: "8502"
+
+volumes:
+  bai_cache: {}
+  ghost_content: {}
+  ghost_mysql: {}
+  jellyfin_config: {}
+  jellyfin_cache: {}
+  pgadmin: {}
+  pgadmin_data: {}
+  privatebin_data: {}
+  thelounge_data: {}
+
+services:
+
+  adminer:
+    image: adminer
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      PYTHONPATH: "/pgadmin4"
+      TZ: Asia/Singapore
+      DOMAINNAME: ${DOMAINNAME}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    expose:
+      - 8080
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.entrypoints=web-secure"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAINNAME}`) || Host(`dbadmin.${DOMAINNAME}`)"
+      - "traefik.http.routers.adminer.middlewares=csrf@file"
+      - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.adminer.service=adminer_app"
+      - "traefik.http.services.adminer_app.loadbalancer.server.port=8080"
+
+  cheatsheets_app:
+    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
+    restart: unless-stopped
+    expose:
+      - 80
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cheatsheets.entrypoints=web-secure"
+      - "traefik.http.routers.cheatsheets.rule=Host(`cheat.${DOMAINNAME}`)"
+      - "traefik.http.routers.cheatsheets.middlewares=csrf@file"
+      - "traefik.http.routers.cheatsheets.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cheatsheets.service=cheatsheets_app"
+      - "traefik.http.services.cheatsheets_app.loadbalancer.server.port=80"
+
+  ghost-db:
+    image: mysql:8
+    security_opt:
+    - seccomp:unconfined
+    restart: always
+    command: --mysql-native-password=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ghost_mysql:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - net
+
+  ghost-server:
+    image: ghost
+    cap_add:
+      - CAP_SYS_NICE
+    security_opt:
+      - seccomp:unconfined
+    restart: always
+    depends_on:
+      - ghost-db
+    environment:
+      url: https://ghost.${DOMAINNAME}
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: root
+      database__connection__password: ${POSTGRES_PASSWORD}
+      database__connection__database: ghost
+      DOMAINNAME: ${DOMAINNAME}
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+    expose:
+      - 2368
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ghost.entrypoints=web-secure"
+      - "traefik.http.routers.ghost.rule=Host(`ghost.${DOMAINNAME}`)"
+      - "traefik.http.routers.ghost.middlewares=csrf@file"
+      - "traefik.http.routers.ghost.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ghost.service=ghost_app"
+      - "traefik.http.services.ghost_app.loadbalancer.server.port=2368"
+
+  heynote_app:
+    image: furyhawk/heynote:${HEYNOTETAG:-latest}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DOMAINNAME: ${DOMAINNAME}
+    expose:
+      - 5173
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heynote.entrypoints=web-secure"
+      - "traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAINNAME}`) || Host(`pad.${DOMAINNAME}`)"
+      - "traefik.http.routers.heynote.middlewares=csrf@file"
+      - "traefik.http.routers.heynote.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.heynote.service=heynote_app"
+      - "traefik.http.services.heynote_app.loadbalancer.server.port=5173"
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    user: 1000:1000
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - type: bind
+        source: ~/media
+        target: /media
+        read_only: false
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    environment:
+      - DOMAINNAME=${DOMAINNAME}
+      - JELLYFIN_PublishedServerUrl=https://media.${DOMAINNAME}
+    expose:
+      - 8096
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.entrypoints=web-secure"
+      - "traefik.http.routers.jellyfin.rule=Host(`media.${DOMAINNAME}`)"
+      - "traefik.http.routers.jellyfin.middlewares=csrf@file"
+      - "traefik.http.routers.jellyfin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.jellyfin.service=jellyfin_app"
+      - "traefik.http.services.jellyfin_app.loadbalancer.server.port=8096"
+
+  meshtastic_web:
+    image: ghcr.io/meshtastic/web
+    restart: unless-stopped
+    expose:
+      - 8080
+      - 8443
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meshtastic.entrypoints=web-secure"
+      - "traefik.http.routers.meshtastic.rule=Host(`mesh.${DOMAINNAME}`)"
+      - "traefik.http.routers.meshtastic.middlewares=csrf@file"
+      - "traefik.http.routers.meshtastic.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.meshtastic.service=meshtastic_app"
+      - "traefik.http.services.meshtastic_app.loadbalancer.server.port=8080"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    expose:
+      - 80
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.entrypoints=web-secure"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.${DOMAINNAME}`)"
+      - "traefik.http.routers.pgadmin.middlewares=csrf@file"
+      - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pgadmin.service=pgadmin_app"
+      - "traefik.http.services.pgadmin_app.loadbalancer.server.port=80"
+
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:latest
+    read_only: true
+    user: "1000:1000"
+    volumes:
+      - privatebin_data:/srv/data # data volume for pastes allows pastes
+      # to persist after container stop or restart
+      - "~/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
+    expose:
+      - 8080
+    restart: unless-stopped
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.privatebin.entrypoints=web-secure"
+      - "traefik.http.routers.privatebin.rule=Host(`bin.${DOMAINNAME}`) || Host(`paste.${DOMAINNAME}`)"
+      - "traefik.http.routers.privatebin.middlewares=csrf@file"
+      - "traefik.http.routers.privatebin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.privatebin.service=privatebin_app"
+      - "traefik.http.services.privatebin_app.loadbalancer.server.port=8080"
+
+  redlib:
+    # disable container temporarily
+    profiles:
+      - donotstart
+    image: quay.io/redlib/redlib:latest-arm
+    restart: unless-stopped
+    user: nobody
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+      # - seccomp=seccomp-redlib.json
+    cap_drop:
+      - ALL
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://127.0.0.1:3080/settings"]
+      interval: 5m
+      timeout: 3s
+    expose:
+      - 3080 # Specify `127.0.0.1:8080:3080` instead if using a reverse proxy
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.redlib.entrypoints=web-secure"
+      - "traefik.http.routers.redlib.rule=Host(`redlib.${DOMAINNAME}`)"
+      - "traefik.http.routers.redlib.middlewares=csrf@file"
+      - "traefik.http.routers.redlib.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.redlib.service=redlib_app"
+      - "traefik.http.services.redlib_app.loadbalancer.server.port=3080"
+
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:latest
+    restart: unless-stopped
+    volumes:
+      - thelounge_data:/var/opt/thelounge # bind lounge config from the host's file system
+    expose:
+      - 9000
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.thelounge.entrypoints=web-secure"
+      - "traefik.http.routers.thelounge.rule=Host(`irc.${DOMAINNAME}`)"
+      - "traefik.http.routers.thelounge.middlewares=csrf@file"
+      - "traefik.http.routers.thelounge.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.thelounge.service=thelounge_app"
+      - "traefik.http.services.thelounge_app.loadbalancer.server.port=9000"
+
+  streamlit-bai:
+    environment:
+      <<: *app-environment
+    image: furyhawk/beyondallinfo:latest
+    restart: unless-stopped
+    command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
+    volumes:
+      - bai_cache:/app/cache
+    expose:
+      - ${STREAMLIT_BAI_SERVER_PORT}
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.streamlit-bai.entrypoints=web-secure"
+      - "traefik.http.routers.streamlit-bai.rule=Host(`bai.${DOMAINNAME}`)"
+      - "traefik.http.routers.streamlit-bai.middlewares=csrf@file"
+      - "traefik.http.routers.streamlit-bai.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.streamlit-bai.service=streamlit_bai_app"
+      - "traefik.http.services.streamlit_bai_app.loadbalancer.server.port=${STREAMLIT_BAI_SERVER_PORT}"
+
+  streamlit-fin:
+    environment:
+      <<: *app-environment
+    image: furyhawk/llama3toolsfin:main
+    restart: unless-stopped
+    expose:
+      - ${STREAMLIT_FIN_SERVER_PORT}
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.streamlit-fin.entrypoints=web-secure"
+      - "traefik.http.routers.streamlit-fin.rule=Host(`fin.${DOMAINNAME}`)"
+      - "traefik.http.routers.streamlit-fin.middlewares=csrf@file"
+      - "traefik.http.routers.streamlit-fin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.streamlit-fin.service=streamlit_fin_app"
+      - "traefik.http.services.streamlit_fin_app.loadbalancer.server.port=${STREAMLIT_FIN_SERVER_PORT}"
+
+  site_server:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ~/site:/usr/share/nginx/html:ro
+    expose:
+      - 80
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.site_server.entrypoints=web-secure"
+      - "traefik.http.routers.site_server.rule=Host(`${DOMAINNAME}`) || Host(`www.${DOMAINNAME}`) || Host(`info.${DOMAINNAME}`) || Host(`124c41.${DOMAINNAME}`)"
+      - "traefik.http.routers.site_server.middlewares=csrf@file, no-www@file"
+      - "traefik.http.routers.site_server.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.site_server.service=site_server_app"
+      - "traefik.http.services.site_server_app.loadbalancer.server.port=80"
+      - "traefik.http.routers.resume_router.entrypoints=web-secure"
+      - "traefik.http.routers.resume_router.rule=Host(`resume.${DOMAINNAME}`)"
+      - "traefik.http.routers.resume_router.middlewares=csrf@file, redirect-resume@file"
+      - "traefik.http.routers.resume_router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.resume_router.service=resume_server"
+      - "traefik.http.services.resume_server.loadbalancer.server.port=80"
+      - "traefik.http.routers.blog_router.entrypoints=web-secure"
+      - "traefik.http.routers.blog_router.rule=Host(`blog.${DOMAINNAME}`)"
+      - "traefik.http.routers.blog_router.middlewares=redirect-blog@file"
+      - "traefik.http.routers.blog_router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.blog_router.service=blog_server"
+      - "traefik.http.services.blog_server.loadbalancer.server.port=80"

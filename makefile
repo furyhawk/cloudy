@@ -13,4 +13,5 @@ down: pull
 pull:
 	@echo "Pulling the project..."
 	git pull
-	git submodule update --init --recursive
+
+# git submodule update --init --recursive
