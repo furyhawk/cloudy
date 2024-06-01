@@ -1,0 +1,253 @@
+volumes:
+  minio_data: {}
+  neo4j_data: {}
+  neo4j_logs: {}
+  postgres_data: {}
+
+services:
+  api_server:
+    image: furyhawk/listen:latest
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE__HOSTNAME: ${DATABASE__HOSTNAME}
+      DATABASE__USERNAME: ${POSTGRES_USER}
+      DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE__PORT: ${DATABASE__PORT}
+      DATABASE__DB: ${DATABASE__DB}
+      SECURITY__JWT_SECRET_KEY: ${SECURITY__JWT_SECRET_KEY}
+      SECURITY__BACKEND_CORS_ORIGINS: ${SECURITY__BACKEND_CORS_ORIGINS}
+      SECURITY__ALLOWED_HOSTS: ${SECURITY__ALLOWED_HOSTS}
+      DOMAINNAME: ${DOMAINNAME}
+    ports:
+      - "8000:8000"
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api_server.entrypoints=web-secure"
+      - "traefik.http.routers.api_server.rule=Host(`api.${DOMAINNAME}`)"
+      - "traefik.http.routers.api_server.middlewares=csrf@file, rate-limit@file"
+      - "traefik.http.routers.api_server.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.api_server.service=api_server_service"
+      - "traefik.http.services.api_server_service.loadbalancer.server.port=8000"
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data"
+      LANG: en_US.utf8
+      TZ: Asia/Singapore
+      # DOMAINNAME: ${DOMAINNAME}
+    command: ["postgres", "-c", "log_connections=on"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # - ./config/postgresql.conf:/etc/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    # ports:
+    #   - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.postgres.entrypoints=postgres-socket"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.service=postgres_service"
+      - "traefik.tcp.services.postgres_service.loadbalancer.server.port=5432"
+    #   - "traefik.tcp.middlewares.test-inflightconn.inflightconn.amount=10"
+      # - "traefik.tcp.routers.postgres.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      # - "traefik.tcp.routers.postgres.tls=true"
+      # - "traefik.tcp.routers.postgres.tls.certresolver=letsencrypt"
+    #   - "traefik.tcp.routers.postgres.middlewares=test-inflightconn"
+    #   - "traefik.http.routers.postgres.entrypoints=web-secure"
+    #   - "traefik.http.routers.postgres.rule=Host(`db.${DOMAINNAME}`)"
+    #   - "traefik.http.routers.postgres.middlewares=rate-limit@file, csrf@file"
+    #   - "traefik.http.routers.postgres.tls.certresolver=letsencrypt"
+    #   - "traefik.http.routers.postgres.service=postgres_service"
+    #   - "traefik.http.services.postgres_service.loadbalancer.server.port=5432"
+
+  osrm-backend:
+    environment:
+      # OSRM manager setup
+      - OSRM_ALGORITHM=mld
+      - OSRM_THREADS=2
+      - OSRM_PORT=${OSRM_PORT:-5000}
+      - OSRM_PROFILE=/opt/car.lua
+      - OSRM_MAP_NAME=${OSRM_MAP_NAME}
+      - OSRM_GEOFABRIK_PATH=${OSRM_GEOFABRIK_PATH}
+      # Notify OSRM Manager to restart without stopping container
+      - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
+      - DOMAINNAME=${DOMAINNAME}
+    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
+    restart: unless-stopped
+    expose:
+      - ${OSRM_PORT:-5000}
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.osrm-backend.entrypoints=web-secure"
+      - "traefik.http.routers.osrm-backend.rule=Host(`osrm.${DOMAINNAME}`)"
+      - "traefik.http.routers.osrm-backend.middlewares=csrf@file"
+      - "traefik.http.routers.osrm-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.osrm-backend.service=osrm_backend_service"
+      - "traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}"
+
+  minio-common:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+      MINIO_OPTS: "--console-address :9001"
+      MINIO_SERVER_URL: https://minio.${DOMAINNAME}
+      DOMAINNAME: ${DOMAINNAME}
+    # user: "1000:1000"
+    restart: unless-stopped
+    command: server /data --address :9000 --console-address :9001
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - minio_data:/data
+    expose:
+      - 9000
+      - 9001
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio-router.entrypoints=web-secure"
+      - "traefik.http.routers.minio-router.rule=Host(`drive.${DOMAINNAME}`) || Host(`storage.${DOMAINNAME}`)"
+      - "traefik.http.routers.minio-router.middlewares=csrf@file"
+      - "traefik.http.routers.minio-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.minio-router.service=minio_common_service"
+      - "traefik.http.services.minio_common_service.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio-api-router.entrypoints=web-secure"
+      - "traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAINNAME}`) || Host(`s3.${DOMAINNAME}`)"
+      - "traefik.http.routers.minio-api-router.middlewares=csrf@file"
+      - "traefik.http.routers.minio-api-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.minio-api-router.service=minio_api_service"
+      - "traefik.http.services.minio_api_service.loadbalancer.server.port=9000"
+
+  neo4j_server:
+    # Docker image to be used
+    image: ${NEO4J_DOCKER_IMAGE:-neo4j:latest}
+    restart: unless-stopped
+    # Environment variables
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-12345678}
+      NEO4J_dbms.default_listen_address: "0.0.0.0"
+      NEO4J_dbms.default_advertised_address: "neo4j.${DOMAINNAME}"
+      NEO4J_dbms.connector.bolt.advertised_address: ":443"
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+      NEO4J_server_memory_pagecache_size: 512M
+      NEO4J_server_memory_heap_max__size: 2G
+      DOMAINNAME: ${DOMAINNAME}
+    user: "1000:1000"
+    depends_on:
+      - traefik
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    # Expose ports
+    expose:
+      - 7474
+      - 7687
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.neo4j-router.entrypoints=web-secure"
+      - "traefik.http.routers.neo4j-router.rule=Host(`neo4j.${DOMAINNAME}`) && PathPrefix(`/neo4j`)||PathPrefix(`/browser`)"
+      - "traefik.http.routers.neo4j-router.middlewares=csrf@file, neo4j_strip@file"
+      - "traefik.http.routers.neo4j-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.neo4j-router.service=neo4j_browser"
+      - "traefik.http.services.neo4j_browser.loadbalancer.server.port=7474"
+      - "traefik.http.routers.neo4j-bolt-router.entrypoints=web-secure"
+      - "traefik.http.routers.neo4j-bolt-router.rule=Host(`neo4j.${DOMAINNAME}`)"
+      - "traefik.http.routers.neo4j-bolt-router.middlewares=csrf@file"
+      - "traefik.http.routers.neo4j-bolt-router.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.neo4j-bolt-router.service=neo4j_bolt"
+      - "traefik.http.services.neo4j_bolt.loadbalancer.server.port=7687"
+      - "traefik.tcp.routers.neo4j-bolt-router.entrypoints=bolt-socket"
+      - "traefik.tcp.routers.neo4j-bolt-router.rule=HostSNIRegexp(`^.+\\.furyhawk\\.lol$`)"
+      - "traefik.tcp.routers.neo4j-bolt-router.tls=true"
+      - "traefik.tcp.routers.neo4j-bolt-router.tls.certresolver=letsencrypt"
+      - "traefik.tcp.routers.neo4j-bolt-router.service=neo4j_bolt"
+      - "traefik.tcp.services.neo4j_bolt.loadbalancer.server.port=7687"
+
+  syncthing:
+    image: syncthing/syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - DOMAINNAME=${DOMAINNAME}
+    restart: unless-stopped
+    volumes:
+      - ~/st-sync:/var/syncthing
+    ports:
+      - "8384:8384" # Web UI
+      - "22000:22000/tcp" # TCP file transfers
+      - "22000:22000/udp" # QUIC file transfers
+      - "21027:21027/udp" # Receive local discovery broadcasts
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.entrypoints=web-secure"
+      - "traefik.http.routers.syncthing.rule=Host(`sync.${DOMAINNAME}`)"
+      - "traefik.http.routers.syncthing.middlewares=csrf@file"
+      - "traefik.http.routers.syncthing.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.syncthing.service=syncthing_service"
+      - "traefik.http.services.syncthing_service.loadbalancer.server.port=8384"
+
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: always
+    environment:
+      - DOMAINNAME=${DOMAINNAME}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    expose:
+      - 8080
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.entrypoints=web-secure"
+      - "traefik.http.routers.dozzle.rule=Host(`log.${DOMAINNAME}`)"
+      - "traefik.http.routers.dozzle.middlewares=auth@file, csrf@file"
+      - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dozzle.service=dozzle_service"
+      - "traefik.http.services.dozzle_service.loadbalancer.server.port=8080"
+
+  # WhoAmI - For Testing and Troubleshooting
+  whoami:
+    image: traefik/whoami
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami-rtr.entrypoints=web-secure"
+      - "traefik.http.routers.whoami-rtr.rule=Host(`whoami.$DOMAINNAME`)"
+      - "traefik.http.routers.whoami-rtr.middlewares=csrf@file"
+      - "traefik.http.routers.whoami-rtr.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.whoami-rtr.service=whoami-svc"
+      - "traefik.http.services.whoami-svc.loadbalancer.server.port=80"

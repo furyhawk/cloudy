@@ -11,10 +11,10 @@ services:
         published: 443
         mode: host
       # - "7687:7687"
-      # - "8083:8083"
-      # - "8084:8084"
-      # - "8883:8883"
-      # - "5432:5432"
+      - "8083:8083"
+      - "8084:8084"
+      - "8883:8883"
+      - "5432:5432"
     deploy:
       placement:
         constraints:
@@ -33,7 +33,22 @@ services:
         # admin-auth middleware with HTTP Basic auth
         # Using the environment variables USERNAME and HASHED_PASSWORD
         - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
-        - traefik.http.middlewares.csrf.headers.hostsProxyHeaders=["X-CSRFToken"]
+        - traefik.http.middlewares.csrf.headers.hostsProxyHeaders=["X-CSRF-Token"]
+        - traefik.http.middlewares.no-www.redirectregex.regex=^https://www.(.*)$$
+        - traefik.http.middlewares.no-www.redirectregex.replacement=https://$$1
+        - traefik.http.middlewares.no-www.redirectregex.permanent=true
+        - traefik.http.middlewares.sslheader.headers.sslProxyHeaders.X-Forwarded-Proto="https,wss"
+        - traefik.http.middlewares.sslheader.headers.sslRedirect=true
+        - traefik.http.middlewares.redirect-resume.redirectregex.regex=^https://resume.${DOMAIN?Variable not set}/(.*)
+        - traefik.http.middlewares.redirect-resume.redirectregex.replacement=https://info.${DOMAIN?Variable not set}/resume/$$1
+        - traefik.http.middlewares.redirect-resume.redirectregex.permanent=true
+        - traefik.http.middlewares.redirect-blog.redirectregex.regex=^https://blog.${DOMAIN?Variable not set}/(.*)
+        - traefik.http.middlewares.redirect-blog.redirectregex.replacement=https://furyhawk.github.io/124c41/$$1
+        - traefik.http.middlewares.redirect-blog.redirectregex.permanent=true
+        - traefik.http.middlewares.rate-limit.ratelimit.average=384
+        - traefik.http.middlewares.rate-limit.ratelimit.burst=128
+        - traefik.http.middlewares.rate-limit.ratelimit.period=10s
+        - treafik.http.middlewares.neo4j_strip.stripprefix.prefixes=/neo4j
         # traefik-https the actual router using HTTPS
         - traefik.http.routers.traefik-public-https.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
         - traefik.http.routers.traefik-public-https.entrypoints=https
@@ -58,7 +73,9 @@ services:
       - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
       # Do not expose all Docker services, only the ones explicitly exposed
       - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
       # Enable Docker Swarm mode
+      - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       # Create an entrypoint "http" listening on port 80
       - --entrypoints.http.address=:80

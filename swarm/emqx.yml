@@ -17,15 +17,34 @@ services:
     volumes:
       - emqx-data1:/opt/emqx/data
     deploy:
-      mode: replicated
-      replicas: 1
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.emqx1.entrypoints=web-secure"
-        - "traefik.http.routers.emqx1.rule=Host(`mqtt.${DOMAINNAME}`)"
-        - "traefik.http.routers.emqx1.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.emqx1.service=emqx-dashboard"
-        - "traefik.http.services.emqx-dashboard.loadbalancer.server.port=18083"
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.tcp.routers.emqx1-tcp-ws.entrypoints=web-socket
+        - traefik.tcp.routers.emqx1-tcp-ws.rule=HostSNI(`*`)
+        - traefik.tcp.routers.emqx1-tcp-ws.service=emqx1-tcp-ws
+        - traefik.tcp.services.emqx1-tcp-ws.loadbalancer.server.port=8083
+        - traefik.tcp.routers.emqx1-tcp-wss.entrypoints=web-socket-secure
+        - traefik.tcp.routers.emqx1-tcp-wss.rule=HostSNIRegexp(`^.+\\.${DOMAIN}$`)
+        - traefik.tcp.routers.emqx1-tcp-wss.tls.certresolver=le
+        - traefik.tcp.routers.emqx1-tcp-wss.service=emqx1-tcp-wss
+        - traefik.tcp.services.emqx1-tcp-wss.loadbalancer.server.port=8084
+        - traefik.http.routers.emqx1.entrypoints=https
+        - traefik.http.routers.emqx1.rule=Host(`mqtt.${DOMAIN}`)
+        - traefik.http.routers.emqx1.tls.certresolver=le
+        - traefik.http.routers.emqx1.service=emqx-dashboard
+        - traefik.http.services.emqx-dashboard.loadbalancer.server.port=18083
+        - traefik.http.routers.emqx1-web.entrypoints=web-socket
+        - traefik.http.routers.emqx1-web.rule=Host(`broker.${DOMAIN}`) || Host(`mqtt.${DOMAIN}`) || Host(`mqttx.${DOMAIN}`)
+        - traefik.http.routers.emqx1-web.tls.certresolver=le
+        - traefik.http.routers.emqx1-web.service=emqx1-web
+        - traefik.http.services.emqx1-web.loadbalancer.server.port=8083
+        - traefik.http.routers.emqx1-wss.entrypoints=web-socket-secure
+        - traefik.http.routers.emqx1-wss.rule=Host(`broker.${DOMAIN}`) || Host(`mqtt.${DOMAIN}`) || Host(`mqttx.${DOMAIN}`)
+        - traefik.http.routers.emqx1-wss.tls.certresolver=le
+        - traefik.http.routers.emqx1-wss.service=emqx1-wss
+        - traefik.http.services.emqx1-wss.loadbalancer.server.port=8084
 
   mqttx-web:
     image: emqx/mqttx-web:latest
@@ -34,12 +53,14 @@ services:
       - traefik-public
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.mqttx-web.entrypoints=web-secure"
-        - "traefik.http.routers.mqttx-web.rule=Host(`mqttx.${DOMAINNAME}`)"
-        - "traefik.http.routers.mqttx-web.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.mqttx-web.service=mqttx-web-service"
-        - "traefik.http.services.mqttx-web-service.loadbalancer.server.port=80"
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.mqttx-web.entrypoints=https
+        - traefik.http.routers.mqttx-web.rule=Host(`mqttx.${DOMAIN}`)
+        - traefik.http.routers.mqttx-web.tls.certresolver=le
+        - traefik.http.routers.mqttx-web.service=mqttx-web-service
+        - traefik.http.services.mqttx-web-service.loadbalancer.server.port=80
 
 networks:
   traefik-public:
