@@ -8,8 +8,11 @@ services:
       retries: 5
     networks:
       - traefik-public
-    ports:
-      - "1883:1883"
+    # ports:
+    #   - target: 1883
+    #     published: 1883
+    #     mode: host
+    #   - "1883:1883"
     #   - 8083:8083
     #   - 8084:8084
     #   - 8883:8883
@@ -21,6 +24,10 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
+        - traefik.tcp.routers.emqx1-tcp-mqtt.entrypoints=mqtt
+        - traefik.tcp.routers.emqx1-tcp-mqtt.rule=HostSNI(`*`)
+        - traefik.tcp.routers.emqx1-tcp-mqtt.service=emqx1-tcp-mqtt
+        - traefik.tcp.services.emqx1-tcp-mqtt.loadbalancer.server.port=1883
         - traefik.tcp.routers.emqx1-tcp-ws.entrypoints=web-socket
         - traefik.tcp.routers.emqx1-tcp-ws.rule=HostSNI(`*`)
         - traefik.tcp.routers.emqx1-tcp-ws.service=emqx1-tcp-ws

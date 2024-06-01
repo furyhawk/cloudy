@@ -7,8 +7,10 @@ x-environment: &app-environment
 volumes:
   bai_cache: {}
   pgadmin: {}
-  privatebin_data: {}
-  thelounge_data: {}
+
+networks:
+  traefik-public:
+    external: true
 
 services:
 
@@ -26,26 +28,18 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-    expose:
-      - 8080
     networks:
       - traefik-public
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.adminer.entrypoints=web-secure"
-        - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`) || Host(`dbadmin.${DOMAIN}`)"
-        - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.adminer.service=adminer_app"
-        - "traefik.http.services.adminer_app.loadbalancer.server.port=8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.adminer.entrypoints=web-secure"
-      - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`) || Host(`dbadmin.${DOMAIN}`)"
-      - "traefik.http.routers.adminer.middlewares=csrf@file"
-      - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.adminer.service=adminer_app"
-      - "traefik.http.services.adminer_app.loadbalancer.server.port=8080"
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.adminer.entrypoints=https
+        - traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`) || Host(`dbadmin.${DOMAIN}`)
+        - traefik.http.routers.adminer.tls.certresolver=le
+        - traefik.http.routers.adminer.service=adminer_app
+        - traefik.http.services.adminer_app.loadbalancer.server.port=8080
 
   heynote_app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
@@ -53,18 +47,18 @@ services:
     environment:
       NODE_ENV: production
       DOMAIN: ${DOMAIN}
-    expose:
-      - 5173
     networks:
-      - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.heynote.entrypoints=web-secure"
-      - "traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)"
-      - "traefik.http.routers.heynote.middlewares=csrf@file"
-      - "traefik.http.routers.heynote.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.heynote.service=heynote_app"
-      - "traefik.http.services.heynote_app.loadbalancer.server.port=5173"
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - "traefik.http.routers.heynote.entrypoints=https"
+        - "traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)"
+        - "traefik.http.routers.heynote.tls.certresolver=le"
+        - "traefik.http.routers.heynote.service=heynote_app"
+        - "traefik.http.services.heynote_app.loadbalancer.server.port=5173"
 
   streamlit-bai:
     environment:
@@ -74,63 +68,64 @@ services:
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
     volumes:
       - bai_cache:/app/cache
-    expose:
-      - ${STREAMLIT_BAI_SERVER_PORT}
     networks:
-      - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.streamlit-bai.entrypoints=web-secure"
-      - "traefik.http.routers.streamlit-bai.rule=Host(`bai.${DOMAIN}`)"
-      - "traefik.http.routers.streamlit-bai.middlewares=csrf@file"
-      - "traefik.http.routers.streamlit-bai.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.streamlit-bai.service=streamlit_bai_app"
-      - "traefik.http.services.streamlit_bai_app.loadbalancer.server.port=${STREAMLIT_BAI_SERVER_PORT}"
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.streamlit-bai.entrypoints=https
+        - traefik.http.routers.streamlit-bai.rule=Host(`bai.${DOMAIN}`)
+        - traefik.http.routers.streamlit-bai.tls.certresolver=le
+        - traefik.http.routers.streamlit-bai.service=streamlit_bai_app
+        - traefik.http.services.streamlit_bai_app.loadbalancer.server.port=${STREAMLIT_BAI_SERVER_PORT}
 
   streamlit-fin:
     environment:
       <<: *app-environment
     image: furyhawk/llama3toolsfin:main
     restart: unless-stopped
-    expose:
-      - ${STREAMLIT_FIN_SERVER_PORT}
     networks:
-      - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.streamlit-fin.entrypoints=web-secure"
-      - "traefik.http.routers.streamlit-fin.rule=Host(`fin.${DOMAIN}`)"
-      - "traefik.http.routers.streamlit-fin.middlewares=csrf@file"
-      - "traefik.http.routers.streamlit-fin.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.streamlit-fin.service=streamlit_fin_app"
-      - "traefik.http.services.streamlit_fin_app.loadbalancer.server.port=${STREAMLIT_FIN_SERVER_PORT}"
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.streamlit-fin.entrypoints=https
+        - traefik.http.routers.streamlit-fin.rule=Host(`fin.${DOMAIN}`)
+        - traefik.http.routers.streamlit-fin.tls.certresolver=le
+        - traefik.http.routers.streamlit-fin.service=streamlit_fin_app
+        - traefik.http.services.streamlit_fin_app.loadbalancer.server.port=${STREAMLIT_FIN_SERVER_PORT}
 
   site_server:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
       - ~/site:/usr/share/nginx/html:ro
-    expose:
-      - 80
     networks:
-      - net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.site_server.entrypoints=web-secure"
-      - "traefik.http.routers.site_server.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`) || Host(`info.${DOMAIN}`) || Host(`124c41.${DOMAIN}`)"
-      - "traefik.http.routers.site_server.middlewares=csrf@file, no-www@file"
-      - "traefik.http.routers.site_server.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.site_server.service=site_server_app"
-      - "traefik.http.services.site_server_app.loadbalancer.server.port=80"
-      - "traefik.http.routers.resume_router.entrypoints=web-secure"
-      - "traefik.http.routers.resume_router.rule=Host(`resume.${DOMAIN}`)"
-      - "traefik.http.routers.resume_router.middlewares=csrf@file, redirect-resume@file"
-      - "traefik.http.routers.resume_router.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.resume_router.service=resume_server"
-      - "traefik.http.services.resume_server.loadbalancer.server.port=80"
-      - "traefik.http.routers.blog_router.entrypoints=web-secure"
-      - "traefik.http.routers.blog_router.rule=Host(`blog.${DOMAIN}`)"
-      - "traefik.http.routers.blog_router.middlewares=redirect-blog@file"
-      - "traefik.http.routers.blog_router.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.blog_router.service=blog_server"
-      - "traefik.http.services.blog_server.loadbalancer.server.port=80"
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.site_server.entrypoints=https
+        - traefik.http.routers.site_server.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`) || Host(`info.${DOMAIN}`) || Host(`124c41.${DOMAIN}`)
+        - traefik.http.routers.site_server.middlewares=no-www
+        - traefik.http.routers.site_server.tls.certresolver=le
+        - traefik.http.routers.site_server.service=site_server_app
+        - traefik.http.services.site_server_app.loadbalancer.server.port=80
+        - "traefik.http.routers.resume_router.entrypoints=https"
+        - "traefik.http.routers.resume_router.rule=Host(`resume.${DOMAIN}`)"
+        - "traefik.http.routers.resume_router.middlewares=redirect-resume"
+        - "traefik.http.routers.resume_router.tls.certresolver=le"
+        - "traefik.http.routers.resume_router.service=resume_server"
+        - "traefik.http.services.resume_server.loadbalancer.server.port=80"
+        - "traefik.http.routers.blog_router.entrypoints=https"
+        - "traefik.http.routers.blog_router.rule=Host(`blog.${DOMAIN}`)"
+        - "traefik.http.routers.blog_router.middlewares=redirect-blog"
+        - "traefik.http.routers.blog_router.tls.certresolver=le"
+        - "traefik.http.routers.blog_router.service=blog_server"
+        - "traefik.http.services.blog_server.loadbalancer.server.port=80"

@@ -10,11 +10,22 @@ services:
       - target: 443
         published: 443
         mode: host
+      - target: 5432
+        published: 5432
+        mode: host
+      - target: 8083
+        published: 8083
+        mode: host
+      - target: 8084
+        published: 8084
+        mode: host
+      # - target: 8883
+      #   published: 8883
+      #   mode: host
+      # - "8083:8083"
+      # - "8084:8084"
+      # - "5432:5432"
       # - "7687:7687"
-      - "8083:8083"
-      - "8084:8084"
-      - "8883:8883"
-      - "5432:5432"
     deploy:
       placement:
         constraints:
@@ -88,7 +99,7 @@ services:
       # Create an entrypoint "postgres-socket" listening on port 5432
       - --entrypoints.postgres-socket.address=:5432
       # Others entrypoints can be created, like a TCP entrypoint
-      # - --entrypoints.mqtt.address=:1883
+      - --entrypoints.mqtt.address=:1883
       - --entrypoints.web-socket.address=:8083
       - --entrypoints.web-socket-secure.address=:8084
       - --entrypoints.bolt-socket.address=:7687
