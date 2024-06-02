@@ -31,6 +31,9 @@ services:
     networks:
       - traefik-public
     deploy:
+      # placement:
+      #   constraints:
+      #     - node.labels.adminer.pgadmin == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -71,6 +74,9 @@ services:
     networks:
       - traefik-public
     deploy:
+      # placement:
+      #   constraints:
+      #     - node.labels.bai.bai_cache == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -107,6 +113,9 @@ services:
     networks:
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.labels.site.site_server == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
