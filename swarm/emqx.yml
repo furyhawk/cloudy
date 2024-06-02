@@ -20,6 +20,9 @@ services:
     volumes:
       - emqx-data1:/opt/emqx/data
     deploy:
+      placement:
+        constraints:
+          - node.labels.emqx1.emqx-data1 == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
