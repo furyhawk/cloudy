@@ -45,6 +45,22 @@ services:
         - traefik.http.routers.adminer.service=adminer_app
         - traefik.http.services.adminer_app.loadbalancer.server.port=8080
 
+  cheatsheets_app:
+    image: furyhawk/cheatsheets:${CHEATSHEETSTAG:-latest}
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.cheatsheets.entrypoints=https
+        - traefik.http.routers.cheatsheets.rule=Host(`cheat.${DOMAIN}`)
+        - traefik.http.routers.cheatsheets.tls.certresolver=le
+        - traefik.http.routers.cheatsheets.service=cheatsheets_app
+        - traefik.http.services.cheatsheets_app.loadbalancer.server.port=80
+
   heynote_app:
     image: furyhawk/heynote:${HEYNOTETAG:-latest}
     restart: unless-stopped
@@ -63,6 +79,31 @@ services:
         - "traefik.http.routers.heynote.tls.certresolver=le"
         - "traefik.http.routers.heynote.service=heynote_app"
         - "traefik.http.services.heynote_app.loadbalancer.server.port=5173"
+
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:latest
+    read_only: true
+    user: "1000:1000"
+    volumes:
+      - privatebin_data:/srv/data # data volume for pastes allows pastes
+      # to persist after container stop or restart
+      - "~/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.labels.privatebin.privatebin_data == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.privatebin.entrypoints=https
+        - traefik.http.routers.privatebin.rule=Host(`bin.${DOMAIN}`) || Host(`paste.${DOMAIN}`)
+        - traefik.http.routers.privatebin.tls.certresolver=le
+        - traefik.http.routers.privatebin.service=privatebin_app
+        - traefik.http.services.privatebin_app.loadbalancer.server.port=8080
 
   streamlit-bai:
     environment:
