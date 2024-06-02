@@ -116,7 +116,6 @@ services:
       - --log.level=INFO
       # Enable the Dashboard and API
       - --api=true
-      - --dashboard=true
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
