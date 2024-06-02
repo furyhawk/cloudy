@@ -36,7 +36,7 @@ services:
         - traefik.tcp.routers.emqx1-tcp-ws.service=emqx1-tcp-ws
         - traefik.tcp.services.emqx1-tcp-ws.loadbalancer.server.port=8083
         - traefik.tcp.routers.emqx1-tcp-wss.entrypoints=web-socket-secure
-        - traefik.tcp.routers.emqx1-tcp-wss.rule=HostSNIRegexp(`^.+\\.${DOMAIN}$`)
+        - traefik.tcp.routers.emqx1-tcp-wss.rule=HostSNIRegexp(`^.+\\.${DOMAIN}$$`)
         - traefik.tcp.routers.emqx1-tcp-wss.tls.certresolver=le
         - traefik.tcp.routers.emqx1-tcp-wss.service=emqx1-tcp-wss
         - traefik.tcp.services.emqx1-tcp-wss.loadbalancer.server.port=8084
