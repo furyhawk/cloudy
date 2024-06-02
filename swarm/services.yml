@@ -14,9 +14,8 @@ services:
       SECURITY__BACKEND_CORS_ORIGINS: ${SECURITY__BACKEND_CORS_ORIGINS}
       SECURITY__ALLOWED_HOSTS: ${SECURITY__ALLOWED_HOSTS}
       DOMAIN: ${DOMAIN}
-    ports:
-      - "8000:8000"
     networks:
+      - net
       - traefik-public
     deploy:
       labels:
@@ -49,6 +48,7 @@ services:
       timeout: 10s
       retries: 10
     networks:
+      - net
       - traefik-public
     deploy:
       placement:
@@ -137,5 +137,8 @@ services:
 volumes:
   postgres_data: {}
 networks:
+  net:
+    driver: overlay
+    attachable: true
   traefik-public:
     external: true
