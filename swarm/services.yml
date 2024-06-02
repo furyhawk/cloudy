@@ -110,7 +110,7 @@ services:
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.dozzle.entrypoints=https
         - traefik.http.routers.dozzle.rule=Host(`log.${DOMAIN}`)
-        - traefik.http.routers.dozzle.middlewares=auth@file
+        - traefik.http.routers.dozzle.middlewares=admin-auth
         - traefik.http.routers.dozzle.tls.certresolver=le
         - traefik.http.routers.dozzle.service=dozzle_service
         - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
