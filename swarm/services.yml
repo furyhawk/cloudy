@@ -86,7 +86,7 @@ services:
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.osrm-backend.entrypoints=https
         - traefik.http.routers.osrm-backend.rule=Host(`osrm.${DOMAIN}`)
-        - traefik.http.routers.osrm-backend.middlewares=ratelimit
+        - traefik.http.routers.osrm-backend.middlewares=rate-limit
         - traefik.http.routers.osrm-backend.tls.certresolver=le
         - traefik.http.routers.osrm-backend.service=osrm_backend_service
         - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
