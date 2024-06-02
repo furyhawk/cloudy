@@ -6,6 +6,8 @@ services:
       interval: 60s
       timeout: 25s
       retries: 5
+    volumes:
+      - emqx-data1:/opt/emqx/data
     networks:
       - traefik-public
     # ports:
@@ -17,8 +19,6 @@ services:
     #   - 8084:8084
     #   - 8883:8883
     #   - 18083:18083
-    volumes:
-      - emqx-data1:/opt/emqx/data
     deploy:
       placement:
         constraints:
