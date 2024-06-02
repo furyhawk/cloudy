@@ -45,6 +45,10 @@ services:
       - net
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.labels.librechat.libre-images == true
+          - node.labels.librechat.libre-logs == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
