@@ -75,11 +75,30 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - "traefik.http.routers.heynote.entrypoints=https"
-        - "traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)"
-        - "traefik.http.routers.heynote.tls.certresolver=le"
-        - "traefik.http.routers.heynote.service=heynote_app"
-        - "traefik.http.services.heynote_app.loadbalancer.server.port=5173"
+        - traefik.http.routers.heynote.entrypoints=https
+        - traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
+        - traefik.http.routers.heynote.tls.certresolver=le
+        - traefik.http.routers.heynote.service=heynote_app
+        - traefik.http.services.heynote_app.loadbalancer.server.port=5173
+
+  meshtastic_web:
+    image: ghcr.io/meshtastic/web
+    restart: unless-stopped
+    expose:
+      - 8080
+      - 8443
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.meshtastic.entrypoints=https
+        - traefik.http.routers.meshtastic.rule=Host(`mesh.${DOMAINNAME}`)
+        - traefik.http.routers.meshtastic.tls.certresolver=le
+        - traefik.http.routers.meshtastic.service=meshtastic_app
+        - traefik.http.services.meshtastic_app.loadbalancer.server.port=8080
 
   privatebin:
     image: privatebin/nginx-fpm-alpine:latest
