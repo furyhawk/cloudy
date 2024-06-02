@@ -35,7 +35,8 @@ services:
         - traefik.http.routers.portainer-https.entrypoints=https
         - traefik.http.routers.portainer-https.tls=true
         - traefik.http.routers.portainer-https.tls.certresolver=le
-        - traefik.http.services.portainer.loadbalancer.server.port=9000
+        - traefik.http.routers.portainer-https.service=portainer_service
+        - traefik.http.services.portainer_service.loadbalancer.server.port=9000
 
 networks:
   agent-network:
