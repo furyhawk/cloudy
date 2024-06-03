@@ -1,7 +1,7 @@
 services:
 
   api_server:
-    image: furyhawk/listen:latest
+    image: furyhawk/listen:v0.1.13
     restart: always
     depends_on:
       - postgres_db
@@ -25,7 +25,6 @@ services:
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.api_server.entrypoints=https
         - traefik.http.routers.api_server.rule=Host(`api.${DOMAIN}`)
-        - traefik.http.routers.api_server.middlewares=rate-limit
         - traefik.http.routers.api_server.tls.certresolver=le
         - traefik.http.routers.api_server.service=api_server_service
         - traefik.http.services.api_server_service.loadbalancer.server.port=8000
