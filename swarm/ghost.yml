@@ -1,0 +1,60 @@
+volumes:
+  ghost_content: {}
+  ghost_mysql: {}
+networks:
+  net:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+services:
+  ghost-db:
+    image: mysql:8
+    security_opt:
+    - seccomp:unconfined
+    restart: always
+    command: --mysql-native-password=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ghost_mysql:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - net
+
+  ghost-server:
+    image: ghost
+    cap_add:
+      - CAP_SYS_NICE
+    security_opt:
+      - seccomp:unconfined
+    restart: always
+    depends_on:
+      - ghost-db
+    environment:
+      url: https://ghost.${DOMAIN}
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: root
+      database__connection__password: ${POSTGRES_PASSWORD}
+      database__connection__database: ghost
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+    expose:
+      - 2368
+    networks:
+      - net
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.enable=true
+        - traefik.http.routers.ghost.entrypoints=https
+        - traefik.http.routers.ghost.rule=Host(`ghost.${DOMAIN}`)
+        - traefik.http.routers.ghost.tls.certresolver=le
+        - traefik.http.routers.ghost.service=ghost_app
+        - traefik.http.services.ghost_app.loadbalancer.server.port=2368
