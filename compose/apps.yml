@@ -31,7 +31,7 @@ services:
       - pgadmin:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
-      - postgres
+      - postgres_db
     expose:
       - 8080
     networks:
@@ -181,7 +181,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
-      - postgres
+      - postgres_db
     expose:
       - 80
     networks:

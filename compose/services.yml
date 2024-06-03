@@ -33,7 +33,7 @@ services:
       - "traefik.http.routers.api_server.service=api_server_service"
       - "traefik.http.services.api_server_service.loadbalancer.server.port=8000"
 
-  postgres:
+  postgres_db:
     image: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}

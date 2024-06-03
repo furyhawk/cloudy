@@ -31,7 +31,7 @@ services:
       - pgadmin:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
-      - postgres
+      - postgres_db
     networks:
       - traefik-public
     deploy:

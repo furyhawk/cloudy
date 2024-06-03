@@ -122,7 +122,7 @@ services:
     image: furyhawk/listen:latest
     restart: always
     depends_on:
-      - postgres
+      - postgres_db
     environment:
       DATABASE__HOSTNAME: ${DATABASE__HOSTNAME}
       DATABASE__USERNAME: ${POSTGRES_USER}
@@ -146,7 +146,7 @@ services:
       - "traefik.http.routers.api_server.service=api_server_service"
       - "traefik.http.services.api_server_service.loadbalancer.server.port=8000"
 
-  postgres:
+  postgres_db:
     image: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -423,7 +423,7 @@ services:
       - pgadmin:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
-      - postgres
+      - postgres_db
     expose:
       - 8080
     networks:
@@ -573,7 +573,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
-      - postgres
+      - postgres_db
     expose:
       - 80
     networks:
