@@ -2,7 +2,7 @@ volumes:
   ghost_content: {}
   ghost_mysql: {}
 networks:
-  net:
+  ghost:
     driver: overlay
     attachable: true
   traefik-public:
@@ -22,7 +22,7 @@ services:
     expose:
       - 3306
     networks:
-      - net
+      - ghost
 
   ghost-server:
     image: ghost
@@ -40,13 +40,13 @@ services:
       database__connection__user: root
       database__connection__password: ${POSTGRES_PASSWORD}
       database__connection__database: ghost
-      DOMAIN: ${DOMAIN}
+      DOMAIN: https://ghost.${DOMAIN}
     volumes:
       - ghost_content:/var/lib/ghost/content
     expose:
       - 2368
     networks:
-      - net
+      - ghost
       - traefik-public
     deploy:
       labels:
