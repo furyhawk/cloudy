@@ -81,6 +81,38 @@ services:
         - traefik.http.routers.heynote.service=heynote_app
         - traefik.http.services.heynote_app.loadbalancer.server.port=5173
 
+  jellyfin:
+    image: jellyfin/jellyfin
+    user: 1000:1000
+    restart: 'unless-stopped'
+    environment:
+      - DOMAIN=${DOMAIN}
+      - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN}
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - type: bind
+        source: ~/media
+        target: /media
+        read_only: false
+    # Optional - alternative address used for autodiscovery
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.labels.jellyfin.jellyfin_config == true
+          - node.labels.jellyfin.jellyfin_cache == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.jellyfin.entrypoints=https
+        - traefik.http.routers.jellyfin.rule=Host(`media.${DOMAIN}`)
+        - traefik.http.routers.jellyfin.tls.certresolver=le
+        - traefik.http.routers.jellyfin.service=jellyfin_app
+        - traefik.http.services.jellyfin_app.loadbalancer.server.port=8096
+
   meshtastic_web:
     image: ghcr.io/meshtastic/web
     restart: unless-stopped
@@ -95,7 +127,7 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.meshtastic.entrypoints=https
-        - traefik.http.routers.meshtastic.rule=Host(`mesh.${DOMAINNAME}`)
+        - traefik.http.routers.meshtastic.rule=Host(`mesh.${DOMAIN}`)
         - traefik.http.routers.meshtastic.tls.certresolver=le
         - traefik.http.routers.meshtastic.service=meshtastic_app
         - traefik.http.services.meshtastic_app.loadbalancer.server.port=8080
