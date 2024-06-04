@@ -25,9 +25,13 @@ deploy-apps: pull
 	docker stack deploy --compose-file ./swarm/apps.yml apps
 
 deploy-ghost: pull
-	@echo "Deploying the ghost stack..."
-	$(loadenvs ./swarm/.env)
-	docker stack deploy --compose-file ./swarm/ghost.yml ghost
+	{ \
+	@echo "Deploying the ghost stack..." ;\
+	set -a ;\
+	source ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/ghost.yml ghost ;\
+	}
 
 deploy-test: pull
 	@echo "Deploying the test stack..."
