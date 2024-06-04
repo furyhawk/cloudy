@@ -5,12 +5,12 @@ x-environment: &app-environment
   STREAMLIT_BAI_SERVER_PORT: 8502
   GROQ_API_KEY: "${GROQ_API_KEY}"
 
-volumes:
-  bai_cache: {}
-  jellyfin_config: {}
-  jellyfin_cache: {}
-  pgadmin: {}
-  privatebin_data: {}
+# volumes:
+  # bai_cache: {}
+  # jellyfin_config: {}
+  # jellyfin_cache: {}
+  # adminer_data: {}
+  # privatebin_data: {}
 
 networks:
   traefik-public:
@@ -28,7 +28,7 @@ services:
       TZ: Asia/Singapore
       DOMAIN: ${DOMAIN}
     volumes:
-      - pgadmin:/var/lib/pgadmin
+      - /var/data/adminer_data:/var/lib/pgadmin
     restart: unless-stopped
     depends_on:
       - postgres_db
@@ -91,8 +91,8 @@ services:
       - DOMAIN=${DOMAIN}
       - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN}
     volumes:
-      - jellyfin_config:/config
-      - jellyfin_cache:/cache
+      - /var/data/jellyfin_config:/config
+      - /var/data/jellyfin_cache:/cache
       - type: bind
         source: ~/media
         target: /media
@@ -101,10 +101,10 @@ services:
     networks:
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.jellyfin.jellyfin_config == true
-          - node.labels.jellyfin.jellyfin_cache == true
+      # placement:
+      #   constraints:
+      #     - node.labels.jellyfin.jellyfin_config == true
+      #     - node.labels.jellyfin.jellyfin_cache == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -138,16 +138,16 @@ services:
     image: privatebin/nginx-fpm-alpine:latest
     read_only: true
     volumes:
-      - privatebin_data:/srv/data # data volume for pastes allows pastes
+      - /var/data/privatebin_data:/srv/data # data volume for pastes allows pastes
       # to persist after container stop or restart
-      - "~/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
+      - "/var/data/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
     restart: unless-stopped
     networks:
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.privatebin.privatebin_data == true
+      # placement:
+      #   constraints:
+      #     - node.labels.privatebin.privatebin_data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -165,13 +165,10 @@ services:
     restart: unless-stopped
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
     volumes:
-      - bai_cache:/app/cache
+      - /var/data/bai_cache:/app/cache
     networks:
       - traefik-public
     deploy:
-      # placement:
-      #   constraints:
-      #     - node.labels.bai.bai_cache == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -204,13 +201,13 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
-      - ~/site:/usr/share/nginx/html:ro
+      - var/data/site:/usr/share/nginx/html:ro
     networks:
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.site.site_server == true
+      # placement:
+      #   constraints:
+      #     - node.labels.site.site_server == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public

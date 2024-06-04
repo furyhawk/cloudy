@@ -14,15 +14,32 @@ pull:
 	@echo "Pulling the project..."
 	git pull
 
+deploy-core: pull
+	{ \
+	echo "Deploying the core stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/core.yml core ;\
+	}
+
 deploy-services: pull
-	@echo "Deploying the services stack..."
-	$(loadenvs ./swarm/.env)
-	docker stack deploy --compose-file ./swarm/services.yml services
+	{ \
+	echo "Deploying the services stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/services.yml services ;\
+	}
 
 deploy-apps: pull
-	@echo "Deploying the apps stack..."
-	$(loadenvs ./swarm/.env)
-	docker stack deploy --compose-file ./swarm/apps.yml apps
+	{ \
+	echo "Deploying the apps stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/apps.yml apps ;\
+	}
 
 deploy-ghost: pull
 	{ \
@@ -33,8 +50,12 @@ deploy-ghost: pull
 	docker stack deploy --compose-file ./swarm/ghost.yml ghost ;\
 	}
 
-deploy-test: pull
-	@echo "Deploying the test stack..."
-	$(loadenvs ./swarm/.env)
-	docker stack deploy --compose-file ./swarm/thelounge.yml thelounge
+deploy-thelounge: pull
+	{ \
+	echo "Deploying the thelounge stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/thelounge.yml thelounge ;\
+	}
 # git submodule update --init --recursive
