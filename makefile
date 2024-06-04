@@ -21,5 +21,5 @@ deploy-apps: pull
 
 deploy-test: pull
 	@echo "Deploying the apps stack..."
-	loadenvs ./swarm/.env && docker stack deploy --compose-file ./swarm/thelounge.yml thelounge
+	$(loadenvs) ./swarm/.env && docker stack deploy --compose-file ./swarm/thelounge.yml thelounge
 # git submodule update --init --recursive
