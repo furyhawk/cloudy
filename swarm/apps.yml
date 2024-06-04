@@ -85,7 +85,6 @@ services:
 
   jellyfin:
     image: jellyfin/jellyfin
-    user: 1000:1000
     restart: 'unless-stopped'
     environment:
       - DOMAIN=${DOMAIN}
