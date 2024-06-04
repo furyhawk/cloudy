@@ -15,7 +15,7 @@ services:
           - node.platform.os == linux
 
   portainer:
-    image: portainer/portainer-ce
+    image: portainer/portainer-ce:sts
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     volumes:
       - portainer-data:/data
