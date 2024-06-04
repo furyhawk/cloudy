@@ -37,7 +37,7 @@ services:
       database__connection__user: root
       database__connection__password: ${POSTGRES_PASSWORD}
       database__connection__database: ghost
-      DOMAIN: https://ghost.${DOMAIN}
+      DOMAIN: ${DOMAIN}
     volumes:
       - /var/data/ghost_content:/var/lib/ghost/content
     expose:
