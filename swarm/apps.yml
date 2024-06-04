@@ -5,9 +5,9 @@ x-environment: &app-environment
   STREAMLIT_BAI_SERVER_PORT: 8502
   GROQ_API_KEY: "${GROQ_API_KEY}"
 
-# volumes:
+volumes:
   # bai_cache: {}
-  # jellyfin_config: {}
+  jellyfin_config: {}
   # jellyfin_cache: {}
   # adminer_data: {}
   # privatebin_data: {}
@@ -90,7 +90,7 @@ services:
       - DOMAIN=${DOMAIN}
       - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN}
     volumes:
-      - /var/data/jellyfin_config:/config
+      - jellyfin_config:/config
       - /var/data/jellyfin_cache:/cache
       - type: bind
         source: ~/media
@@ -100,10 +100,10 @@ services:
     networks:
       - traefik-public
     deploy:
-      # placement:
-      #   constraints:
-      #     - node.labels.jellyfin.jellyfin_config == true
-      #     - node.labels.jellyfin.jellyfin_cache == true
+      placement:
+        constraints:
+          - node.labels.jellyfin.jellyfin_config == true
+          # - node.labels.jellyfin.jellyfin_cache == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
