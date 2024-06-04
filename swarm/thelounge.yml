@@ -1,5 +1,5 @@
 services:
-  app:
+  thelounge:
     image: thelounge/thelounge:latest
     volumes:
       - thelounge-data:/var/opt/thelounge
@@ -13,7 +13,7 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.thelounge-https.rule=Host(`${DOMAIN?Variable not set}`)
+        - traefik.http.routers.thelounge-https.rule=Host(irc.`${DOMAIN?Variable not set}`)
         - traefik.http.routers.thelounge-https.entrypoints=https
         - traefik.http.routers.thelounge-https.tls=true
         - traefik.http.routers.thelounge-https.tls.certresolver=le
