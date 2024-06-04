@@ -201,7 +201,7 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
-      - var/data/site:/usr/share/nginx/html:ro
+      - /var/data/site:/usr/share/nginx/html:ro
     networks:
       - traefik-public
     deploy:
