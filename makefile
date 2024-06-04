@@ -26,9 +26,9 @@ deploy-apps: pull
 
 deploy-ghost: pull
 	{ \
-	@echo "Deploying the ghost stack..." ;\
+	echo "Deploying the ghost stack..." ;\
 	set -a ;\
-	source ./swarm/.env ;\
+	. ./swarm/.env ;\
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/ghost.yml ghost ;\
 	}
