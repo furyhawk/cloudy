@@ -16,11 +16,13 @@ pull:
 
 deploy-services: pull
 	@echo "Deploying the services stack..."
-	$(loadenvs ./swarm/.env) && docker stack deploy --compose-file ./swarm/services.yml services
+	$(loadenvs ./swarm/.env)
+	docker stack deploy --compose-file ./swarm/services.yml services
 
 deploy-apps: pull
 	@echo "Deploying the apps stack..."
-	$(loadenvs ./swarm/.env) && docker stack deploy --compose-file ./swarm/apps.yml apps
+	$(loadenvs ./swarm/.env)
+	docker stack deploy --compose-file ./swarm/apps.yml apps
 
 deploy-ghost: pull
 	@echo "Deploying the ghost stack..."
