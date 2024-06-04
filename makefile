@@ -23,6 +23,15 @@ deploy-core: pull
 	docker stack deploy --compose-file ./swarm/core.yml core ;\
 	}
 
+deploy-portainer: pull
+	{ \
+	echo "Deploying the portainer stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/portainer.yml portainer ;\
+	}
+
 deploy-services: pull
 	{ \
 	echo "Deploying the services stack..." ;\
