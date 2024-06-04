@@ -1,6 +1,3 @@
-volumes:
-  ghost_content: {}
-  ghost_mysql: {}
 networks:
   ghost:
     driver: overlay
@@ -18,7 +15,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ghost_mysql:/var/lib/mysql
+      - /var/data/ghost_mysql:/var/lib/mysql
     expose:
       - 3306
     networks:
@@ -42,7 +39,7 @@ services:
       database__connection__database: ghost
       DOMAIN: https://ghost.${DOMAIN}
     volumes:
-      - ghost_content:/var/lib/ghost/content
+      - /var/data/ghost_content:/var/lib/ghost/content
     expose:
       - 2368
     networks:
@@ -50,9 +47,9 @@ services:
       - traefik-public
     deploy:
       labels:
+        - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.enable=true
         - traefik.http.routers.ghost.entrypoints=https
         - traefik.http.routers.ghost.rule=Host(`ghost.${DOMAIN}`)
         - traefik.http.routers.ghost.tls.certresolver=le

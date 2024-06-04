@@ -14,13 +14,21 @@ pull:
 	@echo "Pulling the project..."
 	git pull
 
+deploy-services: pull
+	@echo "Deploying the services stack..."
+	$(loadenvs ./swarm/.env) && docker stack deploy --compose-file ./swarm/services.yml services
 
 deploy-apps: pull
 	@echo "Deploying the apps stack..."
 	$(loadenvs ./swarm/.env) && docker stack deploy --compose-file ./swarm/apps.yml apps
 
+deploy-ghost: pull
+	@echo "Deploying the ghost stack..."
+	$(loadenvs ./swarm/.env)
+	docker stack deploy --compose-file ./swarm/ghost.yml ghost
+
 deploy-test: pull
-	@echo "Deploying the apps stack..."
+	@echo "Deploying the test stack..."
 	$(loadenvs ./swarm/.env)
 	docker stack deploy --compose-file ./swarm/thelounge.yml thelounge
 # git submodule update --init --recursive
