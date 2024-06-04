@@ -29,6 +29,96 @@ services:
         - traefik.http.routers.api_server.service=api_server_service
         - traefik.http.services.api_server_service.loadbalancer.server.port=8000
 
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: always
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.dozzle.entrypoints=https
+        - traefik.http.routers.dozzle.rule=Host(`log.${DOMAIN}`)
+        - traefik.http.routers.dozzle.middlewares=admin-auth
+        - traefik.http.routers.dozzle.tls.certresolver=le
+        - traefik.http.routers.dozzle.service=dozzle_service
+        - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
+
+  minio-common:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+      MINIO_OPTS: "--console-address :9001"
+      MINIO_SERVER_URL: https://minio.${DOMAIN}
+      DOMAIN: ${DOMAIN}
+    restart: unless-stopped
+    command: server /data --address :9000 --console-address :9001
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /var/data/minio_data:/data
+    expose:
+      - 9000
+      - 9001
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.minio-router.entrypoints=https
+        - traefik.http.routers.minio-router.rule=Host(`drive.${DOMAIN}`) || Host(`storage.${DOMAIN}`)
+        - traefik.http.routers.minio-router.tls.certresolver=le
+        - traefik.http.routers.minio-router.service=minio_common_service
+        - traefik.http.services.minio_common_service.loadbalancer.server.port=9001
+        - traefik.http.routers.minio-api-router.entrypoints=https
+        - traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAIN}`) || Host(`s3.${DOMAIN}`)
+        - traefik.http.routers.minio-api-router.tls.certresolver=le
+        - traefik.http.routers.minio-api-router.service=minio_api_service
+        - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
+
+  osrm-backend:
+    environment:
+      # OSRM manager setup
+      - OSRM_ALGORITHM=mld
+      - OSRM_THREADS=2
+      - OSRM_PORT=${OSRM_PORT:-5000}
+      - OSRM_PROFILE=/opt/car.lua
+      - OSRM_MAP_NAME=${OSRM_MAP_NAME}
+      - OSRM_GEOFABRIK_PATH=${OSRM_GEOFABRIK_PATH}
+      # Notify OSRM Manager to restart without stopping container
+      - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
+      - DOMAIN=${DOMAIN}
+    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.osrm-backend.entrypoints=https
+        - traefik.http.routers.osrm-backend.rule=Host(`osrm.${DOMAIN}`)
+        - traefik.http.routers.osrm-backend.middlewares=rate-limit
+        - traefik.http.routers.osrm-backend.tls.certresolver=le
+        - traefik.http.routers.osrm-backend.service=osrm_backend_service
+        - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
+
   postgres_db:
     image: postgres
     environment:
@@ -63,58 +153,6 @@ services:
         - traefik.tcp.routers.postgres.service=postgres_service
         - traefik.tcp.services.postgres_service.loadbalancer.server.port=5432
 
-  osrm-backend:
-    environment:
-      # OSRM manager setup
-      - OSRM_ALGORITHM=mld
-      - OSRM_THREADS=2
-      - OSRM_PORT=${OSRM_PORT:-5000}
-      - OSRM_PROFILE=/opt/car.lua
-      - OSRM_MAP_NAME=${OSRM_MAP_NAME}
-      - OSRM_GEOFABRIK_PATH=${OSRM_GEOFABRIK_PATH}
-      # Notify OSRM Manager to restart without stopping container
-      - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
-      - DOMAIN=${DOMAIN}
-    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
-    restart: unless-stopped
-    networks:
-      - traefik-public
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.osrm-backend.entrypoints=https
-        - traefik.http.routers.osrm-backend.rule=Host(`osrm.${DOMAIN}`)
-        - traefik.http.routers.osrm-backend.middlewares=rate-limit
-        - traefik.http.routers.osrm-backend.tls.certresolver=le
-        - traefik.http.routers.osrm-backend.service=osrm_backend_service
-        - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
-
-  dozzle:
-    image: amir20/dozzle:latest
-    restart: always
-    environment:
-      - DOMAIN=${DOMAIN}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - traefik-public
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.dozzle.entrypoints=https
-        - traefik.http.routers.dozzle.rule=Host(`log.${DOMAIN}`)
-        - traefik.http.routers.dozzle.middlewares=admin-auth
-        - traefik.http.routers.dozzle.tls.certresolver=le
-        - traefik.http.routers.dozzle.service=dozzle_service
-        - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
-
   # WhoAmI - For Testing and Troubleshooting
   whoami:
     image: traefik/whoami
@@ -135,6 +173,9 @@ services:
         - traefik.http.services.whoami-svc.loadbalancer.server.port=80
 
 volumes:
+  # minio_data: {}
+  # neo4j_data: {}
+  # neo4j_logs: {}
   postgres_data: {}
 networks:
   net:
