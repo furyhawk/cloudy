@@ -49,6 +49,14 @@ deploy-apps: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/apps.yml apps ;\
 	}
+deploy-secondary: pull
+	{ \
+	echo "Deploying the secondary stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/secondary.yml secondary ;\
+	}
 
 deploy-ghost: pull
 	{ \

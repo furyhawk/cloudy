@@ -34,12 +34,12 @@ services:
       - DOMAIN=${DOMAIN}
     volumes:
       - type: bind
-        source: ~/config/.env
+        source: /var/data/config/.env
         target: /app/.env
       - libre-images:/app/client/public/images
       - libre-logs:/app/api/logs
       - type: bind
-        source: ~/config/librechat.yaml
+        source: /var/data/config/librechat.yaml
         target: /app/librechat.yaml
     networks:
       - net
