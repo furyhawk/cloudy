@@ -16,7 +16,7 @@ services:
       - traefik-public
     deploy:
       labels:
-        - "traefik.enable=true"
+        - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.librespeed.entrypoints=https
@@ -24,6 +24,21 @@ services:
         - traefik.http.routers.librespeed.tls.certresolver=le
         - traefik.http.routers.librespeed.service=librespeed_app
         - traefik.http.services.librespeed_app.loadbalancer.server.port=80
+
+  cyberchef:
+    image: ghcr.io/gchq/cyberchef:latest
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.cyberchef.entrypoints=https
+        - traefik.http.routers.cyberchef.rule=Host(`chef.${DOMAIN}`) || Host(`cook.${DOMAIN}`)
+        - traefik.http.routers.librespeed.tls.certresolver=le
+        - traefik.http.routers.cyberchef.service=cyberchef
+        - traefik.http.services.cyberchef.loadbalancer.server.port=80
+    networks:
+      - traefik_public
 
 networks:
   traefik-public:
