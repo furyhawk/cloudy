@@ -1,4 +1,20 @@
 services:
+
+  cyberchef:
+    image: mpepping/cyberchef:latest
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.cyberchef.entrypoints=https
+        - traefik.http.routers.cyberchef.rule=Host(`chef.${DOMAIN}`) || Host(`cook.${DOMAIN}`)
+        - traefik.http.routers.cyberchef.tls.certresolver=le
+        - traefik.http.routers.cyberchef.service=cyberchef
+        - traefik.http.services.cyberchef.loadbalancer.server.port=8000
+    networks:
+      - traefik-public
+
   librespeed:
     image: lscr.io/linuxserver/librespeed:latest
     environment:
@@ -24,21 +40,25 @@ services:
         - traefik.http.routers.librespeed.service=librespeed_app
         - traefik.http.services.librespeed_app.loadbalancer.server.port=80
 
-  cyberchef:
-    image: mpepping/cyberchef:latest
+  linx:
+    image: andreimarcu/linx-server
+    command: -config /linx.conf
+    volumes:
+      - /var/data/linx/:/files/
+      - /var/data/config/linx/linx.conf:/linx.conf:ro
     deploy:
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.cyberchef.entrypoints=https
-        - traefik.http.routers.cyberchef.rule=Host(`chef.${DOMAIN}`) || Host(`cook.${DOMAIN}`)
-        - traefik.http.routers.cyberchef.tls.certresolver=le
-        - traefik.http.routers.cyberchef.service=cyberchef
-        - traefik.http.services.cyberchef.loadbalancer.server.port=8000
+        - traefik.http.routers.linx.entrypoints=https
+        - traefik.http.routers.linx.rule=Host(`linx.${DOMAIN}`)
+        - traefik.http.routers.linx.tls.certresolver=le
+        - traefik.http.routers.linx.service=linx_app
+        - traefik.http.services.linx_app.loadbalancer.server.port=8080"
+
     networks:
       - traefik-public
-
 networks:
   traefik-public:
     external: true
