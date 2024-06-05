@@ -41,11 +41,12 @@ services:
         - traefik.http.services.librespeed_app.loadbalancer.server.port=80
 
   linx:
-    image: andreimarcu/linx-server
-    command: -config /linx.conf
+    image: liampillay/linx-server-anime
+    command: -config /data/linx-server.conf
     volumes:
-      - /var/data/linx/:/files/
-      - /var/data/config/linx/linx.conf:/linx.conf:ro
+      - /var/data/files:/data/files
+      - /var/data/meta:/data/meta
+      - /var/data/config/linx/linx-server.conf:/data/linx-server.conf:ro
     deploy:
       labels:
         - traefik.enable=true
