@@ -55,7 +55,7 @@ services:
         - traefik.http.routers.linx.rule=Host(`linx.${DOMAIN}`)
         - traefik.http.routers.linx.tls.certresolver=le
         - traefik.http.routers.linx.service=linx_app
-        - traefik.http.services.linx_app.loadbalancer.server.port=8080"
+        - traefik.http.services.linx_app.loadbalancer.server.port=8080
 
     networks:
       - traefik-public
