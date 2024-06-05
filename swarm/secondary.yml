@@ -25,7 +25,7 @@ services:
         - traefik.http.services.librespeed_app.loadbalancer.server.port=80
 
   cyberchef:
-    image: ghcr.io/gchq/cyberchef:latest
+    image: mpepping/cyberchef:latest
     deploy:
       labels:
         - traefik.enable=true
