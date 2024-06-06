@@ -55,7 +55,7 @@ services:
       - traefik-public
     deploy:
       labels:
-        - "traefik.enable=true"
+        - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.cheatsheets.entrypoints=https
