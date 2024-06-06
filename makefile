@@ -57,7 +57,14 @@ deploy-secondary: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/secondary.yml secondary ;\
 	}
-
+deploy-emqx: pull
+	{ \
+	echo "Deploying the emqx stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/emqx.yml emqx ;\
+	}
 deploy-ghost: pull
 	{ \
 	echo "Deploying the ghost stack..." ;\
@@ -66,7 +73,14 @@ deploy-ghost: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/ghost.yml ghost ;\
 	}
-
+deploy-swarmpit: pull
+	{ \
+	echo "Deploying the swarmpit stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/swarmpit.yml swarmpit ;\
+	}
 deploy-thelounge: pull
 	{ \
 	echo "Deploying the thelounge stack..." ;\
