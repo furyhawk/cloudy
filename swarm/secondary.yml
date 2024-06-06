@@ -60,6 +60,27 @@ services:
 
     networks:
       - traefik-public
+
+  wetty:
+    image: wettyoss/wetty
+    environment:
+      SSHHOST: ${DOMAIN}
+      SSHPORT: ${SSHPORT}
+      NODE_ENV: 'development'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.wetty.entrypoints=https
+        - traefik.http.routers.wetty.rule=Host(`terminal.${DOMAIN}`)
+        - traefik.http.routers.wetty.tls.certresolver=le
+        - traefik.http.routers.wetty.service=wetty_app
+        - "traefik.http.services.wetty_app.loadbalancer.server.port=3000"
+        # - "traefik.http.routers.wetty.middlewares=forward-auth@file"
+    networks:
+      - traefik-public
+
 networks:
   traefik-public:
     external: true
