@@ -123,30 +123,36 @@ services:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
       - traefik-public
-  shepherd:
-    image: containrrr/shepherd
+
+  gantry:
+    image: shizunge/gantry
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      # Beware YAML gotchas regarding quoting:
-      # With KEY: 'VALUE', quotes are part of yaml syntax and thus get stripped
-      # but with KEY='VALUE', they are part of the value and stay there,
-      # causing problems!
-      TZ: 'Asia/Singapore'
-      SLEEP_TIME: '240m'
-      FILTER_SERVICES: ''
-      VERBOSE: 'true'
-      UPDATE_OPTIONS: '--update-delay=60s'
-      ROLLBACK_OPTIONS: '--rollback-delay=0s'
-      IMAGE_AUTOCLEAN_LIMIT: '1'
-      RUN_ONCE_AND_EXIT: 'false'
+      - "GANTRY_NODE_NAME={{.Node.Hostname}}"
+      # The gantry service is able to find the name of itself service. Use GANTRY_SERVICES_SELF when you want to set a different value.
+      # - "GANTRY_SERVICES_SELF=${STACK}_gantry"
+      - "GANTRY_SLEEP_SECONDS=0"
+    deploy:
+      replicas: 0
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: none
+      labels:
+        - swarm.cronjob.enable=true
+        - swarm.cronjob.schedule=45 23 0 * * *
+        - swarm.cronjob.skip-running=true
+
+  cronjob:
+    image: crazymax/swarm-cronjob:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
-      replicas: 1
-      restart_policy:
-        condition: any
       placement:
         constraints:
-          - node.role == manager
+          - node.role==manager
 
 volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
