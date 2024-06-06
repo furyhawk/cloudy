@@ -1,0 +1,20 @@
+services:
+
+  registry-mirror:
+    image: registry:2
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:register.${DOMAIN?Variable not set}
+        - traefik.docker.network=traefik-public
+        - traefik.port=5000
+    ports:
+      - 5000:5000
+    volumes:
+      - /var/data/registry/registry-mirror-data:/var/lib/registry
+      - /var/data/registry/registry-mirror-config.yml:/etc/docker/registry/config.yml
+
+networks:
+  traefik-public:
+    external: true
