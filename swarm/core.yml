@@ -136,7 +136,7 @@ services:
       VERBOSE: 'true'
       UPDATE_OPTIONS: '--update-delay=30s'
       ROLLBACK_OPTIONS: '--rollback-delay=0s'
-      IMAGE_AUTOCLEAN_LIMIT: '5'
+      IMAGE_AUTOCLEAN_LIMIT: '1'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
