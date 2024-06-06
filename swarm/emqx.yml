@@ -7,7 +7,7 @@ services:
       timeout: 25s
       retries: 5
     volumes:
-      - emqx-data1:/opt/emqx/data
+      - /var/data/emqx-data1:/opt/emqx/data
     networks:
       - traefik-public
     # ports:
@@ -76,6 +76,6 @@ networks:
   traefik-public:
     external: true
 
-volumes:
-  emqx-data1:
-    driver: local
+# volumes:
+#   emqx-data1:
+#     driver: local
