@@ -131,15 +131,19 @@ services:
       # but with KEY='VALUE', they are part of the value and stay there,
       # causing problems!
       TZ: 'Asia/Singapore'
-      SLEEP_TIME: '60m'
+      SLEEP_TIME: '120m'
       FILTER_SERVICES: ''
       VERBOSE: 'true'
-      UPDATE_OPTIONS: '--update-delay=30s'
+      UPDATE_OPTIONS: '--update-delay=60s'
       ROLLBACK_OPTIONS: '--rollback-delay=0s'
       IMAGE_AUTOCLEAN_LIMIT: '1'
+      RUN_ONCE_AND_EXIT: 'false'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
       placement:
         constraints:
           - node.role == manager
