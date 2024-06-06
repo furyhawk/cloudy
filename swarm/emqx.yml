@@ -20,9 +20,9 @@ services:
     #   - 8883:8883
     #   - 18083:18083
     deploy:
-      placement:
-        constraints:
-          - node.labels.emqx1.emqx-data1 == true
+      # placement:
+      #   constraints:
+      #     - node.labels.emqx1.emqx-data1 == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
