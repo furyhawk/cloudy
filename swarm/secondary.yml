@@ -63,6 +63,8 @@ services:
 
   wetty:
     image: wettyoss/wetty
+    command:
+      - --base=/
     environment:
       SSHHOST: ${DOMAIN}
       SSHPORT: ${SSHPORT}
