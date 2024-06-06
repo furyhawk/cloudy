@@ -34,6 +34,7 @@ services:
     restart: always
     environment:
       - DOMAIN=${DOMAIN}
+      # - DOZZLE_REMOTE_HOST=tcp://<yourfirstdockernodehostnamehere>-doz_proxy:2375,tcp://<yourseconddockernodehostnamehere>-doz_proxy:2375,etc...
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
