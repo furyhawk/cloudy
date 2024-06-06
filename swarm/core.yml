@@ -131,7 +131,7 @@ services:
       # but with KEY='VALUE', they are part of the value and stay there,
       # causing problems!
       TZ: 'Asia/Singapore'
-      SLEEP_TIME: '120m'
+      SLEEP_TIME: '240m'
       FILTER_SERVICES: ''
       VERBOSE: 'true'
       UPDATE_OPTIONS: '--update-delay=60s'
