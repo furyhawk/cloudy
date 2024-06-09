@@ -43,7 +43,7 @@ services:
   linx:
     image: furyhawk/linx-server-anime
     command: -config /data/linx-server.conf
-    user: nobody
+    user: "1000:1000"
     volumes:
       - /var/data/files:/data/files
       - /var/data/meta:/data/meta
