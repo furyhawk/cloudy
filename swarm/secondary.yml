@@ -2,6 +2,8 @@ services:
 
   cyberchef:
     image: mpepping/cyberchef:latest
+    networks:
+      - traefik-public
     deploy:
       labels:
         - traefik.enable=true
@@ -12,8 +14,6 @@ services:
         - traefik.http.routers.cyberchef.tls.certresolver=le
         - traefik.http.routers.cyberchef.service=cyberchef
         - traefik.http.services.cyberchef.loadbalancer.server.port=8000
-    networks:
-      - traefik-public
 
   librespeed:
     image: lscr.io/linuxserver/librespeed:latest
@@ -48,6 +48,8 @@ services:
       - /var/data/files:/data/files
       - /var/data/meta:/data/meta
       - /var/data/config/linx/linx-server.conf:/data/linx-server.conf:ro
+    networks:
+      - traefik-public
     deploy:
       labels:
         - traefik.enable=true
@@ -59,8 +61,6 @@ services:
         - traefik.http.routers.linx.service=linx_app
         - traefik.http.services.linx_app.loadbalancer.server.port=8080
 
-    networks:
-      - traefik-public
 
   wetty:
     image: wettyoss/wetty
@@ -70,6 +70,8 @@ services:
       SSHHOST: ${DOMAIN}
       SSHPORT: ${SSHPORT}
       NODE_ENV: 'development'
+    networks:
+      - traefik-public
     deploy:
       labels:
         - traefik.enable=true
@@ -81,8 +83,6 @@ services:
         - traefik.http.routers.wetty.service=wetty_app
         - "traefik.http.services.wetty_app.loadbalancer.server.port=3000"
         # - "traefik.http.routers.wetty.middlewares=forward-auth@file"
-    networks:
-      - traefik-public
 
 networks:
   traefik-public:
