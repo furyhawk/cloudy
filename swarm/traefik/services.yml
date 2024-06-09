@@ -1,0 +1,17 @@
+http:
+  routers:
+    traefik-public-https:
+      entryPoints:
+        - https
+      rule: Host(`coco.furyhawk.lol`)
+      tls:
+        certResolver: le
+      service: coco_desktop@file
+
+  services:
+
+    coco_desktop:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.178:5000
+          

@@ -79,6 +79,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Mount the volume to store the certificates
       - traefik-public-certificates:/certificates
+      - /var/data/config/traefik/services.yml:/etc/traefik/services.yml:ro
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
@@ -91,6 +92,7 @@ services:
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.network=traefik-public
+      - --providers.file.filename=/etc/traefik/services.yml
       # Create an entrypoint "http" listening on port 80
       - --entrypoints.http.address=:80
       # Create an entrypoint "https" listening on port 443
