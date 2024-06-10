@@ -1,5 +1,5 @@
 volumes:
-  searxng_data: {}
+  # searxng_data: {}
   valkey_data2: {}
 
 networks:
