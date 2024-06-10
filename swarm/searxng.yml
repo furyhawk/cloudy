@@ -67,9 +67,9 @@ services:
       - searxng
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.searxng.searxng_data == true
+      # placement:
+      #   constraints:
+      #     - node.labels.searxng.searxng_data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
