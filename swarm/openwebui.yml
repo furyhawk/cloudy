@@ -14,6 +14,9 @@ services:
     networks:
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.role == manager
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
