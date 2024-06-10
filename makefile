@@ -105,4 +105,12 @@ deploy-thelounge: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/thelounge.yml thelounge ;\
 	}
+deploy-searxng: pull
+	{ \
+	echo "Deploying the searxng stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/searxng.yml searxng ;\
+	}
 # git submodule update --init --recursive

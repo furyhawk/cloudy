@@ -1,0 +1,71 @@
+volumes:
+  valkey_data2: {}
+
+networks:
+  searxng:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+services:
+
+  redis_valkey:
+    image: docker.io/valkey/valkey:7-alpine
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    volumes:
+      - valkey_data2:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+    networks:
+      - searxng
+    deploy:
+      placement:
+        constraints:
+          - node.labels.valkey.redis == true
+
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    environment:
+      - LIMITER=true
+      - SEARXNG_BASE_URL=https://search.${DOMAIN}/
+    volumes:
+      - /var/data/config/searxng:/etc/searxng:rw
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+    depends_on:
+      - redis
+    networks:
+      - searxng
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.searxng-rtr.entrypoints=https
+        - traefik.http.routers.searxng-rtr.rule=Host(`search.${DOMAIN}`)
+        - traefik.http.routers.searxng-rtr.middlewares=xbot
+        - traefik.http.routers.searxng-rtr.tls.certresolver=le
+        - traefik.http.routers.searxng-rtr.service=searxng-svc
+        - traefik.http.services.searxng-svc.loadbalancer.server.port=8080

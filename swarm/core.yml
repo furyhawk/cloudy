@@ -61,6 +61,14 @@ services:
         - traefik.http.middlewares.rate-limit.ratelimit.average=384
         - traefik.http.middlewares.rate-limit.ratelimit.burst=128
         - traefik.http.middlewares.rate-limit.ratelimit.period=10s
+        - traefik.http.middlewares.xbot.headers.browserXssFilter=true
+        - traefik.http.middlewares.xbot.headers.contentTypeNosniff=true
+        - traefik.http.middlewares.xbot.headers.frameDeny=true
+        - traefik.http.middlewares.xbot.headers.stsPreload=true
+        - traefik.http.middlewares.xbot.headers.stsSeconds=31536000
+        - traefik.http.middlewares.xbot.headers.stsIncludeSubdomains=true
+        - traefik.http.middlewares.xbot.headers.permissionsPolicy="accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), layout-animations=(), legacy-image-formats=(), magnetometer=(), microphone=(), midi=(), oversized-images=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), sync-xhr=(), usb=(), wake-lock=(), xr-spatial-tracking=()"
+        - traefik.http.middlewares.xbot.headers.referrerPolicy="no-referrer"
         - treafik.http.middlewares.neo4j_strip.stripprefix.prefixes=/neo4j
         # traefik-https the actual router using HTTPS
         - traefik.http.routers.traefik-public-https.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
