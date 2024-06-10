@@ -5,11 +5,8 @@ networks:
 services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
-    container_name: open-webui
     volumes:
       - /var/data/open-webui:/app/backend/data
-    extra_hosts:
-      - host.docker.internal:host-gateway
     networks:
       - traefik-public
     deploy:
