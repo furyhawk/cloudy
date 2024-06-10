@@ -1,4 +1,5 @@
 volumes:
+  searxng_data: {}
   valkey_data2: {}
 
 networks:
@@ -32,7 +33,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.valkey.redis == true
+          - node.labels.searxng.redis == true
 
   searxng:
     image: docker.io/searxng/searxng:latest
@@ -40,9 +41,14 @@ services:
     environment:
       - LIMITER=true
       - SEARXNG_BASE_URL=https://search.${DOMAIN}/
-    user: "1000:1000"
+      - SEARXNG_REDIS_URL=redis://redis_valkey:6379/0
+      - SEARXNG_SECRET=${SEARXNG_SECRET:-ultrasecretkey}
+      - SEARXNG_LIMITER=true
+      # - SEARXNG_USE_DEFAULT_SETTINGS=true
+      # - SEARXNG_IMAGE_PROXY=true
+      # - SEARXNG_DEBUG=false
     volumes:
-      - /var/data/config/searxng:/etc/searxng:rw
+      - searxng_data:/etc/searxng
     cap_drop:
       - ALL
     cap_add:
@@ -60,6 +66,9 @@ services:
       - searxng
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.labels.searxng.searxng_data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
