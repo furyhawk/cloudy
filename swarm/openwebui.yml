@@ -2,6 +2,9 @@ networks:
   traefik-public:
     external: true
 
+volumes:
+  open_webui: {}
+
 services:
   open_webui:
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG:-main}
@@ -11,7 +14,7 @@ services:
       - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT:-8080}
       - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-false}
     volumes:
-      - /var/data/open-webui:/app/backend/data
+      - open_webui:/app/backend/data
     expose:
       - ${OPEN_WEBUI_PORT:-8080}
     networks:
@@ -19,7 +22,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == manager
+          - node.labels.open_webui.open_webui == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
