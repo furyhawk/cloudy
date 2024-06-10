@@ -48,13 +48,14 @@ services:
       # - SEARXNG_IMAGE_PROXY=true
       # - SEARXNG_DEBUG=false
     volumes:
-      - searxng_data:/etc/searxng
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
+      - /var/data/config/searxng:/etc/searxng
+      # - searxng_data:/etc/searxng
+    # cap_drop:
+    #   - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETGID
+    #   - SETUID
     logging:
       driver: "json-file"
       options:
