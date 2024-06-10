@@ -46,3 +46,29 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 labels:
   - "traefik.http.middlewares.test-auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
 ```
+
+### TODO:
+
+middleware:
+```
+# Enable HTTP Strict Transport Security (HSTS) to force clients to always connect via HTTPS
+Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+# Enable cross-site filter (XSS) and tell browser to block detected attacks
+X-XSS-Protection "1; mode=block"
+
+# Prevent some browsers from MIME-sniffing a response away from the declared Content-Type
+X-Content-Type-Options "nosniff"
+
+# Disable some features
+Permissions-Policy "accelerometer=(),ambient-light-sensor=(),autoplay=(),camera=(),encrypted-media=(),focus-without-user-activation=(),geolocation=(),gyroscope=(),magnetometer=(),microphone=(),midi=(),payment=(),picture-in-picture=(),speaker=(),sync-xhr=(),usb=(),vr=()"
+
+# Disable some features (legacy)
+Feature-Policy "accelerometer 'none';ambient-light-sensor 'none'; autoplay 'none';camera 'none';encrypted-media 'none';focus-without-user-activation 'none'; geolocation 'none';gyroscope 'none';magnetometer 'none';microphone 'none';midi 'none';payment 'none';picture-in-picture 'none'; speaker 'none';sync-xhr 'none';usb 'none';vr 'none'"
+
+# Referer
+Referrer-Policy "no-referrer"
+
+# X-Robots-Tag
+X-Robots-Tag "noindex, noarchive, nofollow"
+```
