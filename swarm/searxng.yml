@@ -40,6 +40,7 @@ services:
     environment:
       - LIMITER=true
       - SEARXNG_BASE_URL=https://search.${DOMAIN}/
+    user: "1000:1000"
     volumes:
       - /var/data/config/searxng:/etc/searxng:rw
     cap_drop:
