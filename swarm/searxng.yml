@@ -55,7 +55,7 @@ services:
         max-size: "1m"
         max-file: "1"
     depends_on:
-      - redis
+      - redis_valkey
     networks:
       - searxng
       - traefik-public
