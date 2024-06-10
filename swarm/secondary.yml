@@ -10,7 +10,7 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.cyberchef.entrypoints=https
-        - traefik.http.routers.cyberchef.rule=Host(`chef.${DOMAIN}`) || Host(`cook.${DOMAIN}`)
+        - traefik.http.routers.cyberchef.rule=Host(`cook.${DOMAIN}`)
         - traefik.http.routers.cyberchef.tls.certresolver=le
         - traefik.http.routers.cyberchef.service=cyberchef
         - traefik.http.services.cyberchef.loadbalancer.server.port=8000
