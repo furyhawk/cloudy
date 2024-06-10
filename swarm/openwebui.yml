@@ -8,8 +8,8 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
       - OPEN_WEBUI_PORT=${OPEN_WEBUI_PORT:-8080}
-      - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT}
-      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API-false}
+      - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT:-8080}
+      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-false}
     volumes:
       - /var/data/open-webui:/app/backend/data
     networks:
