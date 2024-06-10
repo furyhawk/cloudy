@@ -81,6 +81,22 @@ deploy-swarmpit: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/swarmpit.yml swarmpit ;\
 	}
+deploy-librechat: pull
+	{ \
+	echo "Deploying the librechat stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/librechat.yml librechat ;\
+	}
+deploy-openwebui: pull
+	{ \
+	echo "Deploying the openwebui stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/openwebui.yml openwebui ;\
+	}
 deploy-thelounge: pull
 	{ \
 	echo "Deploying the thelounge stack..." ;\
