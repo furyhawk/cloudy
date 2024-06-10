@@ -54,7 +54,7 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.librechat.entrypoints=https
-        - traefik.http.routers.librechat.rule=Host(`chat.${DOMAIN}`) || Host(`bot.${DOMAIN}`)
+        - traefik.http.routers.librechat.rule=Host(`chat.${DOMAIN}`)
         - traefik.http.routers.librechat.tls.certresolver=le
         - traefik.http.routers.librechat.service=librechat_app
         - traefik.http.services.librechat_app.loadbalancer.server.port=${PORT}
