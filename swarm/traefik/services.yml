@@ -4,6 +4,8 @@ http:
       entryPoints:
         - https
       rule: Host(`coco.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
       tls:
         certResolver: le
       service: coco_desktop@file
