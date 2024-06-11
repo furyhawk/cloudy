@@ -31,7 +31,7 @@ services:
         - traefik.http.routers.adguardhome.entrypoints=https
         - traefik.http.routers.adguardhome.rule=Host(`guard.${DOMAIN}`)
         - traefik.http.routers.adguardhome.tls.certresolver=le
-        - traefik.http.router.adguardhome.service=adguardhome_service
+        - traefik.http.routers.adguardhome.service=adguardhome_service
         - traefik.http.services.adguardhome_service.loadbalancer.server.port=3000
 
 networks:
