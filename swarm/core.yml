@@ -4,6 +4,9 @@ services:
     # Use the latest v3.0.x Traefik image available
     image: traefik:latest
     ports:
+      # - target: 53
+      #   published: 53
+      #   mode: host
       - target: 80
         published: 80
         mode: host
@@ -109,6 +112,8 @@ services:
       - --entrypoints.http.http.redirections.entrypoint.to=https
       - --entrypoints.http.http.redirections.entrypoint.scheme=https
       - --entrypoints.http.http.redirections.entrypoint.permanent=true
+      # Create an entrypoint "dns" listening on port 53
+      # - --entrypoints.dns.address=:53
       # Create an entrypoint "postgres-socket" listening on port 5432
       - --entrypoints.postgres-socket.address=:5432
       # Others entrypoints can be created, like a TCP entrypoint
