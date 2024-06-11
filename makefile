@@ -57,6 +57,14 @@ deploy-secondary: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/secondary.yml secondary ;\
 	}
+deploy-adguardhome: pull
+	{ \
+	echo "Deploying the adguardhome stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/adguardhome.yml adguardhome ;\
+	}
 deploy-emqx: pull
 	{ \
 	echo "Deploying the emqx stack..." ;\
