@@ -32,6 +32,14 @@ deploy-portainer: pull
 	docker stack deploy --compose-file ./swarm/portainer.yml portainer ;\
 	}
 
+deploy-swarmpit: pull
+	{ \
+	echo "Deploying the swarmpit stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/swarmpit.yml swarmpit ;\
+	}
 deploy-services: pull
 	{ \
 	echo "Deploying the services stack..." ;\
@@ -81,14 +89,6 @@ deploy-ghost: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/ghost.yml ghost ;\
 	}
-deploy-swarmpit: pull
-	{ \
-	echo "Deploying the swarmpit stack..." ;\
-	set -a ;\
-	. ./swarm/.env ;\
-	set +a ;\
-	docker stack deploy --compose-file ./swarm/swarmpit.yml swarmpit ;\
-	}
 deploy-librechat: pull
 	{ \
 	echo "Deploying the librechat stack..." ;\
@@ -96,6 +96,14 @@ deploy-librechat: pull
 	. ./swarm/.env ;\
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/librechat.yml librechat ;\
+	}
+deploy-mailserver: pull
+	{ \
+	echo "Deploying the mailserver stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/mailserver.yml mailserver ;\
 	}
 deploy-openwebui: pull
 	{ \
@@ -120,13 +128,5 @@ deploy-searxng: pull
 	. ./swarm/.env ;\
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/searxng.yml searxng ;\
-	}
-deploy-mailserver: pull
-	{ \
-	echo "Deploying the mailserver stack..." ;\
-	set -a ;\
-	. ./swarm/.env ;\
-	set +a ;\
-	docker stack deploy --compose-file ./swarm/mailserver.yml mailserver ;\
 	}
 # git submodule update --init --recursive
