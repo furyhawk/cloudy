@@ -89,7 +89,7 @@ services:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Mount the volume to store the certificates
-      - /var/data/config/acme.json:/certificates/acme.json
+      - traefik-public-certificates:/certificates
       - /var/data/config/traefik/services.yml:/etc/traefik/services.yml:ro
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
