@@ -121,4 +121,12 @@ deploy-searxng: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/searxng.yml searxng ;\
 	}
+deploy-mailserver: pull
+	{ \
+	echo "Deploying the mailserver stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/mailserver.yml mailserver ;\
+	}
 # git submodule update --init --recursive
