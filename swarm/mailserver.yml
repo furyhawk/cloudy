@@ -1,6 +1,6 @@
 services:
   mail:
-    image: tvial/docker-mailserver:latest
+    image: mailserver/docker-mailserver:latest
     env_file: /var/data/docker-mailserver/docker-mailserver.env
     volumes:
       - /var/data/docker-mailserver/maildata:/var/mail
@@ -28,7 +28,7 @@ services:
       - internal
 
   rainloop:
-    image: hardware/rainloop
+    image: nerzhul/rainloop-arm64
     volumes:
       - /var/data/docker-mailserver/rainloop:/rainloop/data
     networks:
