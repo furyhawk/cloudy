@@ -1,6 +1,12 @@
 services:
   mail:
     image: tvial/docker-mailserver:latest
+    env_file: /var/data/docker-mailserver/docker-mailserver.env
+    volumes:
+      - /var/data/docker-mailserver/maildata:/var/mail
+      - /var/data/docker-mailserver/mailstate:/var/mail-state
+      - /var/data/docker-mailserver/config:/tmp/docker-mailserver
+      - /var/data/docker-mailserver/letsencrypt:/etc/letsencrypt
     ports:
       - target: 25
         published: 25
@@ -18,12 +24,6 @@ services:
         published: 995
         protocol: tcp
         mode: host
-    volumes:
-      - /var/data/docker-mailserver/maildata:/var/mail
-      - /var/data/docker-mailserver/mailstate:/var/mail-state
-      - /var/data/docker-mailserver/config:/tmp/docker-mailserver
-      - /var/data/docker-mailserver/letsencrypt:/etc/letsencrypt
-    env_file: /var/data/docker-mailserver/docker-mailserver.env
     networks:
       - internal
 
