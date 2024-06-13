@@ -6,7 +6,8 @@ services:
       # - /var/data/docker-mailserver/maildata:/var/mail
       # - /var/data/docker-mailserver/mailstate:/var/mail-state
       # - /var/data/docker-mailserver/config:/tmp/docker-mailserver
-      - /var/data/docker-mailserver/letsencrypt:/etc/letsencrypt
+      - traefik-public-certificates:/certificates
+      - /var/data/config/acme.json:/etc/letsencrypt/acme.json:ro
     ports:
       - target: 25
         published: 25
