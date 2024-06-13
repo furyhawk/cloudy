@@ -3,9 +3,9 @@ services:
     image: mailserver/docker-mailserver:latest
     env_file: /var/data/docker-mailserver/docker-mailserver.env
     volumes:
-      - /var/data/docker-mailserver/maildata:/var/mail
-      - /var/data/docker-mailserver/mailstate:/var/mail-state
-      - /var/data/docker-mailserver/config:/tmp/docker-mailserver
+      # - /var/data/docker-mailserver/maildata:/var/mail
+      # - /var/data/docker-mailserver/mailstate:/var/mail-state
+      # - /var/data/docker-mailserver/config:/tmp/docker-mailserver
       - /var/data/docker-mailserver/letsencrypt:/etc/letsencrypt
     ports:
       - target: 25
@@ -27,10 +27,8 @@ services:
     networks:
       - internal
 
-  rainloop:
-    image: nerzhul/rainloop-arm64
-    volumes:
-      - /var/data/docker-mailserver/rainloop:/rainloop/data
+  whoami:
+    image: docker.io/traefik/whoami:latest
     networks:
       - internal
       - traefik-public
@@ -39,10 +37,25 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.rainloop.entrypoints=https
-        - traefik.http.routers.rainloop.rule=Host(`webmail.${DOMAIN}`)
-        - traefik.http.routers.rainloop.tls.certresolver=le
-        - traefik.http.services.rainloop.loadbalancer.server.port=8888
+        - traefik.http.routers.mailwhoami.entrypoints=https
+        - traefik.http.routers.mailwhoami.rule=Host(`mail.${DOMAIN}`)
+
+  # rainloop:
+  #   image: nerzhul/rainloop-arm64
+  #   volumes:
+  #     - /var/data/docker-mailserver/rainloop:/rainloop/data
+  #   networks:
+  #     - internal
+  #     - traefik-public
+  #   deploy:
+  #     labels:
+  #       - traefik.enable=true
+  #       - traefik.docker.network=traefik-public
+  #       - traefik.constraint-label=traefik-public
+  #       - traefik.http.routers.rainloop.entrypoints=https
+  #       - traefik.http.routers.rainloop.rule=Host(`webmail.${DOMAIN}`)
+  #       - traefik.http.routers.rainloop.tls.certresolver=le
+  #       - traefik.http.services.rainloop.loadbalancer.server.port=8888
 
 networks:
   traefik-public:
