@@ -111,8 +111,6 @@ touch config.yaml
 echo "tls-san:" >> config.yaml 
 echo "  - $vip" >> config.yaml
 echo "  - $master1" >> config.yaml
-echo "  - $master2" >> config.yaml
-echo "  - $master3" >> config.yaml
 echo "write-kubeconfig-mode: 0644" >> config.yaml
 echo "disable:" >> config.yaml
 echo "  - rke2-ingress-nginx" >> config.yaml
