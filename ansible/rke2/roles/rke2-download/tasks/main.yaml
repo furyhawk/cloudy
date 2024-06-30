@@ -1,0 +1,31 @@
+# Create a directory to download RKE2 binary to
+- name: Create directory for RKE2 binary
+  ansible.builtin.file:
+    path: "{{ rke2_install_dir }}"
+    state: directory
+    mode: '0755'
+
+# Download the RKE2 binary
+- name: Download RKE2 amd64 binary
+  ansible.builtin.get_url:
+    url: "{{ rke2_binary_url }}/rke2.linux-amd64"
+    dest: "{{ rke2_install_dir }}/rke2"
+    mode: '0755'
+  when: ansible_facts.architecture == "x86_64"
+
+- name: Download RKE2 arm64 binary
+  ansible.builtin.get_url:
+    url: "{{ rke2_binary_url }}/rke2.linux-arm64"
+    dest: "{{ rke2_install_dir }}/rke2"
+    mode: '0755'
+  when:
+    - ( ansible_facts.architecture is search("arm") and
+        ansible_facts.userspace_bits == "64" ) or
+      ansible_facts.architecture is search("aarch64")
+
+# Set permissions on the RKE2 binary
+- name: Set executable permissions on the RKE2 binary
+  ansible.builtin.file:
+    path: "{{ rke2_install_dir }}/rke2"
+    mode: '0755'
+    state: file
