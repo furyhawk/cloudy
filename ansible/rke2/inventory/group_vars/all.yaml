@@ -11,7 +11,7 @@ metallb_version: v0.14.5
 lb_range: 192.168.50.190-192.168.50.199
 lb_pool_name: first-pool
 
-rke2_version: "v1.28.10+rke2r1"
+rke2_version: "v1.28.11+rke2r1"
 rke2_install_dir: "/usr/local/bin"
 rke2_binary_url: "https://github.com/rancher/rke2/releases/download/{{ rke2_version }}"
 
