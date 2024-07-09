@@ -4,7 +4,7 @@ os: "linux"
 system_timezone: "Asia/Singapore"
 
 kube_vip_version: "v0.8.1"
-vip_interface: enx207bd2d0439e
+vip_interface: null
 vip: 192.168.50.210
 
 metallb_version: v0.14.5
