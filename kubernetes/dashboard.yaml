@@ -5,9 +5,9 @@ metadata:
   name: dashboard
 spec:
   entryPoints:
-    - web
+    - traefik
   routes:
-    - match: Host(`node03.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+    - match: (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
       kind: Rule
       services:
         - name: api@internal
