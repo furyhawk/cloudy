@@ -1,5 +1,6 @@
 # to run define K3S_TOKEN, K3S_VERSION is optional, eg:
-#   K3S_TOKEN=${RANDOM}${RANDOM}${RANDOM} docker compose -f k3s.yml up -d
+#   export K3S_TOKEN=${RANDOM}${RANDOM}${RANDOM}
+#   docker compose -f k3s.yml up -d
 services:
   server:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
@@ -28,8 +29,8 @@ services:
       - k3s-server:/var/lib/rancher/k3s
     ports:
       - 6443:6443
-      - 80:80      # Ingress controller port 80
-      - 443:443    # Ingress controller port 443
+      # - 80:80      # Ingress controller port 80
+      # - 443:443    # Ingress controller port 443
 
   node:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
