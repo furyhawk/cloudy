@@ -1,6 +1,11 @@
 # to run define K3S_TOKEN, K3S_VERSION is optional, eg:
+#   export K3S_VERSION=v1.21.4+k3s1
+#   export K3S_TOKEN=your_secret_token
+#   export RANDOM="$(openssl rand -hex 8)"
+#   export RANDOM="$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')"
 #   export K3S_TOKEN=${RANDOM}${RANDOM}${RANDOM}
 #   docker compose -f k3s.yml up -d
+#   export KUBECONFIG=$(pwd)/config/kubeconfig.yaml
 services:
   server:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
