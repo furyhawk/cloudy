@@ -173,3 +173,5 @@ minio-data/
 usersfile
 .DS_Store
 fstab
+
+kubernetes/config/kubeconfig.yaml
