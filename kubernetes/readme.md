@@ -12,5 +12,4 @@ kubectl port-forward --address 0.0.0.0 service/traefik 8000:8000 8080:8080 443:4
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.0/docs/content/user-guides/crd-acme/04-ingressroutes.yml
 curl [-k] https://your.example.com/tls
 curl http://your.example.com:8000/notls
-
 ```
