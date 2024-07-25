@@ -1,11 +1,10 @@
-# Application to expose
-kind: Deployment
+---
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: whoami
-  namespace: whoami
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: whoami
@@ -13,68 +12,48 @@ spec:
     metadata:
       labels:
         app: whoami
-  spec:
-    containers:
-    - name: whoami
-      image: traefik/whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami
+
 ---
-# Service to reach the application on the cluster
 apiVersion: v1
 kind: Service
 metadata:
   name: whoami
-  namespace: whoami
-  labels:
-    app: whoami
 spec:
-  type: ClusterIP
-  ports:
-  - port: 80
-    name: whoami
   selector:
     app: whoami
+  ports:
+    - protocol: TCP
+      port: 80
+
 ---
-# HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: whoami-httproute
-  namespace: whoami
+  name: whoami
 spec:
   parentRefs:
-  - name: traefik-gateway
-    namespace: traefik
+    - name: traefik-gateway
   hostnames:
-  - node03.local
+    - whoami.docker.localhost
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-  backendRefs:
-  - name: whoami
-    namespace: whoami
-    port: 80
-#   filters:
-#   # Core filter which adds a header
-#   - type: RequestHeaderModifier
-#     requestHeaderModifier:
-#       add:
-#         - name: x-post-topic
-#           value: GatewayAPI
-# # ExtensionRef filter to use the Traefik Middleware AddPrefix
-#   - type: ExtensionRef
-#     extensionRef:
-#       group: traefik.io
-#       kind: Middleware
-#       name: addprefix
-# ---
-# # Traefik Middleware AddPrefix
-# apiVersion: traefik.io/v1alpha1
-# kind: Middleware
-# metadata:
-#   name: addprefix
-#   namespace: whoami
-# spec:
-#   addPrefix:
-#     prefix: /gatewayapi
+    - matches:
+        - path:
+            type: Exact
+            value: /
+
+      backendRefs:
+        - name: whoami
+          port: 80
+          weight: 1
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}

@@ -9,4 +9,12 @@ providers:
     enabled: true
 # Allow the Gateway to expose HTTPRoute from all namespaces
 gateway:
+  enabled: true
   namespacePolicy: All
+  annotations:
+    cert-manager.io/issuer: selfsigned-issuer
+  listeners:
+    websecure:
+      hostname: whoami.docker.localhost
+      certificateRefs:
+        - name: whoami-tls
