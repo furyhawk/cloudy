@@ -19,6 +19,7 @@ services:
     expose:
       - 3000
     restart: unless-stopped
+    user: "${UID}:${GID}"
     volumes:
       - /var/data/docmost:/app/data/storage
     networks:
@@ -50,6 +51,7 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
+    user: "${UID}:${GID}"
     volumes:
       - /var/data/redis_data:/data
     networks:

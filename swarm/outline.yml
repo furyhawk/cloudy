@@ -13,6 +13,7 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
+    user: "${UID}:${GID}"
     volumes:
       - /var/data/outline_redis_data:/data
     networks:
@@ -39,12 +40,13 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - SLACK_CLIENT_ID=${SLACK_CLIENT_ID}
       - SLACK_CLIENT_SECRET=${SLACK_CLIENT_SECRET}
-    expose:
-      - 3000
-    volumes:
-      - /var/data/outline_data:/var/lib/outline/data
     depends_on:
       - redis
+    user: "${UID}:${GID}"
+    volumes:
+      - /var/data/outline_data:/var/lib/outline/data
+    expose:
+      - 3000
     networks:
       - net
       - traefik-public
