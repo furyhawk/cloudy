@@ -1,6 +1,5 @@
-# volumes:
-# storage-data: {}
-# database-data: {}
+volumes:
+  outline_redis_data: {}
 
 networks:
   net:
@@ -13,11 +12,14 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
-    user: "${UID}:${GID}"
     volumes:
-      - /var/data/outline_redis_data:/data
+      - outline_redis_data:/data
     networks:
       - net
+    deploy:
+      placement:
+        constraints:
+          - node.labels.outline.outline_redis_data == true
 
   outline:
     image: docker.getoutline.com/outlinewiki/outline:latest

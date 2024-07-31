@@ -1,3 +1,6 @@
+volumes:
+  docmost_redis_data: {}
+
 networks:
   net:
     driver: overlay
@@ -21,11 +24,14 @@ services:
     restart: unless-stopped
     user: "${UID}:${GID}"
     volumes:
-      - /var/data/docmost:/app/data/storage
+      - docmost_redis_data:/app/data/storage
     networks:
       - net
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.labels.docmost.docmost_redis_data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
