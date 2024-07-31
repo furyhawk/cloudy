@@ -11,15 +11,10 @@ networks:
 
 services:
   redis:
-    image: redis
-    command: ["redis-server", "/redis.conf"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 30s
-      retries: 3
+    image: redis:7.2-alpine
+    restart: unless-stopped
     volumes:
-      - /var/data/redis.conf:/redis.conf
+      - /var/data/outline_redis_data:/data
     networks:
       - net
 
