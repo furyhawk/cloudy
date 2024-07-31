@@ -1,0 +1,56 @@
+networks:
+  net:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+services:
+  docmost:
+    image: docmost/docmost:latest
+    depends_on:
+      # - db
+      - redis
+    environment:
+      APP_URL: "https://doc.${DOMAIN}"
+      APP_SECRET: ${JWT_SECRET}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE__HOSTNAME}:5432/docmost?schema=public"
+      REDIS_URL: "redis://redis:6379"
+    expose:
+      - 3000
+    restart: unless-stopped
+    volumes:
+      - /var/data/docmost:/app/data/storage
+    networks:
+      - net
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.docmost.entrypoints=https
+        - traefik.http.routers.docmost.rule=Host(`doc.${DOMAIN}`)
+        - traefik.http.routers.docmost.tls.certresolver=le
+        - traefik.http.routers.docmost.service=docmost_service
+        - traefik.http.services.docmost_service.loadbalancer.server.port=3000
+
+  # db:
+  #   image: postgres:16-alpine
+  #   environment:
+  #     POSTGRES_DB: docmost
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/data/db_data:/var/lib/postgresql/data
+  #   networks:
+  #     - net
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    volumes:
+      - /var/data/redis_data:/data
+    networks:
+      - net

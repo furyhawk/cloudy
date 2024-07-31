@@ -1,0 +1,66 @@
+# volumes:
+# storage-data: {}
+# database-data: {}
+
+networks:
+  net:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+services:
+  redis:
+    image: redis
+    command: ["redis-server", "/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - /var/data/redis.conf:/redis.conf
+    networks:
+      - net
+
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:latest
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - SECRET_KEY=${OUTLINE_SECRET_KEY}
+      - UTILS_SECRET=${OUTLINE_UTILS_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+      - PGSSLMODE=${PGSSLMODE}
+      - REDIS_URL=${REDIS_URL}
+      - URL=${OUTLINE_URL}
+      - PORT=${OUTLINE_PORT}
+      - COLLABORATION_URL=${COLLABORATION_URL}
+      - FILE_STORAGE=${FILE_STORAGE}
+      - FILE_STORAGE_LOCAL_ROOT_DIR=${FILE_STORAGE_LOCAL_ROOT_DIR}
+      - FILE_STORAGE_UPLOAD_MAX_SIZE=${FILE_STORAGE_UPLOAD_MAX_SIZE}
+      - FILE_STORAGE_IMPORT_MAX_SIZE=${FILE_STORAGE_IMPORT_MAX_SIZE}
+      - FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=${FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - SLACK_CLIENT_ID=${SLACK_CLIENT_ID}
+      - SLACK_CLIENT_SECRET=${SLACK_CLIENT_SECRET}
+    expose:
+      - 3000
+    volumes:
+      - /var/data/outline_data:/var/lib/outline/data
+    depends_on:
+      - redis
+    networks:
+      - net
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.outline-rtr.entrypoints=https
+        - traefik.http.routers.outline-rtr.rule=Host(`outline.${DOMAIN}`)
+        - traefik.http.routers.outline-rtr.middlewares=xbot
+        - traefik.http.routers.outline-rtr.tls.certresolver=le
+        - traefik.http.routers.outline-rtr.service=outline-svc
+        - traefik.http.services.outline-svc.loadbalancer.server.port=3000
