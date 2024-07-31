@@ -129,4 +129,20 @@ deploy-searxng: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/searxng.yml searxng ;\
 	}
+deploy-docmost: pull
+	{ \
+	echo "Deploying the docmost stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/docmost.yml docmost ;\
+	}
+deploy-outline: pull
+	{ \
+	echo "Deploying the outline stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/outline.yml outline ;\
+	}
 # git submodule update --init --recursive
