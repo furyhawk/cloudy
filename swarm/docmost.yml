@@ -23,14 +23,11 @@ services:
       - 3000
     restart: unless-stopped
     volumes:
-      - docmost_redis_data:/app/data/storage
+      - /var/data/docmost_data:/app/data/storage
     networks:
       - net
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.docmost.docmost_redis_data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -58,6 +55,10 @@ services:
     restart: unless-stopped
     user: "${UID}:${GID}"
     volumes:
-      - /var/data/redis_data:/data
+      - docmost_redis_data:/app/data/storage
     networks:
       - net
+    deploy:
+      placement:
+        constraints:
+          - node.labels.docmost.docmost_redis_data == true
