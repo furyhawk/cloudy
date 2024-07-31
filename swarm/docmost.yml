@@ -22,7 +22,6 @@ services:
     expose:
       - 3000
     restart: unless-stopped
-    user: "${UID}:${GID}"
     volumes:
       - docmost_redis_data:/app/data/storage
     networks:
