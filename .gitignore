@@ -174,4 +174,8 @@ usersfile
 .DS_Store
 fstab
 
-kubernetes/config/kubeconfig.yaml
+kubernetes/talos/kubeconfig.yaml
+kubernetes/talos/kubeconfig
+kubernetes/talos/config
+kubernetes/talos/_out/
+kubernetes/config/
