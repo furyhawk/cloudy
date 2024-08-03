@@ -1,0 +1,11 @@
+- op: add
+  path: /cluster/proxy
+  value:
+    disabled: false
+    mode: ipvs
+    extraArgs:
+      ipvs-strict-arp: true
+- op: add
+  path: /cluster/network/cni
+  value:
+    name: none

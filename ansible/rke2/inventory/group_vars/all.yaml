@@ -15,6 +15,6 @@ rke2_version: "v1.28.11+rke2r1"
 rke2_install_dir: "/usr/local/bin"
 rke2_binary_url: "https://github.com/rancher/rke2/releases/download/{{ rke2_version }}"
 
-ansible_user: furyhawk
+ansible_user: user
 ansible_become: true
 ansible_become_method: sudo
