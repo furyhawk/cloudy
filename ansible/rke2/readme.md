@@ -82,6 +82,8 @@ kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{
 ```
 
 ```bash
+sudo service open-iscsi status
+sudo apt install open-iscsi
 kubectl -n cattle-system get deploy rancher
 
 kubectl -n cattle-system rollout status deploy/rancher
@@ -89,28 +91,26 @@ kubectl -n cattle-system get deploy rancher
 kubectl get svc -n cattle-system
 kubectl expose deployment rancher --name=rancher-lb --port=443 --type=LoadBalancer -n cattle-system
 kubectl get svc -n cattle-system
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
+# kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
+# k delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
+helm repo add longhorn https://charts.longhorn.io
+helm repo update
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.6.2
 kubectl get pods \
 --namespace longhorn-system \
 --watch
-k delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
-kubectl apply -f https://raw.githubusercontent.com/JamesTurland/JimsGarage/main/Kubernetes/Longhorn/longhorn.yaml
-kubectl get pods \
---namespace longhorn-system \
---watch
-sudo service open-iscsi status
-sudo apt install open-iscsi
-kubectl get pods \
---namespace longhorn-system \
---watch
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
 kubectl -n longhorn-system get pod
 kubectl get svc
-k apply -f kube-vip
-helm repo add longhorn https://charts.longhorn.io
-helm install my-longhorn longhorn/longhorn --version 1.6.2
 helm repo add traefik https://traefik.github.io/charts
+helm install traefik traefik/traefik --create-namespace -n 'traefik' -f traefik.yaml
+helm list -n traefik
+kubectl -n traefik port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name -A) 9000:9000 --address 0.0.0.0
+# Update repository
 helm repo update
-helm install my-traefik traefik/traefik --version 29.0.0
-kubectl create namespace traefik
+# See current Chart & Traefik version
+helm search repo traefik/traefik
+# Update CRDs (Traefik Proxy v3 CRDs)
+kubectl apply --server-side --force-conflicts -k https://github.com/traefik/traefik-helm-chart/traefik/crds/
+# Upgrade Traefik
+helm upgrade traefik traefik/traefik
 ```

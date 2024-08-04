@@ -176,7 +176,7 @@ gatewayClass:
 ingressRoute:
   dashboard:
     # -- Create an IngressRoute for the dashboard
-    enabled: false
+    enabled: true
     # -- Additional ingressRoute annotations (e.g. for kubernetes.io/ingress.class)
     annotations: {}
     # -- Additional ingressRoute labels (e.g. for filtering IngressRoute by custom labels)
@@ -604,7 +604,7 @@ ports:
     # If you want to access it from outside your cluster,
     # use `kubectl port-forward` or create a secure ingress
     expose:
-      default: false
+      default: true
     # -- The exposed port for this service
     exposedPort: 9000
     # -- The port protocol (TCP/UDP)
@@ -810,7 +810,7 @@ persistence:
   # -- Enable persistence using Persistent Volume Claims
   # ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   # It can be used to store TLS certificates, see `storage` in certResolvers
-  enabled: false
+  enabled: true
   name: data
   #  existingClaim: ""
   accessMode: ReadWriteOnce
