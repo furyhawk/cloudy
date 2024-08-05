@@ -8,13 +8,18 @@ providers:
   kubernetesGateway:
     enabled: true
 # Allow the Gateway to expose HTTPRoute from all namespaces
+# Allow the Gateway to expose HTTPRoute from all namespaces
 gateway:
-  enabled: true
-  namespacePolicy: All
-  annotations:
-    cert-manager.io/issuer: selfsigned-issuer
   listeners:
+    web:
+      namespacePolicy: All
     websecure:
-      hostname: whoami.docker.localhost
-      certificateRefs:
-        - name: whoami-tls
+      namespacePolicy: All
+
+  # annotations:
+  #   cert-manager.io/issuer: selfsigned-issuer
+  # listeners:
+  #   websecure:
+  #     hostname: whoami.localhost
+  #     certificateRefs:
+  #       - name: whoami-tls

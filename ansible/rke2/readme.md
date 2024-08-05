@@ -101,6 +101,8 @@ kubectl get pods \
 --watch
 kubectl -n longhorn-system get pod
 kubectl get svc
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.1/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.1/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
 helm repo add traefik https://traefik.github.io/charts
 helm install traefik traefik/traefik --create-namespace -n 'traefik' -f traefik.yaml
 helm list -n traefik
