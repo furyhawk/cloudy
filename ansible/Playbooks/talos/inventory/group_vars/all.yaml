@@ -1,7 +1,7 @@
 os: "linux"
 arch: "amd64"
 
-talos_version: v1.7.0
+talos_version: v1.7.5
 talosctl_version: v1.7.5
 control_plane_ip: 192.168.50.195
 

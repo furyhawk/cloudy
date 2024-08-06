@@ -7,5 +7,5 @@
 # Generate Machine Configurations. This is using the qemu agent as per: https://www.talos.dev/v1.7/talos-guides/install/virtualized-platforms/proxmox/
 - name: Generate config for cluster
   when: "not stat_result.stat.exists"
-  ansible.builtin.command: talosctl gen config talos-proxmox-cluster https://{{ control_plane_ip }}:6443 --output-dir {{ config_directory }} --install-image factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:{{ talos_version }}
+  ansible.builtin.command: talosctl gen config talos-proxmox-cluster https://{{ control_plane_ip }}:6443 --output-dir {{ config_directory }} --install-image factory.talos.dev/installer/770f94a47e708326b61f3e641bb733dc879c544dee1972e74763798fe93a1f6d:{{ talos_version }}
   changed_when: true
