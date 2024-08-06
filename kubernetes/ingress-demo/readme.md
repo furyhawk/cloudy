@@ -57,14 +57,14 @@ hosts
 
 ```bash
 k get ingressroutes
-k create -f 1-ingressroute.yaml
+k create -f traefik/simple-ingress-routes/1-ingressroute.yaml
 # http://traefik.local/
-k delete -f 1-ingressroute.yaml
-k apply -f 2-ingressroute.yaml
+k delete -f traefik/simple-ingress-routes/1-ingressroute.yaml
+k apply -f traefik/simple-ingress-routes/2-ingressroute.yaml
 # http://traefik.local/
 # http://nginx.traefik.local/
-k delete -f 2-ingressroute.yaml
-k apply -f 3-ingressroute.yaml
+k delete -f traefik/simple-ingress-routes/2-ingressroute.yaml
+k apply -f traefik/simple-ingress-routes/3-ingressroute.yaml
 # http://green.traefik.local/
-k delete -f 3-ingressroute.yaml
+k delete -f traefik/simple-ingress-routes/3-ingressroute.yaml
 ```
