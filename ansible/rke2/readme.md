@@ -57,6 +57,8 @@ documentation:
 
 https://cert-manager.io/docs/usage/ingress/
 
+
+https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-8-5/
 ```bash
 kubectl get pods --namespace cert-manager
 kubectl create namespace cattle-system
@@ -95,6 +97,7 @@ kubectl get svc -n cattle-system
 # k delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
+k apply -f longhorn.yaml
 helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.6.2
 kubectl get pods \
 --namespace longhorn-system \
