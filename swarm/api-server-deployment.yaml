@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services.yml
+    kompose.version: 1.34.0 (HEAD)
+  labels:
+    io.kompose.service: api-server
+    traefik.constraint-label: traefik-public
+    traefik.docker.network: traefik-public
+    traefik.enable: "true"
+    traefik.http.routers.api_server.entrypoints: https
+    traefik.http.routers.api_server.rule: Host(`api.`)
+    traefik.http.routers.api_server.service: api_server_service
+    traefik.http.routers.api_server.tls.certresolver: le
+    traefik.http.services.api_server_service.loadbalancer.server.port: "8000"
+  name: api-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: api-server
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f services.yml
+        kompose.version: 1.34.0 (HEAD)
+      labels:
+        io.kompose.service: api-server
+    spec:
+      containers:
+        - env:
+            - name: DATABASE__DB
+            - name: DATABASE__HOSTNAME
+            - name: DATABASE__PASSWORD
+            - name: DATABASE__PORT
+            - name: DATABASE__USERNAME
+            - name: DOMAIN
+            - name: SECURITY__ALLOWED_HOSTS
+            - name: SECURITY__BACKEND_CORS_ORIGINS
+            - name: SECURITY__JWT_SECRET_KEY
+          image: furyhawk/listen:v0.1.15
+          name: api-server
+      restartPolicy: Always
