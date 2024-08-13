@@ -1,9 +1,9 @@
-# test stack
+# nginx_ingress_test stack
 
 ```bash
 minikube start
-k create ns test
-kubectl config set-context --current --namespace=test
+k create ns nginx_ingress_test
+kubectl config set-context --current --namespace=nginx_ingress_test
 
 # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
 helm upgrade --install ingress-nginx ingress-nginx \
@@ -11,7 +11,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --namespace ingress-nginx --create-namespace
 minikube addons enable ingress
 
-k apply -f test
+k apply -f nginx_ingress_test
 minikube ip
 
 minikube tunnel 
