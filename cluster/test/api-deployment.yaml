@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: postgres-deployment
+    name: api-deployment
 spec:
     replicas: 1
     selector:
         matchLabels:
-            component: postgres
+            component: api
     template:
         metadata:
             labels:
-                component: postgres
+                component: api
         spec:
-            volumes:
-            -   name: postgres-storage
-                persistentVolumeClaim:
-                    claimName: database-persistent-volume-claim
             containers:
-                -   name: postgres
-                    image: postgres
+                -   name: api
+                    image: uxioandrade/tutorial-api
                     ports:
-                        - containerPort: 5432
-                    volumeMounts:
-                     -  name: postgres-storage
-                        mountPath: /var/lib/postgresql/data
-                        subPath: postgres
+                        -   containerPort: 8080
+                    env:
+                        -   name: PG_HOST
+                            value: postgres-cluster-ip-service
+                        -   name: PG_PORT
+                            value: '5432'
+                        -   name: PGUSER
+                            value: postgres
+                        -   name: PGDATABASE
+                            value: postgres

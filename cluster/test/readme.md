@@ -1,12 +1,31 @@
 # test stack
 
 ```bash
+minikube start
 k create ns test
 kubectl config set-context --current --namespace=test
-k apply -f api-deployment.yaml -f client-deployment.yaml
-k apply -f database-persistent-volume-claim.yaml
-k apply -f api-cluster-ip-service.yaml
-k apply -f client-cluster-ip-deployment.yaml
-k apply -f postgres-cluster-ip-service.yaml
-k apply -f ingress-service.yaml
+
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+minikube addons enable ingress
+
+k apply -f test
+minikube ip
+
+minikube tunnel 
+
+# Wait for ingress address
+
+# kubectl get ingress
+# NAME              CLASS   HOSTS   ADDRESS          PORTS   AGE
+# example-ingress   nginx   *       <your_ip_here>   80      5m45s
+
+# Note for Docker Desktop Users:
+# To get ingress to work you’ll need to open a new terminal window and run minikube tunnel and in the following step use 127.0.0.1 in place of <ip_from_above>.
+
+minikube delete --all --purge
+
+
 ```
