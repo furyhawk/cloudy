@@ -179,3 +179,4 @@ kubernetes/talos/kubeconfig
 kubernetes/talos/config
 kubernetes/talos/_out/
 kubernetes/config/
+kubernetes/_out/
