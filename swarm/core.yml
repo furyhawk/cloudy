@@ -183,6 +183,6 @@ networks:
   traefik-public:
     driver: overlay
     attachable: true
-    name: proxy
-    external: true
+    name: traefik-public
+    # external: true
 
