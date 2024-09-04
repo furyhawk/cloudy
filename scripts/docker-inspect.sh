@@ -1,3 +1,1 @@
-docker inspect -f '{{ range $k, $v := .Config.Labels -}}
-{{ $k }}={{ $v }};
-{{ end -}}' $cid
+docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [hostname={{ .Description.Hostname }}, Addr={{ .Status.Addr }}, State={{ .Status.State }}, Role={{ .Spec.Role }}, Availability={{ .Spec.Availability }}]: Arch={{ .Description.Platform.Architecture }}, OS={{ .Description.Platform.OS }}, NanoCPUs={{ .Description.Resources.NanoCPUs }}, MemoryBytes={{ .Description.Resources.MemoryBytes }}, docker_version={{ .Description.Engine.EngineVersion }}, labels={{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
