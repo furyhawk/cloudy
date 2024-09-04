@@ -34,6 +34,13 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 12. `cp usersfile.example ./compose/usersfile`
 13. `make serve`
 
+## Docker Swarm Deployment
+```
+docker swarm init
+docker network create -d overlay --attachable traefik-public
+make deploy-core
+```
+
 ### Notes:
 ```yaml
 # Declaring the user list
