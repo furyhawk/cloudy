@@ -3,7 +3,7 @@ http:
     traefik-public-https:
       entryPoints:
         - https
-      rule: Host(`coco.furyhawk.lol`)
+      rule: Host(`coco.cloudy.local`)
       middlewares:
         - admin-auth@swarm
       tls:
