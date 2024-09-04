@@ -6,8 +6,7 @@ http:
       rule: Host(`coco.cloudy.local`)
       middlewares:
         - admin-auth@swarm
-      tls:
-        certResolver: le
+      tls: {}
       service: coco_desktop@file
 
   services:
