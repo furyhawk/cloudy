@@ -23,6 +23,9 @@ deploy-core: pull
 	docker stack deploy --compose-file ./swarm/core.yml core ;\
 	}
 
+remove-core:
+	docker stack rm core
+
 deploy-portainer: pull
 	{ \
 	echo "Deploying the portainer stack..." ;\
