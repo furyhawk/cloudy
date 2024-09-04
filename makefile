@@ -14,6 +14,15 @@ pull:
 	@echo "Pulling the project..."
 	git pull
 
+deploy-local-core: pull
+	{ \
+	echo "Deploying the core stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/local_core.yml core ;\
+	}
+
 deploy-core: pull
 	{ \
 	echo "Deploying the core stack..." ;\
