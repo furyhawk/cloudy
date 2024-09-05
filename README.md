@@ -39,6 +39,8 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 docker swarm init
 docker network create -d overlay --attachable traefik-public
 make deploy-core
+
+docker service logs core_traefik --details
 ```
 
 ### Notes:
