@@ -84,7 +84,7 @@ services:
         - traefik.http.routers.traefik-public-https.service=api@internal
         # Local service router
         - traefik.http.routers.traefik-public-local-https.entrypoints=https
-        - traefik.http.routers.traefik-public-local-https.rule=HostRegexp(`dashboard.${LOCALDOMAIN}`)
+        - traefik.http.routers.traefik-public-local-https.rule=Host(`dashboard.${LOCALDOMAIN}`)
         - traefik.http.routers.traefik-public-local-https.tls=true
         # Enable HTTP Basic auth, using the middleware created above
         - traefik.http.routers.traefik-public-local-https.middlewares=admin-auth
