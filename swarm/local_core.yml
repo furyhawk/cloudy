@@ -96,8 +96,7 @@ services:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Mount the volume to store the certificates
-      - traefik-public-certificates:/certificates
-      - /var/data/config/traefik/certs:/certs:ro
+      - /var/data/config/traefik/certs:/certs:rw
       # Mount the configuration file for Traefik
       - /var/data/config/traefik/local_dynamic.yml:/etc/traefik/local_dynamic.yml:ro
       - /var/data/config/traefik/local_services.yml:/etc/traefik/local_services.yml:ro
@@ -136,7 +135,7 @@ services:
       - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
       # Store the Let's Encrypt certificates in the mounted volume
       - --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.storage=/certs/acme.json
       # Use the TLS Challenge for Let's Encrypt
       - --certificatesresolvers.le.acme.tlschallenge=true
       # Enable the access log, with HTTP requests
@@ -181,11 +180,11 @@ services:
         constraints:
           - node.role==manager
 
-volumes:
+# volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
   # Traefik is always deployed to the same Docker node with the same volume containing
   # the HTTPS certificates
-  traefik-public-certificates:
+  # traefik-public-certificates:
 
 networks:
   # Use the previously created public network "traefik-public", shared with other
