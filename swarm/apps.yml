@@ -46,6 +46,10 @@ services:
         - traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`) || Host(`dbadmin.${DOMAIN}`)
         - traefik.http.routers.adminer.tls.certresolver=le
         - traefik.http.routers.adminer.service=adminer_app
+        - traefik.http.routers.adminer-local.entrypoints=https
+        - traefik.http.routers.adminer-local.rule=Host(`adminer.${LOCALDOMAIN}`) || Host(`dbadmin.${LOCALDOMAIN}`)
+        - traefik.http.routers.adminer-local.tls=true
+        - traefik.http.routers.adminer-local.service=adminer_app
         - traefik.http.services.adminer_app.loadbalancer.server.port=8080
 
   cheatsheets_app:
@@ -62,6 +66,10 @@ services:
         - traefik.http.routers.cheatsheets.rule=Host(`cheat.${DOMAIN}`)
         - traefik.http.routers.cheatsheets.tls.certresolver=le
         - traefik.http.routers.cheatsheets.service=cheatsheets_app
+        - traefik.http.routers.cheatsheets-local.entrypoints=https
+        - traefik.http.routers.cheatsheets-local.rule=Host(`cheat.${LOCALDOMAIN}`)
+        - traefik.http.routers.cheatsheets-local.tls=true
+        - traefik.http.routers.cheatsheets-local.service=cheatsheets_app
         - traefik.http.services.cheatsheets_app.loadbalancer.server.port=80
 
   heynote_app:
@@ -78,10 +86,14 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.heynote.entrypoints=https
-        - traefik.http.routers.heynote.rule=Host(`note.${DOMAIN}`) || Host(`note.${DOMAIN}`) || Host(`note0.${DOMAIN}`) || Host(`note1.${DOMAIN}`) || Host(`note2.${DOMAIN}`) || Host(`note3.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
+        - traefik.http.routers.heynote.rule=Host(`note.${DOMAIN}`) || Host(`note0.${DOMAIN}`) || Host(`note1.${DOMAIN}`) || Host(`note2.${DOMAIN}`) || Host(`note3.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
         # - traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
         - traefik.http.routers.heynote.tls.certresolver=le
         - traefik.http.routers.heynote.service=heynote_app
+        - traefik.http.routers.heynote-local.entrypoints=https
+        - traefik.http.routers.heynote-local.rule=Host(`note.${LOCALDOMAIN}`)
+        - traefik.http.routers.heynote-local.tls=true
+        - traefik.http.routers.heynote-local.service=heynote_app
         - traefik.http.services.heynote_app.loadbalancer.server.port=5173
 
   jellyfin:
