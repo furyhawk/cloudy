@@ -1,7 +1,7 @@
 services:
 
   api_server:
-    image: furyhawk/listen:v0.1.15
+    image: furyhawk/listen:v0.1.17
     restart: always
     depends_on:
       - postgres_db
