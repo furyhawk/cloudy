@@ -31,11 +31,14 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.portainer-https.rule=Host(`port.${DOMAIN?Variable not set}`) || Host(`portainer.${DOMAIN?Variable not set}`)
         - traefik.http.routers.portainer-https.entrypoints=https
-        - traefik.http.routers.portainer-https.tls=true
+        - traefik.http.routers.portainer-https.rule=Host(`port.${DOMAIN?Variable not set}`) || Host(`portainer.${DOMAIN?Variable not set}`)
         - traefik.http.routers.portainer-https.tls.certresolver=le
         - traefik.http.routers.portainer-https.service=portainer_service
+        - traefik.http.routers.portainer-local-https.entrypoints=https
+        - traefik.http.routers.portainer-local-https.rule=Host(`port.${LOCALDOMAIN?Variable not set}`) || Host(`portainer.${LOCALDOMAIN?Variable not set}`)
+        - traefik.http.routers.portainer-local-https.tls=true
+        - traefik.http.routers.portainer-local-https.service=portainer_service
         - traefik.http.services.portainer_service.loadbalancer.server.port=9000
 
 networks:
