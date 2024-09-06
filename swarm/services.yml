@@ -27,10 +27,10 @@ services:
         - traefik.http.routers.api_server.rule=Host(`api.${DOMAIN}`)
         - traefik.http.routers.api_server.tls.certresolver=le
         - traefik.http.routers.api_server.service=api_server_service
-        - traefik.http.routers.api_local_server.entrypoints=https
-        - traefik.http.routers.api_local_server.rule=Host(`api.${LOCALDOMAIN}`)
-        - traefik.http.routers.api_local_server.tls=true
-        - traefik.http.routers.api_local_server.service=api_server_service
+        # - traefik.http.routers.api_local_server.entrypoints=https
+        # - traefik.http.routers.api_local_server.rule=Host(`api.${LOCALDOMAIN}`)
+        # - traefik.http.routers.api_local_server.tls=true
+        # - traefik.http.routers.api_local_server.service=api_server_service
         - traefik.http.services.api_server_service.loadbalancer.server.port=8000
 
   dozzle:
@@ -135,11 +135,11 @@ services:
         - traefik.http.routers.osrm-backend.middlewares=rate-limit
         - traefik.http.routers.osrm-backend.tls.certresolver=le
         - traefik.http.routers.osrm-backend.service=osrm_backend_service
-        - traefik.http.routers.osrm-local-backend.entrypoints=https
-        - traefik.http.routers.osrm-local-backend.rule=Host(`osrm.${LOCALDOMAIN}`)
-        - traefik.http.routers.osrm-local-backend.middlewares=rate-limit
-        - traefik.http.routers.osrm-local-backend.tls=true
-        - traefik.http.routers.osrm-local-backend.service=osrm_backend_service
+        # - traefik.http.routers.osrm-local-backend.entrypoints=https
+        # - traefik.http.routers.osrm-local-backend.rule=Host(`osrm.${LOCALDOMAIN}`)
+        # - traefik.http.routers.osrm-local-backend.middlewares=rate-limit
+        # - traefik.http.routers.osrm-local-backend.tls=true
+        # - traefik.http.routers.osrm-local-backend.service=osrm_backend_service
         - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
 
   postgres_db:
