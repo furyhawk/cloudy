@@ -74,6 +74,10 @@ services:
         - traefik.http.routers.mqttx-web.rule=Host(`mqttx.${DOMAIN}`)
         - traefik.http.routers.mqttx-web.tls.certresolver=le
         - traefik.http.routers.mqttx-web.service=mqttx-web-service
+        - traefik.http.routers.mqttx-local-web.entrypoints=https
+        - traefik.http.routers.mqttx-local-web.rule=Host(`mqttx.${LOCALDOMAIN}`)
+        - traefik.http.routers.mqttx-local-web.tls=true
+        - traefik.http.routers.mqttx-local-web.service=mqttx-web-service
         - traefik.http.services.mqttx-web-service.loadbalancer.server.port=80
 
 networks:
