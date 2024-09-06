@@ -27,6 +27,10 @@ services:
         - traefik.http.routers.api_server.rule=Host(`api.${DOMAIN}`)
         - traefik.http.routers.api_server.tls.certresolver=le
         - traefik.http.routers.api_server.service=api_server_service
+        - traefik.http.routers.api_local_server.entrypoints=https
+        - traefik.http.routers.api_local_server.rule=Host(`api.${LOCALDOMAIN}`)
+        - traefik.http.routers.api_local_server.tls=true
+        - traefik.http.routers.api_local_server.service=api_server_service
         - traefik.http.services.api_server_service.loadbalancer.server.port=8000
 
   dozzle:
@@ -52,6 +56,11 @@ services:
         - traefik.http.routers.dozzle.middlewares=admin-auth
         - traefik.http.routers.dozzle.tls.certresolver=le
         - traefik.http.routers.dozzle.service=dozzle_service
+        - traefik.http.routers.dozzle_local.entrypoints=https
+        - traefik.http.routers.dozzle_local.rule=Host(`log.${LOCALDOMAIN}`)
+        - traefik.http.routers.dozzle_local.middlewares=admin-auth
+        - traefik.http.routers.dozzle_local.tls=true
+        - traefik.http.routers.dozzle_local.service=dozzle_service
         - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
 
   minio-common:
@@ -90,6 +99,14 @@ services:
         - traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAIN}`) || Host(`s3.${DOMAIN}`)
         - traefik.http.routers.minio-api-router.tls.certresolver=le
         - traefik.http.routers.minio-api-router.service=minio_api_service
+        - traefik.http.routers.minio-local-router.entrypoints=https
+        - traefik.http.routers.minio-local-router.rule=Host(`drive.${LOCALDOMAIN}`) || Host(`storage.${LOCALDOMAIN}`)
+        - traefik.http.routers.minio-local-router.tls=true
+        - traefik.http.routers.minio-local-router.service=minio_common_service
+        - traefik.http.routers.minio-api-local-router.entrypoints=https
+        - traefik.http.routers.minio-api-local-router.rule=Host(`minio.${LOCALDOMAIN}`) || Host(`s3.${LOCALDOMAIN}`)
+        - traefik.http.routers.minio-api-local-router.tls=true
+        - traefik.http.routers.minio-api-local-router.service=minio_api_service
         - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
 
   osrm-backend:
@@ -118,6 +135,11 @@ services:
         - traefik.http.routers.osrm-backend.middlewares=rate-limit
         - traefik.http.routers.osrm-backend.tls.certresolver=le
         - traefik.http.routers.osrm-backend.service=osrm_backend_service
+        - traefik.http.routers.osrm-local-backend.entrypoints=https
+        - traefik.http.routers.osrm-local-backend.rule=Host(`osrm.${LOCALDOMAIN}`)
+        - traefik.http.routers.osrm-local-backend.middlewares=rate-limit
+        - traefik.http.routers.osrm-local-backend.tls=true
+        - traefik.http.routers.osrm-local-backend.service=osrm_backend_service
         - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
 
   postgres_db:
@@ -171,6 +193,10 @@ services:
         - traefik.http.routers.whoami-rtr.rule=Host(`whoami.$DOMAIN`)
         - traefik.http.routers.whoami-rtr.tls.certresolver=le
         - traefik.http.routers.whoami-rtr.service=whoami-svc
+        - traefik.http.routers.whoami-local-rtr.entrypoints=https
+        - traefik.http.routers.whoami-local-rtr.rule=Host(`whoami.$LOCALDOMAIN`)
+        - traefik.http.routers.whoami-local-rtr.tls=true
+        - traefik.http.routers.whoami-local-rtr.service=whoami-svc
         - traefik.http.services.whoami-svc.loadbalancer.server.port=80
 
 volumes:
