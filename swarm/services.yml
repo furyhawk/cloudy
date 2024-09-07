@@ -121,7 +121,7 @@ services:
       # Notify OSRM Manager to restart without stopping container
       - OSRM_NOTIFY_FILEPATH=/data/osrm_notify.txt
       - DOMAIN=${DOMAIN}
-    image: osrm/osrm-backend:${OSRM_VERSION:-latest}
+    image: furyhawk/osrm-backend:${OSRM_VERSION:-latest}
     restart: unless-stopped
     networks:
       - traefik-public
