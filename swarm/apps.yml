@@ -101,6 +101,7 @@ services:
     restart: 'unless-stopped'
     environment:
       - DOMAIN=${DOMAIN}
+      - MEDIADIR=${MEDIADIR}
       - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN}
     volumes:
       - jellyfin_config:/config
