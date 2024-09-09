@@ -106,7 +106,7 @@ services:
       - jellyfin_config:/config
       - /var/data/jellyfin_cache:/cache
       - type: bind
-        source: ~/media
+        source: ${MEDIADIR}
         target: /media
         read_only: false
     # Optional - alternative address used for autodiscovery
