@@ -1,0 +1,9 @@
+docker node update --label-add docmost.docmost_redis_data=true swarm
+docker node update --label-add outline.outline_redis_data=true swarm
+docker node update --label-add jellyfin.jellyfin_config=true swarm
+docker node update --label-add open_webui.open_webui=true swarm
+docker node update --label-add portainer.portainer-data=true swarm
+docker node update --label-add postgres.postgres_data=true swarm
+docker node update --label-add searxng.redis=true swarm
+docker node update --label-add searxng.searxng_data=true swarm
+docker node update --label-add traefik-public.traefik-public-certificates=true swarm
