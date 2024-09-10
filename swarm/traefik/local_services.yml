@@ -3,11 +3,29 @@ http:
     traefik-public-https:
       entryPoints:
         - https
-      rule: Host(`coco.cloudy.local`)
+      rule: Host(`coco.swarm.local`)
       middlewares:
         - admin-auth@swarm
       tls: {}
       service: coco_desktop@file
+    
+    proxmox00:
+      entryPoints:
+        - https
+      rule: Host(`proxmox00.swarm.local`)
+      middlewares:
+        - admin-auth@swarm
+      tls: {}
+      service: proxmox00@file
+
+    proxmox01:
+      entryPoints:
+        - https
+      rule: Host(`proxmox01.swarm.local`)
+      middlewares:
+        - admin-auth@swarm
+      tls: {}
+      service: proxmox01@file
 
   services:
 
@@ -15,3 +33,13 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.178:5000
+
+    proxmox00:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.210:8006
+
+    proxmox01:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.201:8006
