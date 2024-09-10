@@ -1,6 +1,6 @@
 http:
   routers:
-    traefik-public-https:
+    local-traefik-public-https:
       entryPoints:
         - https
       rule: Host(`coco.swarm.local`)
@@ -9,7 +9,7 @@ http:
       tls: {}
       service: coco_desktop@file
     
-    proxmox00:
+    local-proxmox00:
       entryPoints:
         - https
       rule: Host(`proxmox00.swarm.local`)
@@ -18,13 +18,43 @@ http:
       tls: {}
       service: proxmox00@file
 
-    proxmox01:
+    local-proxmox01:
       entryPoints:
         - https
       rule: Host(`proxmox01.swarm.local`)
       middlewares:
         - admin-auth@swarm
       tls: {}
+      service: proxmox01@file
+
+    traefik-public-https:
+      entryPoints:
+        - https
+      rule: Host(`coco.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
+      tls:
+        certResolver: le
+      service: coco_desktop@file
+
+    proxmox00:
+      entryPoints:
+        - https
+      rule: Host(`proxmox00.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
+      tls:
+        certResolver: le
+      service: proxmox00@file
+
+    proxmox01:
+      entryPoints:
+        - https
+      rule: Host(`proxmox01.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
+      tls:
+        certResolver: le
       service: proxmox01@file
 
   services:
