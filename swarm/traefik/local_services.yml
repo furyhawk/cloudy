@@ -73,7 +73,7 @@ http:
         passHostHeader: true
         serversTransport: "pvetransport"
         servers:
-          - url: "https://192.168.50.201:8006"
+          - url: "https://192.168.50.210:8006"
 
 tcp:
   routers:
