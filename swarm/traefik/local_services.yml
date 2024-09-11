@@ -13,8 +13,6 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox00.swarm.local`)
-      middlewares:
-        - admin-auth@swarm
       tls: {}
       service: proxmox00@file
 
@@ -22,8 +20,6 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox01.swarm.local`)
-      middlewares:
-        - admin-auth@swarm
       tls: {}
       service: proxmox01@file
 
@@ -41,8 +37,6 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox00.furyhawk.lol`)
-      middlewares:
-        - admin-auth@swarm
       tls:
         certResolver: le
       service: proxmox00@file
@@ -51,8 +45,6 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox01.furyhawk.lol`)
-      middlewares:
-        - admin-auth@swarm
       tls:
         certResolver: le
       service: proxmox01@file
