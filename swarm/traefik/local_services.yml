@@ -79,7 +79,7 @@ tcp:
   routers:
     spice:
       entryPoints:
-        - spice
+        - spice-socket
       rule: HostSNI(`*`)
       tls: false
       service: spice@file
