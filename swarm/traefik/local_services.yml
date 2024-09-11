@@ -83,20 +83,31 @@ tcp:
       rule: HostSNI(`*`)
       tls: false
       service: spice@file
-    spice-tls:
+    spice00-tls:
       entryPoints:
-        - spice-tls
+        - spice00-tls-socket
       rule: HostSNI(`*`)
       tls:
         passthrough: true
-      service: spice-tls@file
+      service: spice00-tls@file
+    spice01-tls:
+      entryPoints:
+        - spice01-tls-socket
+      rule: HostSNI(`*`)
+      tls:
+        passthrough: true
+      service: spice01-tls@file
 
   services:
     spice:
       loadBalancer:
         servers:
           - address: "https://192.168.50.210:3128"
-    spice-tls:
+    spice00-tls:
       loadBalancer:
         servers:
           - address: "https://192.168.50.210:61000"
+    spice01-tls:
+      loadBalancer:
+        servers:
+          - address: "https://192.168.50.210:61001"
