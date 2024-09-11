@@ -59,9 +59,9 @@ http:
     proxmox00:
       loadBalancer:
         servers:
-          - url: http://192.168.50.210:8006
+          - url: https://192.168.50.210:8006
 
     proxmox01:
       loadBalancer:
         servers:
-          - url: http://192.168.50.201:8006
+          - url: https://192.168.50.201:8006
