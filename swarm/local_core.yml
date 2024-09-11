@@ -25,6 +25,12 @@ services:
       - target: 8084
         published: 8084
         mode: host
+      - target: 3128
+        published: 3128
+        mode: host
+      - target: 61001
+        published: 61001
+        mode: host
       # - target: 8883
       #   published: 8883
       #   mode: host
@@ -133,6 +139,8 @@ services:
       - --entrypoints.web-socket.address=:8083
       - --entrypoints.web-socket-secure.address=:8084
       - --entrypoints.bolt-socket.address=:7687
+      - --entrypoints.spice-socket.address=:3128
+      - --entrypoints.spice-tls-socket.address=:61001
       # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
       - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
       # Store the Let's Encrypt certificates in the mounted volume

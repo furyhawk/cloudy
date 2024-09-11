@@ -12,7 +12,7 @@ http:
         - admin-auth@swarm
       tls: {}
       service: coco_desktop@file
-    
+
     local-proxmox00:
       entryPoints:
         - https
@@ -56,7 +56,6 @@ http:
       service: proxmox01@file
 
   services:
-
     coco_desktop:
       loadBalancer:
         servers:
@@ -75,3 +74,29 @@ http:
         serversTransport: "pvetransport"
         servers:
           - url: "https://192.168.50.201:8006"
+
+tcp:
+  routers:
+    spice:
+      entryPoints:
+        - spice
+      rule: HostSNI(`*`)
+      tls: false
+      service: spice@file
+    spice-tls:
+      entryPoints:
+        - spice-tls
+      rule: HostSNI(`*`)
+      tls:
+        passthrough: true
+      service: spice-tls@file
+
+  services:
+    spice:
+      loadBalancer:
+        servers:
+          - address: "https://192.168.50.210:3128"
+    spice-tls:
+      loadBalancer:
+        servers:
+          - address: "https://192.168.50.210:61001"
