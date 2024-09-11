@@ -2,6 +2,7 @@ http:
   serversTransports:
     pvetransport:
       insecureSkipVerify: true
+
   routers:
     local-traefik-public-https:
       entryPoints:
@@ -40,6 +41,8 @@ http:
       entryPoints:
         - https
       rule: Host(`dc00.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
       tls: {}
       service: proxmox00@file
 
@@ -47,6 +50,8 @@ http:
       entryPoints:
         - https
       rule: Host(`dc01.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
       tls: {}
       service: proxmox01@file
 
