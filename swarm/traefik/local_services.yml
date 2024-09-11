@@ -73,7 +73,7 @@ http:
         passHostHeader: true
         serversTransport: "pvetransport"
         servers:
-          - url: "https://192.168.50.210:8006"
+          - url: "https://192.168.50.201:8006"
 
 tcp:
   routers:
@@ -99,4 +99,4 @@ tcp:
     spice-tls:
       loadBalancer:
         servers:
-          - address: "https://192.168.50.210:61000"
+          - address: "https://192.168.50.210:61001"
