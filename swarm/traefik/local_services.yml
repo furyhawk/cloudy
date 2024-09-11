@@ -6,8 +6,7 @@ http:
       rule: Host(`coco.swarm.local`)
       middlewares:
         - admin-auth@swarm
-      tls:
-        passthrough: true
+      tls: {}
       service: coco_desktop@file
     
     local-proxmox00:
@@ -21,8 +20,7 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox01.swarm.local`)
-      tls:
-        passthrough: true
+      tls: {}
       service: proxmox01@file
 
     traefik-public-https:
@@ -39,16 +37,12 @@ http:
       entryPoints:
         - https
       rule: Host(`proxmox00.furyhawk.lol`)
-      tls:
-        passthrough: true
       service: proxmox00@file
 
     proxmox01:
       entryPoints:
         - https
       rule: Host(`proxmox01.furyhawk.lol`)
-      tls:
-        passthrough: true
       service: proxmox01@file
 
   services:
