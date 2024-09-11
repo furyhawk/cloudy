@@ -37,16 +37,14 @@ http:
       entryPoints:
         - https
       rule: Host(`dc00.furyhawk.lol`)
-      tls:
-        certResolver: le
+      tls: {}
       service: proxmox00@file
 
     proxmox01:
       entryPoints:
         - https
       rule: Host(`dc01.furyhawk.lol`)
-      tls:
-        certResolver: le
+      tls: {}
       service: proxmox01@file
 
   services:
