@@ -99,4 +99,4 @@ tcp:
     spice-tls:
       loadBalancer:
         servers:
-          - address: "https://192.168.50.210:61001"
+          - address: "https://192.168.50.210:61000"
