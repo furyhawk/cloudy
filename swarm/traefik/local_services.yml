@@ -1,4 +1,7 @@
 http:
+  serversTransports:
+    pvetransport:
+      insecureSkipVerify: true
   routers:
     local-traefik-public-https:
       entryPoints:
@@ -37,14 +40,14 @@ http:
       entryPoints:
         - https
       rule: Host(`dc00.furyhawk.lol`)
-      tls: false
+      tls: {}
       service: proxmox00@file
 
     proxmox01:
       entryPoints:
         - https
       rule: Host(`dc01.furyhawk.lol`)
-      tls: false
+      tls: {}
       service: proxmox01@file
 
   services:
@@ -56,10 +59,14 @@ http:
 
     proxmox00:
       loadBalancer:
+        passHostHeader: true
+        serversTransport: "pvetransport"
         servers:
           - url: "https://192.168.50.210:8006"
 
     proxmox01:
       loadBalancer:
+        passHostHeader: true
+        serversTransport: "pvetransport"
         servers:
           - url: "https://192.168.50.201:8006"
