@@ -77,37 +77,69 @@ http:
 
 tcp:
   routers:
-    spice:
+    spice00:
       entryPoints:
         - spice-socket
-      rule: HostSNI(`*`)
+      rule: HostSNI(`dc00.furyhawk.lol`)
       tls: false
-      service: spice@file
-    spice00-tls:
+      service: spice00@file
+    spice01:
+      entryPoints:
+        - spice-socket
+      rule: HostSNI(`dc01.furyhawk.lol`)
+      tls: false
+      service: spice01@file
+    spice0000-tls:
       entryPoints:
         - spice00-tls-socket
-      rule: HostSNI(`*`)
+      rule: HostSNI(`dc00.furyhawk.lol`)
       tls:
         passthrough: true
-      service: spice00-tls@file
-    spice01-tls:
+      service: spice0000-tls@file
+    spice0001-tls:
+      entryPoints:
+        - spice00-tls-socket
+      rule: HostSNI(``dc01.furyhawk.lol`)
+      tls:
+        passthrough: true
+      service: spice0001-tls@file
+    spice0100-tls:
       entryPoints:
         - spice01-tls-socket
-      rule: HostSNI(`*`)
+      rule: HostSNI(`dc00.furyhawk.lol`)
       tls:
         passthrough: true
-      service: spice01-tls@file
+      service: spice0100-tls@file
+    spice0101-tls:
+      entryPoints:
+        - spice01-tls-socket
+      rule: HostSNI(`dc01.furyhawk.lol`)
+      tls:
+        passthrough: true
+      service: spice0101-tls@file
 
   services:
-    spice:
+    spice00:
       loadBalancer:
         servers:
           - address: "192.168.50.210:3128"
-    spice00-tls:
+    spice01:
+      loadBalancer:
+        servers:
+          - address: "192.168.50.201:3128"
+    spice0000-tls:
       loadBalancer:
         servers:
           - address: "192.168.50.210:61000"
-    spice01-tls:
+    spice0001-tls:
+      loadBalancer:
+        servers:
+          - address: "192.168.50.201:61000"
+    spice0100-tls:
       loadBalancer:
         servers:
           - address: "192.168.50.210:61001"
+    spice0101-tls:
+      loadBalancer:
+        servers:
+          - address: "192.168.50.201:61001"
