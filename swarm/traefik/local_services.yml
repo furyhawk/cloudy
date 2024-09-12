@@ -93,29 +93,29 @@ tcp:
       entryPoints:
         - spice00-tls-socket
       rule: HostSNI(`dc00.furyhawk.lol`)
-      tls:
-        passthrough: true
+      # tls:
+      #   passthrough: true
       service: spice0000-tls@file
     spice0001-tls:
       entryPoints:
         - spice00-tls-socket
-      rule: HostSNI(``dc01.furyhawk.lol`)
-      tls:
-        passthrough: true
+      rule: HostSNI(`dc01.furyhawk.lol`)
+      # tls:
+      #   passthrough: true
       service: spice0001-tls@file
     spice0100-tls:
       entryPoints:
         - spice01-tls-socket
       rule: HostSNI(`dc00.furyhawk.lol`)
-      tls:
-        passthrough: true
+      # tls:
+      #   passthrough: true
       service: spice0100-tls@file
     spice0101-tls:
       entryPoints:
         - spice01-tls-socket
       rule: HostSNI(`dc01.furyhawk.lol`)
-      tls:
-        passthrough: true
+      # tls:
+      #   passthrough: true
       service: spice0101-tls@file
 
   services:
