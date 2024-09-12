@@ -77,18 +77,18 @@ http:
 
 tcp:
   routers:
-    spice00:
-      entryPoints:
-        - spice-socket
-      rule: HostSNI(`dc00.furyhawk.lol`)
-      tls: false
-      service: spice00@file
-    spice01:
-      entryPoints:
-        - spice-socket
-      rule: HostSNI(`dc01.furyhawk.lol`)
-      tls: false
-      service: spice01@file
+    # spice00:
+    #   entryPoints:
+    #     - spice-socket
+    #   rule: HostSNI(`dc00.furyhawk.lol`)
+    #   tls: false
+    #   service: spice00@file
+    # spice01:
+    #   entryPoints:
+    #     - spice-socket
+    #   rule: HostSNI(`dc01.furyhawk.lol`)
+    #   tls: false
+    #   service: spice01@file
     spice0000-tls:
       entryPoints:
         - spice00-tls-socket
