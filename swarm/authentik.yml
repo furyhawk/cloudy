@@ -7,7 +7,7 @@ volumes:
     driver: local
 
 networks:
-  authentik-net:
+  authentik:
     driver: overlay
     attachable: true
   traefik-public:
@@ -33,7 +33,7 @@ services:
     # env_file:
     #   - .env
     networks:
-      - authentik-net
+      - authentik
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -47,7 +47,7 @@ services:
     volumes:
       - redis:/data
     networks:
-      - authentik-net
+      - authentik
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.8.1}
     restart: unless-stopped
@@ -74,7 +74,7 @@ services:
       - postgresql
       - redis
     networks:
-      - authentik-net
+      - authentik
       - traefik-public
     deploy:
       labels:
@@ -114,5 +114,5 @@ services:
       - postgresql
       - redis
     networks:
-      - authentik-net
+      - authentik
 
