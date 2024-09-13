@@ -110,6 +110,7 @@ services:
         source: ${MEDIADIR}
         target: /media
         read_only: false
+    user: "1000:1000"
     # Optional - alternative address used for autodiscovery
     networks:
       - traefik-public
