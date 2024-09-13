@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
     command: worker
     environment:
-      AUTHENTIK_REDIS__HOST: authentik_redis
+      AUTHENTIK_REDIS__HOST: authentik-redis
       AUTHENTIK_POSTGRESQL__HOST: ${DATABASE__HOSTNAME:-postgresql}
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
