@@ -22,7 +22,6 @@ deploy-local-core: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/local_core.yml core ;\
 	}
-
 deploy-core: pull
 	{ \
 	echo "Deploying the core stack..." ;\
@@ -31,7 +30,6 @@ deploy-core: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/core.yml core ;\
 	}
-
 remove-core:
 	docker stack rm core
 
