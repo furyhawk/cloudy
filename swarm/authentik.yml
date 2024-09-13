@@ -16,6 +16,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?database password required}
       POSTGRES_USER: ${POSTGRES_USER:-authentik}
       POSTGRES_DB: ${PG_DB:-authentik}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
     # env_file:
     #   - .env
   redis:
@@ -40,6 +41,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     volumes:
       - /var/data/authentik/media:/media
       - /var/data/authentik/custom-templates:/templates
