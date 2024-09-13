@@ -1,5 +1,18 @@
 ---
 
+volumes:
+  database:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  authentik-net:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
 services:
   postgresql:
     image: docker.io/library/postgres:16-alpine
@@ -19,6 +32,8 @@ services:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
     # env_file:
     #   - .env
+    networks:
+      - authentik-net
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -31,6 +46,8 @@ services:
       timeout: 3s
     volumes:
       - redis:/data
+    networks:
+      - authentik-net
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.8.1}
     restart: unless-stopped
@@ -56,6 +73,9 @@ services:
     depends_on:
       - postgresql
       - redis
+    networks:
+      - authentik-net
+      - traefik-public
     deploy:
       labels:
         - traefik.enable=true
@@ -93,9 +113,6 @@ services:
     depends_on:
       - postgresql
       - redis
+    networks:
+      - authentik-net
 
-volumes:
-  database:
-    driver: local
-  redis:
-    driver: local
