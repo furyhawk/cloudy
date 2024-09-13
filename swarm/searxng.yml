@@ -41,7 +41,7 @@ services:
     environment:
       - LIMITER=true
       - SEARXNG_BASE_URL=https://search.${DOMAIN}/
-      - SEARXNG_REDIS_URL=redis://redis_valkey:6379/0
+      - SEARXNG_REDIS_URL=redis://tasks.redis_valkey:6379/0
       - SEARXNG_SECRET=${SEARXNG_SECRET:-ultrasecretkey}
       - SEARXNG_LIMITER=true
       # - SEARXNG_USE_DEFAULT_SETTINGS=true

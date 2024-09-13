@@ -8,7 +8,7 @@ server:
 ui:
   static_use_hash: true
 redis:
-  url: redis://redis_valkey:6379/0
+  url: redis://tasks.redis_valkey:6379/0
 search:
   # remove format to deny access, use lower case.
   # formats: [html, csv, json, rss]
