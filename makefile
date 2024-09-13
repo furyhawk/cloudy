@@ -41,6 +41,7 @@ deploy-portainer: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/portainer.yml portainer ;\
 	}
+
 deploy-swarmpit: pull
 	{ \
 	echo "Deploying the swarmpit stack..." ;\
@@ -49,6 +50,7 @@ deploy-swarmpit: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/swarmpit.yml swarmpit ;\
 	}
+
 deploy-services: pull
 	{ \
 	echo "Deploying the services stack..." ;\
@@ -57,14 +59,16 @@ deploy-services: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/services.yml services ;\
 	}
+
 deploy-authentik: pull
 	{ \
 	echo "Deploying the authentik stack..." ;\
 	set -a ;\
 	. ./swarm/.env ;\
-	set +a ;\                
+	set +a ;\
 	docker stack deploy --compose-file ./swarm/authentik.yml authentik ;\
 	}
+
 deploy-apps: pull
 	{ \
 	echo "Deploying the apps stack..." ;\
