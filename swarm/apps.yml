@@ -105,12 +105,12 @@ services:
       - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN}
     volumes:
       - jellyfin_config:/config
-      - /var/data/jellyfin_cache:/cache
+      - /var/data/jellyfin_cache:/cache:z
       - type: bind
         source: ${MEDIADIR}
         target: /media
         read_only: false
-    user: "1000:1000"
+    # user: "1000:1000"
     # Optional - alternative address used for autodiscovery
     networks:
       - traefik-public
