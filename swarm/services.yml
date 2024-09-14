@@ -54,7 +54,7 @@ services:
         - traefik.http.routers.dozzle.entrypoints=https
         - traefik.http.routers.dozzle.rule=Host(`log.${DOMAIN}`)
         - traefik.http.routers.dozzle.priority=10
-        - traefik.http.routers.dozzle.middlewares=authentik@file
+        - traefik.http.routers.dozzle.middlewares=admin-auth@swarm
         - traefik.http.routers.dozzle.tls.certresolver=le
         - traefik.http.routers.dozzle.service=dozzle_service
         - traefik.http.routers.dozzle_local.entrypoints=https
