@@ -68,7 +68,8 @@ deploy-authentik: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/authentik.yml authentik ;\
 	}
-
+remove-authentik:
+	docker stack rm authentik
 deploy-apps: pull
 	{ \
 	echo "Deploying the apps stack..." ;\
