@@ -69,7 +69,7 @@ services:
         - traefik.http.routers.dozzle_auth.tls.certresolver=le
         - traefik.http.routers.dozzle_auth.service=authentik_svc
         - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
-        - traefik.http.services.authentik_svc.loadbalancer.url="http://authentik-server:9000/outpost.goauthentik.io"
+        - traefik.http.services.authentik_svc.loadbalancer.servers.url="http://authentik-server:9000/outpost.goauthentik.io"
 
   minio-common:
     image: minio/minio:latest
