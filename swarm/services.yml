@@ -60,15 +60,16 @@ services:
         - traefik.http.routers.dozzle_local.entrypoints=https
         - traefik.http.routers.dozzle_local.rule=Host(`log.${LOCALDOMAIN}`)
         - traefik.http.routers.dozzle_local.priority=10
-        - traefik.http.routers.dozzle_local.middlewares=admin-auth
+        - traefik.http.routers.dozzle_local.middlewares=admin-auth@swarm
         - traefik.http.routers.dozzle_local.tls=true
         - traefik.http.routers.dozzle_local.service=dozzle_service
         - traefik.http.routers.dozzle_auth.entrypoints=https
         - traefik.http.routers.dozzle_auth.rule="Host(`log.${DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)"
         - traefik.http.routers.dozzle_auth.priority=20
-        - traefik.http.routers.dozzle_auth.service=authentik-svc
+        - traefik.http.routers.dozzle_auth.tls.certresolver=le
+        - traefik.http.routers.dozzle_auth.service=authentik_svc
         - traefik.http.services.dozzle_service.loadbalancer.server.port=8080
-        - traefik.http.services.authentik-svc.loadbalancer.url="http://authentik-server:9000/outpost.goauthentik.io"
+        - traefik.http.services.authentik_svc.loadbalancer.url="http://authentik-server:9000/outpost.goauthentik.io"
 
   minio-common:
     image: minio/minio:latest
