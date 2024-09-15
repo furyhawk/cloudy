@@ -37,7 +37,7 @@ https://factory.talos.dev/?arch=amd64&board=undefined&cmdline-set=true&extension
 
 factory.talos.dev/installer/fd65c64ea210a46f2dfbd101075a9e0c4380d286e92c202bb42c5a7e67047c77:v1.7.6
 
-talosctl gen config talos-proxmox-cluster https://$CONTROL_PLANE_IP:6443 --output-dir _out --install-image factory.talos.dev/installer/fd65c64ea210a46f2dfbd101075a9e0c4380d286e92c202bb42c5a7e67047c77:v1.7.6 --force
+talosctl gen config talos-arm-cluster https://$CONTROL_PLANE_IP:6443 --output-dir _out --install-image factory.talos.dev/installer/fd65c64ea210a46f2dfbd101075a9e0c4380d286e92c202bb42c5a7e67047c77:v1.7.6 --force
 talosctl apply-config --insecure --nodes $CONTROL_PLANE_IP --file _out/controlplane.yaml
 export TALOSCONFIG="_out/talosconfig"
 # talosctl config merge $TALOSCONFIG
@@ -60,6 +60,7 @@ sed -e "s/strictARP: false/strictARP: true/" | \
 kubectl apply -f - -n kube-system
 
 helm repo add metallb https://metallb.github.io/metallb
+helm repo update
 helm install metallb metallb/metallb --create-namespace -n 'metallb-system'
 # helm install metallb metallb/metallb -f metallb.yaml
 kubectl apply -f metallb.yaml
@@ -96,4 +97,37 @@ helm install longhorn longhorn/longhorn --create-namespace -n 'longhorn-system' 
 
 helm repo add traefik https://traefik.github.io/charts
 helm install traefik traefik/traefik --create-namespace -n 'traefik' -f traefik.yaml
+
+# Add kubernetes-dashboard repository
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+Release "kubernetes-dashboard" does not exist. Installing it now.
+NAME: kubernetes-dashboard
+LAST DEPLOYED: Sun Sep 15 23:12:56 2024
+NAMESPACE: kubernetes-dashboard
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+*************************************************************************************************
+*** PLEASE BE PATIENT: Kubernetes Dashboard may need a few minutes to get up and become ready ***
+*************************************************************************************************
+
+Congratulations! You have just installed Kubernetes Dashboard in your cluster.
+
+To access Dashboard run:
+  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+
+NOTE: In case port-forward command does not work, make sure that kong service name is correct.
+      Check the services in Kubernetes Dashboard namespace using:
+        kubectl -n kubernetes-dashboard get svc
+
+Dashboard will be available at:
+  https://localhost:8443
+
+kubectl  -n kubernetes-dashboard create serviceaccount kubernetes-dashboard
+serviceaccount/kubernetes-dashboard created
+kubectl -n kubernetes-dashboard create token kubernetes-dashboard
+
 ```
