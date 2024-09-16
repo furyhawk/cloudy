@@ -126,8 +126,13 @@ NOTE: In case port-forward command does not work, make sure that kong service na
 Dashboard will be available at:
   https://localhost:8443
 
-kubectl  -n kubernetes-dashboard create serviceaccount kubernetes-dashboard
-serviceaccount/kubernetes-dashboard created
-kubectl -n kubernetes-dashboard create token kubernetes-dashboard
+
+# Create a service account for the dashboard
+kubectl apply -f dashboard-adminuser.yaml
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+
+# kubectl  -n kubernetes-dashboard create serviceaccount admin-user
+# serviceaccount/kubernetes-dashboard created
+kubectl -n kubernetes-dashboard create token admin-user
 
 ```
