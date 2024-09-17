@@ -3,9 +3,9 @@
 ## Description
 ```bash
 # https://longhorn.io/docs/1.6.2/deploy/accessing-the-ui/longhorn-ingress/
-# $ USER=admin; PASSWORD=1234; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
-# $ cat auth
-# admin:$apr1$FnyKCYKb$6IP2C45fZxMcoLwkOwf7k0
+# USER=admin; PASSWORD=1234; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
+# cat auth
+# admin:$apr1$9ucb20/W$4PupY6OD8EsPbxUSGLFdG.
 
 htpasswd -nb user password | openssl base64 > auth
 # replace user and password with your own values in auth file to longhorn-ingress-route.yaml
@@ -65,9 +65,9 @@ htpasswd -nb user password | openssl base64 > auth
 
 kubectl -n longhorn-system apply -f longhorn-ingress-route.yaml
 
-$ kubectl -n longhorn-system get ingressroutes
-NAME               HOSTS   ADDRESS                                     PORTS   AGE
-longhorn-ingress   *       45.79.165.114,66.228.45.37,97.107.142.125   80      2m7s
+kubectl -n longhorn-system get ingressroutes
+# NAME               HOSTS   ADDRESS                                     PORTS   AGE
+# longhorn-ingress   *       45.79.165.114,66.228.45.37,97.107.142.125   80      2m7s
 
 $ curl -v http://97.107.142.125/
 *   Trying 97.107.142.125...

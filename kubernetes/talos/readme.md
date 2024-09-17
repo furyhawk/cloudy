@@ -37,6 +37,12 @@ https://factory.talos.dev/?arch=amd64&board=undefined&cmdline-set=true&extension
 
 factory.talos.dev/installer/fd65c64ea210a46f2dfbd101075a9e0c4380d286e92c202bb42c5a7e67047c77:v1.7.6
 
+arm64
+https://factory.talos.dev/?arch=arm64&cmdline-set=true&extensions=-&extensions=siderolabs%2Ffuse3&extensions=siderolabs%2Fiscsi-tools&extensions=siderolabs%2Fqemu-guest-agent&extensions=siderolabs%2Futil-linux-tools&platform=metal&target=metal&version=1.7.6
+factory.talos.dev/installer/039a705a9d120fab2ce1931cbdfbdeeb3c6bfe5c2a0e26479772406cc769943e:v1.7.6
+
+talosctl upgrade --nodes 192.168.50.191,192.168.50.192,192.168.50.193 --image factory.talos.dev/installer/039a705a9d120fab2ce1931cbdfbdeeb3c6bfe5c2a0e26479772406cc769943e:v1.7.6 --preserve
+
 talosctl gen config talos-arm-cluster https://$CONTROL_PLANE_IP:6443 --output-dir _out --install-image factory.talos.dev/installer/fd65c64ea210a46f2dfbd101075a9e0c4380d286e92c202bb42c5a7e67047c77:v1.7.6 --force
 talosctl apply-config --insecure --nodes $CONTROL_PLANE_IP --file _out/controlplane.yaml
 export TALOSCONFIG="_out/talosconfig"
@@ -93,7 +99,10 @@ documentation:
 
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
-helm install longhorn longhorn/longhorn --create-namespace -n 'longhorn-system' -f longhorn.yaml
+kubectl create namespace longhorn-system
+kubectl apply -f longhorn.yaml
+helm install longhorn longhorn/longhorn --namespace longhorn-system
+# helm install longhorn longhorn/longhorn --create-namespace -n 'longhorn-system' -f longhorn.yaml
 
 helm repo add traefik https://traefik.github.io/charts
 helm install traefik traefik/traefik --create-namespace -n 'traefik' -f traefik.yaml
@@ -102,29 +111,29 @@ helm install traefik traefik/traefik --create-namespace -n 'traefik' -f traefik.
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
-Release "kubernetes-dashboard" does not exist. Installing it now.
-NAME: kubernetes-dashboard
-LAST DEPLOYED: Sun Sep 15 23:12:56 2024
-NAMESPACE: kubernetes-dashboard
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-*************************************************************************************************
-*** PLEASE BE PATIENT: Kubernetes Dashboard may need a few minutes to get up and become ready ***
-*************************************************************************************************
+# Release "kubernetes-dashboard" does not exist. Installing it now.
+# NAME: kubernetes-dashboard
+# LAST DEPLOYED: Sun Sep 15 23:12:56 2024
+# NAMESPACE: kubernetes-dashboard
+# STATUS: deployed
+# REVISION: 1
+# TEST SUITE: None
+# NOTES:
+# *************************************************************************************************
+# *** PLEASE BE PATIENT: Kubernetes Dashboard may need a few minutes to get up and become ready ***
+# *************************************************************************************************
 
-Congratulations! You have just installed Kubernetes Dashboard in your cluster.
+# Congratulations! You have just installed Kubernetes Dashboard in your cluster.
 
-To access Dashboard run:
-  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+# To access Dashboard run:
+#   kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 
-NOTE: In case port-forward command does not work, make sure that kong service name is correct.
-      Check the services in Kubernetes Dashboard namespace using:
-        kubectl -n kubernetes-dashboard get svc
+# NOTE: In case port-forward command does not work, make sure that kong service name is correct.
+#       Check the services in Kubernetes Dashboard namespace using:
+#         kubectl -n kubernetes-dashboard get svc
 
-Dashboard will be available at:
-  https://localhost:8443
+# Dashboard will be available at:
+#   https://localhost:8443
 
 
 # Create a service account for the dashboard
@@ -135,4 +144,19 @@ kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"
 # serviceaccount/kubernetes-dashboard created
 kubectl -n kubernetes-dashboard create token admin-user
 
+```
+
+## Uninstallation
+
+```bash
+helm uninstall traefik -n traefik
+helm uninstall longhorn -n longhorn-system
+helm uninstall cert-manager -n cert-manager
+helm uninstall metallb -n metallb-system
+helm uninstall kubernetes-dashboard -n kubernetes-dashboard
+
+Uninstallation
+kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag
+helm uninstall longhorn -n longhorn-system
+kubectl delete namespace longhorn-system
 ```
