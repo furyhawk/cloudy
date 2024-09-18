@@ -1,11 +1,11 @@
 # postgresql
 
 ```bash
-create ns postgresql-svc
+kubectl create ns postgresql-svc
 kubectl config set-context --current --namespace=postgresql-svc
-k apply -f ps-configmap.yaml
-k apply -f ps-storage.yaml
-k get pvc
+kubectl apply -f ps-configmap.yaml
+kubectl apply -f ps-storage.yaml
+kubectl get pvc
 NAME                STATUS   VOLUME               CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
 postgres-pv-claim   Bound    postgres-pv-volume   2Gi        RWX            manual         <unset>                 6s
 
@@ -30,4 +30,10 @@ kubectl exec -it [pod-name] --  psql -h localhost -U admin --password -p [port] 
 kubectl exec -it postgres-84bd99bf45-sf6xq --  psql -h localhost -U admin --password -p 5432 postgresdb
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
 helm install postgresql bitnami/postgresql --create-namespace -n 'postgresql-svc' --set persistence.existingClaim=postgresql-pv-claim --set volumePermissions.enabled=true
+
+kubectl delete -f ps-deployment.yaml
+kubectl delete -f ps-service.yaml
+kubectl delete -f ps-configmap.yaml
+kubectl delete -f ps-storage.yaml
