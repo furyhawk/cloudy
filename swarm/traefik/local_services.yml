@@ -9,18 +9,18 @@ http:
         address: "http://authentik-server:9000/outpost.goauthentik.io/auth/traefik"
         trustForwardHeader: true
         authResponseHeaders:
-        - X-authentik-username
-        - X-authentik-groups
-        - X-authentik-email
-        - X-authentik-name
-        - X-authentik-uid
-        - X-authentik-jwt
-        - X-authentik-meta-jwks
-        - X-authentik-meta-outpost
-        - X-authentik-meta-provider
-        - X-authentik-meta-app
-        - X-authentik-meta-version
-        - authorization
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version
+          - authorization
 
   routers:
     local-traefik-public-https:
@@ -74,6 +74,15 @@ http:
       tls: {}
       service: proxmox01@file
 
+    opnsense:
+      entryPoints:
+        - https
+      rule: Host(`opn.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
+      tls: {}
+      service: opnsense@file
+
   services:
     coco_desktop:
       loadBalancer:
@@ -93,6 +102,11 @@ http:
         serversTransport: "pvetransport"
         servers:
           - url: "https://192.168.50.201:8006"
+
+    opnsense:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.50.170"
 
 tcp:
   routers:
