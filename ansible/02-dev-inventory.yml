@@ -39,3 +39,10 @@ test:
     node09:
       ansible_host: 192.168.50.209
       ansible_port: 22
+
+dev:
+  hosts:
+    dev301:
+      ansible_host: 192.168.50.71
+    dev302:
+      ansible_host: 192.168.50.170
