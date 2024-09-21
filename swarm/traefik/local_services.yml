@@ -77,7 +77,7 @@ http:
     opnsense:
       entryPoints:
         - https
-      rule: Host(`opn.furyhawk.lol`)
+      rule: Host(`firewall.furyhawk.lol`)
       middlewares:
         - admin-auth@swarm
       tls: {}
