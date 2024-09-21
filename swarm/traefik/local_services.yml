@@ -78,8 +78,8 @@ http:
       entryPoints:
         - https
       rule: Host(`firewall.furyhawk.lol`)
-      middlewares:
-        - admin-auth@swarm
+      # middlewares:
+      #   - admin-auth@swarm
       tls: {}
       service: opnsense@file
 
