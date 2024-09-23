@@ -17,3 +17,14 @@ dev:
   hosts:
     dev302:
       ansible_host: 192.168.1.10
+      ansible_user: user
+      ansible_become_method: sudo
+    dev301:
+      ansible_host: 192.168.50.71
+      ansible_user: user
+      ansible_become_method: sudo
+
+virtual:
+  children:
+    backend:
+    dev:
