@@ -2,5 +2,5 @@
 
 ## Update all packages
 ```bash
-ansible-playbook -i hosts.yml playbook.yml -K
+ansible-playbook -i inventory playbooks/update/update-noreboot.yml -l '!dc08' -K
 ```

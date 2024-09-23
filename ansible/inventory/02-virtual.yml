@@ -1,0 +1,19 @@
+backend:
+  hosts:
+    nfs:
+      ansible_host: 192.168.50.225
+      ansible_user: root
+      ansible_become_method: su
+    swarm:
+      ansible_host: 192.168.50.220
+      ansible_user: user
+      ansible_become_method: sudo
+    firewall:
+      ansible_host: 192.168.50.170
+      ansible_user: root
+      ansible_become_method: su
+
+dev:
+  hosts:
+    dev302:
+      ansible_host: 192.168.1.10
