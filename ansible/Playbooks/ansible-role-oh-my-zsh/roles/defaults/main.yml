@@ -17,6 +17,7 @@ omz_install_directory: ".oh-my-zsh"
 # Oh My ZSH template vars.
 omz_zshrc_create: true
 omz_zshrc_template: "templates/zshrc.zsh-template.j2"
+omz_custom_theme_template: "templates/custom.zsh-theme.j2"
 omz_zshrc_backup: true
 omz_zshrc_force: true
 omz_zsh_theme: "robbyrussell"

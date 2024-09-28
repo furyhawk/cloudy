@@ -8,17 +8,15 @@
     users:
       - name: "user"
         group: "user"
-        settings: |
-          export PATH="/usr/local/sbin:$path"
-          alias l="ls -lah"
+        settings: ""
   tasks:
     - name: Run ansible-role-oh-my-zsh.
       include_role:
-        name: "ansible-role-oh-my-zsh"
+        name: "ctorgalson.oh-my-zsh"
       vars:
         omz_user: "{{ item }}"
-        # Only create `.zshrc` for user 'lorem'; item.settings will be
-        # appended to `.zshrc` for the user 'ipsum'.
+        # Only create `.zshrc` for user 'user'; item.settings will be
+        # appended to `.zshrc` for the user 'user'.
         omz_zshrc_create: "{{ (item.name == 'user') | ternary(true, false) }}"
         omz_plugins:
           - "kubectl"

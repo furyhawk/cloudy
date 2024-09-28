@@ -125,3 +125,7 @@ This task only runs when `omz_zshrc_create` is set to `false`.
               - "autojump"
               - "git"
           with_items: "{{ users }}"
+
+```bash
+ansible-playbook -i inventory playbooks/ansible-role-oh-my-zsh/playbook.yml -l 'dev303' -K
+```
