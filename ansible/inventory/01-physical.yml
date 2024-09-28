@@ -30,7 +30,11 @@ arm64:
       ansible_host: 192.168.50.205
       ansible_user: user
       ansible_become_method: sudo
-    dc08:
+    node07:
+      ansible_host: 192.168.50.207
+      ansible_user: user
+      ansible_become_method: sudo
+    node08:
       ansible_host: 192.168.50.208
       ansible_user: user
       ansible_become_method: sudo
