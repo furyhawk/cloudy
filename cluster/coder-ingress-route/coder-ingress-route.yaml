@@ -1,52 +1,31 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: basic-auth-users-secret
-  namespace: longhorn-system
-data:
-  users: dXNlcjokYXByMSREdjgvWEFWayR1RmhjMlNyalloMGJuR09IYmNrV2oxCgo=
-
----
-# Declaring the user list
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: ingress-auth
-  namespace: longhorn-system
-spec:
-  basicAuth:
-    secret: basic-auth-users-secret
-
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: strip-longhorn
-  namespace: longhorn-system
+  name: strip-coder
+  namespace: default
 spec:
   stripPrefix:
     prefixes:
-      - "/longhorn"
+      - "/coder"
     forceSlash: true
 
 ---
-# Host(`test.traefik.local`) && PathPrefix(`/longhorn`)
+# Host(`test.traefik.local`) && PathPrefix(`/coder`)
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: longhorn-ingress
-  namespace: longhorn-system
+  name: coder-ingress
+  namespace: default
 spec:
   entryPoints:
     - web
   routes:
-    - match: PathPrefix(`/longhorn`)
+    - match: PathPrefix(`/coder`)
       kind: Rule
       middlewares:
-        - name: ingress-auth
-          namespace: longhorn-system
-        - name: strip-longhorn
-          namespace: longhorn-system
+        - name: strip-coder
+          namespace: default
       services:
-        - name: longhorn-frontend
+        - name: code-server
           port: 80
