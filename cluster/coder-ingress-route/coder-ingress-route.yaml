@@ -28,4 +28,4 @@ spec:
           namespace: default
       services:
         - name: code-server
-          port: 80
+          port: 8080

@@ -63,9 +63,9 @@ htpasswd -nb user password | openssl base64 > auth
 # " | kubectl -n longhorn-system create -f -
 # ingress.networking.k8s.io/longhorn-ingress created
 
-kubectl -n longhorn-system apply -f longhorn-ingress-route.yaml
+kubectl apply -f coder-ingress-route.yaml
 
-kubectl -n longhorn-system get ingressroutes
+kubectl get ingressroutes
 # NAME               HOSTS   ADDRESS                                     PORTS   AGE
 # longhorn-ingress   *       45.79.165.114,66.228.45.37,97.107.142.125   80      2m7s
 
