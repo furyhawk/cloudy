@@ -1,0 +1,66 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: coder.taefik.local
+  namespace: code-server
+spec:
+  dnsNames:
+    - coder.taefik.local
+  secretName: coder.taefik.local
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: insecure-transport
+  namespace: code-server
+spec:
+  insecureSkipVerify: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-coder
+  namespace: code-server
+spec:
+  stripPrefix:
+    prefixes:
+      - "/coder"
+    forceSlash: true
+
+---
+# Host(`coder.traefik.local`) && PathPrefix(`/coder`) PathPrefix(`/coder`)
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: coder-ingress
+  namespace: code-server
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`coder.traefik.local`)
+      kind: Rule
+      # middlewares:
+      #   - name: strip-coder
+      #     namespace: code-server
+      services:
+        - name: code-server
+          port: 8080
+          namespace: code-server
+          serversTransport: insecure-transport
+  tls:
+    secretName: coder.taefik.local
