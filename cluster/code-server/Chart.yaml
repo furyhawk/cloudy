@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+apiVersion: v2
+type: application
+name: code-server
+description: A Helm chart for Kubernetes
+version: 2.0.0
+# renovate: image=ghcr.io/coder/code-server
+appVersion: "4.93.1"
+
+home: https://charts.pascaliske.dev/charts/code-server/
+sources:
+  - https://github.com/pascaliske/helm-charts
+  - https://github.com/coder/code-server
+keywords:
+  - vscode
+  - code-server
+  - browser-ide
+  - ide
+maintainers:
+  - name: pascaliske
+    email: info@pascaliske.dev
+    url: https://pascaliske.dev
+
+dependencies:
+  - name: base
+    version: 1.2.0
+    repository: https://charts.pascaliske.dev
+
+annotations:
+  # possible kinds: added, changed, deprecated, removed, fixed, security
+  artifacthub.io/changes: |
+    - kind: removed
+      description: 'Remove support for CRDs from "traefik.containo.us".'
+    - kind: added
+      description: 'Add support for CRDs from "traefik.io".'
