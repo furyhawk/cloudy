@@ -40,7 +40,18 @@ spec:
     prefixes:
       - "/coder"
     forceSlash: true
-
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: upgrade
+  namespace: code-server
+  # --- snip --
+spec:
+  headers:
+    customRequestHeaders:
+      Connection: Upgrade
+      Upgrade: websocket
 ---
 # Host(`coder.traefik.local`) && PathPrefix(`/coder`) PathPrefix(`/coder`)
 apiVersion: traefik.io/v1alpha1
@@ -54,9 +65,10 @@ spec:
   routes:
     - match: Host(`coder.traefik.local`)
       kind: Rule
-      # middlewares:
+      middlewares:
+        - name: upgrade
+          namespace: code-server
       #   - name: strip-coder
-      #     namespace: code-server
       services:
         - name: code-server
           port: 8080
