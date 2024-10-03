@@ -84,6 +84,21 @@ services:
         - "traefik.http.services.wetty_app.loadbalancer.server.port=3000"
         # - "traefik.http.routers.wetty.middlewares=forward-auth@file"
 
+  whisper_web:
+    image: furyhawk/whisper-web
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.whisper_web.entrypoints=https
+        - traefik.http.routers.whisper_web.rule=Host(`whisper.${DOMAIN}`)
+        - traefik.http.routers.whisper_web.tls.certresolver=le
+        - traefik.http.routers.whisper_web.service=whisper_web
+        - traefik.http.services.whisper_web.loadbalancer.server.port=4173
+
 networks:
   traefik-public:
     external: true
