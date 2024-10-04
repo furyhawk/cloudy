@@ -20,14 +20,14 @@ services:
     # lscr.io/linuxserver/librespeed:latest
     image: ghcr.io/librespeed/speedtest:latest
     environment:
-      - PUID=1000
-      - PGID=1000
+      # - PUID=1000
+      # - PGID=1000
       - TZ=${TZ}
-      - PASSWORD=${DATABASE__PASSWORD}
+      # - PASSWORD=${DATABASE__PASSWORD}
       - MODE=standalone
     user: "1000:1000"
-    volumes:
-      - librespeed_data:/config
+    # volumes:
+    #   - librespeed_data:/config
     # ports:
     #   - 80:80
     restart: unless-stopped
