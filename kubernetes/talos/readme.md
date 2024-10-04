@@ -1,7 +1,7 @@
 # talos
 
 ```bash
-export CONTROL_PLANE_IP=192.168.50.180
+export CONTROL_PLANE_IP=192.168.50.191
 # talosctl gen config talos-proxmox-cluster https://$CONTROL_PLANE_IP:6443 --output-dir _out
 
 # amd
