@@ -16,15 +16,17 @@ services:
         - traefik.http.services.cyberchef.loadbalancer.server.port=8000
 
   librespeed:
+    # ghcr.io/librespeed/speedtest:latest
     image: lscr.io/linuxserver/librespeed:latest
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
       - PASSWORD=${DATABASE__PASSWORD}
+      - MODE=standalone
     user: "1000:1000"
-    volumes:
-      - /var/data/config/librespeed:/config
+    # volumes:
+    #   - /var/data/config/librespeed:/config
     # ports:
     #   - 80:80
     restart: unless-stopped
