@@ -26,8 +26,8 @@ services:
       - PASSWORD=${DATABASE__PASSWORD}
       - MODE=standalone
     user: "1000:1000"
-    # volumes:
-    #   - /var/data/config/librespeed:/config
+    volumes:
+      - librespeed_data:/config
     # ports:
     #   - 80:80
     restart: unless-stopped
@@ -102,6 +102,9 @@ services:
         - traefik.http.routers.whisper_web.tls.certresolver=le
         - traefik.http.routers.whisper_web.service=whisper_web
         - traefik.http.services.whisper_web.loadbalancer.server.port=4173
+
+volumes:
+  librespeed_data:
 
 networks:
   traefik-public:
