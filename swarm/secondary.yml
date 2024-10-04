@@ -18,10 +18,11 @@ services:
   librespeed:
     image: lscr.io/linuxserver/librespeed:latest
     environment:
-      # - PUID=1000
-      # - PGID=1000
+      - PUID=1000
+      - PGID=1000
       - TZ=${TZ}
       - PASSWORD=${DATABASE__PASSWORD}
+    user: "1000:1000"
     volumes:
       - /var/data/config/librespeed:/config
     # ports:
@@ -43,7 +44,7 @@ services:
   linx:
     image: furyhawk/linx-server-anime
     command: -config /data/linx-server.conf
-    # user: "1000:1000"
+    user: "1000:1000"
     volumes:
       - /var/data/files:/data/files
       - /var/data/meta:/data/meta
