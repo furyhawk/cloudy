@@ -103,9 +103,6 @@ services:
         - traefik.http.routers.whisper_web.service=whisper_web
         - traefik.http.services.whisper_web.loadbalancer.server.port=4173
 
-volumes:
-  librespeed_data:
-
 networks:
   traefik-public:
     external: true
