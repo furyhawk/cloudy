@@ -8,7 +8,7 @@ x-environment: &app-environment
 volumes:
   # bai_cache: {}
   jellyfin_config: {}
-  # jellyfin_cache: {}
+  jellyfin_cache: {}
   # adminer_data: {}
   # privatebin_data: {}
 
@@ -106,7 +106,7 @@ services:
     # user: "1000:1000"
     volumes:
       - jellyfin_config:/config
-      - /var/data/jellyfin_cache:/cache
+      - jellyfin_cache:/cache
       - type: bind
         source: ${MEDIADIR}
         target: /media
