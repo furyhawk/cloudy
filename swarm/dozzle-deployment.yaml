@@ -7,7 +7,7 @@ metadata:
   labels:
     io.kompose.service: dozzle
     traefik.constraint-label: traefik-public
-    traefik.docker.network: traefik-public
+    traefik.swarm.network: traefik-public
     traefik.enable: "true"
     traefik.http.routers.dozzle.entrypoints: https
     traefik.http.routers.dozzle.middlewares: admin-auth

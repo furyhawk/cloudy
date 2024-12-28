@@ -26,7 +26,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.tcp.routers.adguardhome_tcp.entrypoints=dns
         - traefik.tcp.routers.adguardhome_tcp.rule=HostSNI(`*`)

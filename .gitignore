@@ -165,6 +165,7 @@ cython_debug/
 # production.yml
 
 cache/
+config/
 data-node/
 meili_data*/
 privatebin-data/

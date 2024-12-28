@@ -51,7 +51,7 @@ services:
           - node.labels.librechat.libre-logs == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.librechat.entrypoints=https
         - traefik.http.routers.librechat.rule=Host(`chat.${DOMAIN}`)

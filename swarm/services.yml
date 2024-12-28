@@ -21,7 +21,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.api_server.entrypoints=https
         - traefik.http.routers.api_server.rule=Host(`api.${DOMAIN}`)
@@ -49,7 +49,7 @@ services:
           - node.role == manager
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.dozzle.entrypoints=https
         - traefik.http.routers.dozzle.rule=Host(`log.${DOMAIN}`)
@@ -96,7 +96,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.minio-router.entrypoints=https
         - traefik.http.routers.minio-router.rule=Host(`drive.${DOMAIN}`) || Host(`storage.${DOMAIN}`)
@@ -136,7 +136,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.osrm-backend.entrypoints=https
         - traefik.http.routers.osrm-backend.rule=Host(`osrm.${DOMAIN}`)
@@ -177,7 +177,7 @@ services:
           - node.labels.postgres.postgres_data == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.tcp.routers.postgres.entrypoints=postgres-socket
         - traefik.tcp.routers.postgres.rule=HostSNI(`*`)
@@ -195,7 +195,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.whoami-rtr.entrypoints=https
         - traefik.http.routers.whoami-rtr.rule=Host(`whoami.$DOMAIN`)

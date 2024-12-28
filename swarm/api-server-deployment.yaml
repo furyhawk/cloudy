@@ -7,7 +7,7 @@ metadata:
   labels:
     io.kompose.service: api-server
     traefik.constraint-label: traefik-public
-    traefik.docker.network: traefik-public
+    traefik.swarm.network: traefik-public
     traefik.enable: "true"
     traefik.http.routers.api_server.entrypoints: https
     traefik.http.routers.api_server.rule: Host(`api.`)

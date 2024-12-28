@@ -29,7 +29,7 @@ services:
       #     - node.labels.emqx1.emqx-data1 == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.tcp.routers.emqx1-tcp-mqtt.entrypoints=mqtt
         - traefik.tcp.routers.emqx1-tcp-mqtt.rule=HostSNI(`*`)
@@ -68,7 +68,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.mqttx-web.entrypoints=https
         - traefik.http.routers.mqttx-web.rule=Host(`mqttx.${DOMAIN}`)

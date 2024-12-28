@@ -40,7 +40,7 @@ services:
       #     - node.labels.adminer.pgadmin == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.adminer.entrypoints=https
         - traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`) || Host(`dbadmin.${DOMAIN}`)
@@ -60,7 +60,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.cheatsheets.entrypoints=https
         - traefik.http.routers.cheatsheets.rule=Host(`cheat.${DOMAIN}`)
@@ -83,7 +83,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.heynote.entrypoints=https
         - traefik.http.routers.heynote.rule=Host(`note.${DOMAIN}`) || Host(`note0.${DOMAIN}`) || Host(`note1.${DOMAIN}`) || Host(`note2.${DOMAIN}`) || Host(`note3.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
@@ -121,7 +121,7 @@ services:
           # - node.labels.jellyfin.jellyfin_cache == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.jellyfin.entrypoints=https
         - traefik.http.routers.jellyfin.rule=Host(`media.${DOMAIN}`)
@@ -140,7 +140,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.meshtastic.entrypoints=https
         - traefik.http.routers.meshtastic.rule=Host(`mesh.${DOMAIN}`)
@@ -164,7 +164,7 @@ services:
       #     - node.labels.privatebin.privatebin_data == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.privatebin.entrypoints=https
         - traefik.http.routers.privatebin.rule=Host(`bin.${DOMAIN}`) || Host(`paste.${DOMAIN}`)
@@ -185,7 +185,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.streamlit-bai.entrypoints=https
         - traefik.http.routers.streamlit-bai.rule=Host(`bai.${DOMAIN}`)
@@ -203,7 +203,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.streamlit-fin.entrypoints=https
         - traefik.http.routers.streamlit-fin.rule=Host(`fin.${DOMAIN}`)
@@ -224,7 +224,7 @@ services:
       #     - node.labels.site.site_server == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.site_server.entrypoints=https
         - traefik.http.routers.site_server.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`) || Host(`info.${DOMAIN}`) || Host(`124c41.${DOMAIN}`)

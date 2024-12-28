@@ -7,7 +7,7 @@ metadata:
   labels:
     io.kompose.service: whoami
     traefik.constraint-label: traefik-public
-    traefik.docker.network: traefik-public
+    traefik.swarm.network: traefik-public
     traefik.enable: "true"
     traefik.http.routers.whoami-rtr.entrypoints: https
     traefik.http.routers.whoami-rtr.rule: Host(`whoami.`)

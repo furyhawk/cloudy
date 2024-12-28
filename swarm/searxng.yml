@@ -72,7 +72,7 @@ services:
       #     - node.labels.searxng.searxng_data == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.searxng-rtr.entrypoints=https
         - traefik.http.routers.searxng-rtr.rule=Host(`search.${DOMAIN}`)

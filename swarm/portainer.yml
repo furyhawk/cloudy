@@ -29,7 +29,7 @@ services:
           - node.labels.portainer.portainer-data == true
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.portainer-https.entrypoints=https
         - traefik.http.routers.portainer-https.rule=Host(`port.${DOMAIN?Variable not set}`) || Host(`portainer.${DOMAIN?Variable not set}`)

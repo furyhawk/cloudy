@@ -7,7 +7,7 @@ services:
     deploy:
       labels:
         - traefik.frontend.rule=Host:register.${DOMAIN?Variable not set}
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.port=5000
     ports:
       - 5000:5000

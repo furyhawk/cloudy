@@ -30,7 +30,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.docmost.entrypoints=https
         - traefik.http.routers.docmost.rule=Host(`doc.${DOMAIN}`)
