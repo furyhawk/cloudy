@@ -151,7 +151,7 @@ services:
         - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
 
   postgres_db:
-    image: postgres
+    image: postgres:16
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
