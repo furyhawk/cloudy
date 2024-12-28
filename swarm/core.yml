@@ -40,6 +40,7 @@ services:
       labels:
         # Enable Traefik for this service, to make it available in the public network
         - traefik.enable=true
+        - traefik.swarm.lbswarm=true
         # Use the traefik-public network (declared below)
         - traefik.swarm.network=traefik-public
         # Use the custom label "traefik.constraint-label=traefik-public"
