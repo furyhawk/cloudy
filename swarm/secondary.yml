@@ -19,8 +19,8 @@ services:
     image: glanceapp/glance
     networks:
       - traefik-public
-    volumes:
-      - /var/data/glance.yml:/app/glance.yml
+    # volumes:
+    #   - /var/data/glance.yml:/app/glance.yml
       # - /etc/timezone:/etc/timezone:ro
       # - /etc/localtime:/etc/localtime:ro
     deploy:
