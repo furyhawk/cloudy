@@ -15,6 +15,25 @@ services:
         - traefik.http.routers.cyberchef.service=cyberchef
         - traefik.http.services.cyberchef.loadbalancer.server.port=8000
 
+  glance:
+    image: glanceapp/glance
+    networks:
+      - traefik-public
+    volumes:
+      - /var/data/glance.yml:/app/glance.yml
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.glance.entrypoints=https
+        - traefik.http.routers.glance.rule=Host(`home.${DOMAIN}`)
+        - traefik.http.routers.glance.tls.certresolver=le
+        - traefik.http.routers.glance.service=glance
+        - traefik.http.services.glance.loadbalancer.server.port=8080
+
   librespeed:
     # ghcr.io/librespeed/speedtest:latest
     # lscr.io/linuxserver/librespeed:latest
