@@ -21,8 +21,8 @@ services:
       - traefik-public
     volumes:
       - /var/data/glance.yml:/app/glance.yml
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+      # - /etc/timezone:/etc/timezone:ro
+      # - /etc/localtime:/etc/localtime:ro
     deploy:
       labels:
         - traefik.enable=true
