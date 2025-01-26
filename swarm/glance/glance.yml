@@ -50,6 +50,24 @@ pages:
             cache: 1m
             title: Services
             sites:
+              - title: Blog
+                url: https://furyhawk.github.io/124c41/
+                icon: si:readthedocs
+              - title: Resume
+                url: https://info.furyhawk.lol/resume/
+                icon: si:apachekylin
+              - title: Linx
+                url: https://linx.furyhawk.lol/
+                icon: si:pastebin
+              - title: bin
+                url: https://bin.furyhawk.lol/
+                icon: si:reacthookform
+              - title: Speedtest
+                url: https://speed.furyhawk.lol/
+                icon: si:speedtest
+              - title: cheatsheets
+                url: https://cheat.furyhawk.lol/
+                icon: si:apachekafka
               - title: Jellyfin
                 url: https://media.furyhawk.lol/
                 icon: si:jellyfin
