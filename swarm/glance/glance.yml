@@ -46,6 +46,14 @@ pages:
 
       - size: full
         widgets:
+          - type: monitor
+            cache: 1m
+            title: Services
+            sites:
+              - title: Jellyfin
+                url: https://media.furyhawk.lol/
+                icon: si:jellyfin
+
           - type: rss
             title: News
             style: horizontal-cards
