@@ -84,6 +84,7 @@ deploy-secondary: pull
 	set -a ;\
 	. ./swarm/.env ;\
 	set +a ;\
+	cp ./swarm/glance/glance.yml /var/data/glance.yml ;\
 	docker stack deploy --compose-file ./swarm/secondary.yml secondary ;\
 	}
 deploy-adguardhome: pull
