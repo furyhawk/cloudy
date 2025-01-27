@@ -3,9 +3,10 @@
 # Webapp + Streamlit + Traefik + Docker
 This simple project uses Traefik as a reverse proxy to a Streamlit application and handles SSL certs with Lets Encrypt.
 
-- [Chat](https://chat.furyhawk.lol/): Chat with AI.
+- [AI](https://bot.furyhawk.lol/): OpenwebUI.
+- ~~[Chat](https://chat.furyhawk.lol/): Chat with AI.~~
 - [Stock Analysis Assistant](https://fin.furyhawk.lol/): AI assistant using GROQ and llama3.
-- [Redlib](https://redlib.furyhawk.lol/): Reddit libre.
+- ~~[Redlib](https://redlib.furyhawk.lol/): Reddit libre.~~
 - [Blog](https://info.furyhawk.lol/)
 - [Beyond All Information](https://bai.furyhawk.lol/): analyse your [Beyond All Reason](https://www.beyondallreason.info/) games.
 - [CheatSheets](https://cheat.furyhawk.lol/): Collection of cheatsheets.
@@ -17,7 +18,7 @@ This simple project uses Traefik as a reverse proxy to a Streamlit application a
 
 ## Requirements
 - Docker Compose
-- Build for ARM64 platform
+- Build for ARM64/x86 platform
 
 ## Production Deployment
 1. `git clone https://github.com/furyhawk/cloudy.git`
