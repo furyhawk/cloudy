@@ -35,7 +35,7 @@ services:
 
   chromadb:
     hostname: chromadb
-    image: chromadb/chroma:0.5.15
+    image: chromadb/chroma:latest
     volumes:
       - ./data/chromadb:/chroma/chroma
     environment:
