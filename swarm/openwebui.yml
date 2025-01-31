@@ -8,11 +8,24 @@ volumes:
 services:
   open_webui:
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG:-main}
+    depends_on:
+        - chromadb
+        - ollama
     environment:
+      - CHROMA_HTTP_PORT=8000
+      - CHROMA_HTTP_HOST=chromadb
+      - CHROMA_TENANT=default_tenant
+      - VECTOR_DB=chroma
+      - DATA_DIR=/app/backend/data
       - DOMAIN=${DOMAIN}
       - PORT=${OPEN_WEBUI_PORT:-8080}
       - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT:-8080}
-      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-false}
+      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-true}
+      - CORS_ALLOW_ORIGIN="*"
+      - OLLAMA_BASE_URLS=http://ollama:11434
+      - RAG_EMBEDDING_ENGINE=ollama
+      - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
+      - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
     volumes:
       - open_webui:/app/backend/data
     expose:
@@ -32,12 +45,17 @@ services:
         - traefik.http.routers.open_webui.tls.certresolver=le
         - traefik.http.routers.open_webui.service=open_webui_app
         - traefik.http.services.open_webui_app.loadbalancer.server.port=${OPEN_WEBUI_PORT:-8080}
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
 
   chromadb:
     hostname: chromadb
     image: chromadb/chroma:latest
     volumes:
-      - ./data/chromadb:/chroma/chroma
+      - /var/data/chromadb:/chroma/chroma
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
@@ -73,4 +91,4 @@ services:
         delay: 5s
         max_attempts: 3
     volumes:
-      - ./data/ollama:/root/.ollama
+      - /var/data/ollama:/root/.ollama
