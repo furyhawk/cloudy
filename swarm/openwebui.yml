@@ -1,9 +1,12 @@
 networks:
+  net:
+    driver: overlay
+    attachable: true
   traefik-public:
     external: true
 
-volumes:
-  open_webui: {}
+# volumes:
+#   open_webui: {}
 
 services:
   open_webui:
@@ -11,6 +14,7 @@ services:
     depends_on:
         - chromadb
         - ollama
+    user: "${UID}:${GID}"
     environment:
       - CHROMA_HTTP_PORT=8000
       - CHROMA_HTTP_HOST=chromadb
@@ -27,10 +31,11 @@ services:
       - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
       - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
     volumes:
-      - open_webui:/app/backend/data
+      - /var/data/open-webui:/app/backend/data
     expose:
       - ${OPEN_WEBUI_PORT:-8080}
     networks:
+      - net
       - traefik-public
     deploy:
       placement:
@@ -54,16 +59,17 @@ services:
   chromadb:
     hostname: chromadb
     image: chromadb/chroma:latest
+    user: "${UID}:${GID}"
     volumes:
       - /var/data/chromadb:/chroma/chroma
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
       - PERSIST_DIRECTORY=/chroma/chroma
-    ports: 
-      - target: 8000
-        published: 8000
-        mode: overlay
+    expose:
+      - 8000
+    networks:
+      - net
     deploy:
       replicas: 1
       restart_policy:
@@ -79,11 +85,12 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+    user: "${UID}:${GID}"
     hostname: ollama
-    ports:
-      - target: 11434
-        published: 11434
-        mode: overlay
+    expose:
+      - 11434
+    networks:
+      - net
     deploy:
       replicas: 1
       restart_policy:
