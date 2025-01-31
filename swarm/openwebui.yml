@@ -32,7 +32,7 @@ services:
       - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
       - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
     volumes:
-      - open-webui:/app/backend/data
+      - open_webui:/app/backend/data
     expose:
       - ${OPEN_WEBUI_PORT:-8080}
     networks:
