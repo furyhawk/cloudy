@@ -87,7 +87,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - /var/data/minio_data:/data
+      - minio_data:/data
     expose:
       - 9000
       - 9001
@@ -208,7 +208,7 @@ services:
         - traefik.http.services.whoami-svc.loadbalancer.server.port=80
 
 volumes:
-  # minio_data: {}
+  minio_data: {}
   # neo4j_data: {}
   # neo4j_logs: {}
   postgres_data: {}
