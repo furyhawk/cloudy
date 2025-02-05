@@ -1,0 +1,50 @@
+volumes:
+  open_webui: {}
+  chromadb: {}
+  ollama: {}
+
+services:
+  open_webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG:-main}
+    depends_on:
+        - chromadb
+        - ollama
+    environment:
+      - CHROMA_HTTP_PORT=8000
+      - CHROMA_HTTP_HOST=chromadb
+      - CHROMA_TENANT=default_tenant
+      - VECTOR_DB=chroma
+      - DATA_DIR=/app/backend/data
+      - DOMAIN=${DOMAIN}
+      - PORT=${OPEN_WEBUI_PORT:-8080}
+      - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT:-8080}
+      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-true}
+      - CORS_ALLOW_ORIGIN="*"
+      - OLLAMA_BASE_URLS=http://ollama:11434
+      - RAG_EMBEDDING_ENGINE=ollama
+      - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
+      - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
+    volumes:
+      - open_webui:/app/backend/data
+    expose:
+      - ${OPEN_WEBUI_PORT:-8080}
+
+  chromadb:
+    hostname: chromadb
+    image: chromadb/chroma:latest
+    volumes:
+      - chromadb:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+    expose:
+      - 8000
+
+  ollama:
+    image: ollama/ollama:latest
+    hostname: ollama
+    volumes:
+      - ollama:/root/.ollama
+    expose:
+      - 11434
