@@ -1,3 +1,4 @@
+---
 volumes:
   open_webui: {}
   chromadb: {}
@@ -5,7 +6,7 @@ volumes:
 
 services:
   open_webui:
-    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG:-main}
+    image: ghcr.io/open-webui/open-webui:main
     depends_on:
         - chromadb
         - ollama
@@ -15,19 +16,18 @@ services:
       - CHROMA_TENANT=default_tenant
       - VECTOR_DB=chroma
       - DATA_DIR=/app/backend/data
-      - DOMAIN=${DOMAIN}
-      - PORT=${OPEN_WEBUI_PORT:-8080}
-      - WEBUI_URL=http://localhost:${OPEN_WEBUI_PORT:-8080}
-      - ENABLE_OLLAMA_API=${ENABLE_OLLAMA_API:-true}
-      - CORS_ALLOW_ORIGIN="*"
+      - PORT=8080
+      - WEBUI_URL=http://localhost:8080
+      - ENABLE_OLLAMA_API=true
+      # - CORS_ALLOW_ORIGIN="*"
       - OLLAMA_BASE_URLS=http://ollama:11434
       - RAG_EMBEDDING_ENGINE=ollama
       - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
       - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
     volumes:
       - open_webui:/app/backend/data
-    expose:
-      - ${OPEN_WEBUI_PORT:-8080}
+    ports:
+      - "8080:8080"
 
   chromadb:
     hostname: chromadb
@@ -35,16 +35,23 @@ services:
     volumes:
       - chromadb:/chroma/chroma
     environment:
-      - IS_PERSISTENT=TRUE
-      - ALLOW_RESET=TRUE
+      - IS_PERSISTENT=true
+      - ALLOW_RESET=true
       - PERSIST_DIRECTORY=/chroma/chroma
-    expose:
-      - 8000
+    ports:
+      - "8000:8000"
 
   ollama:
     image: ollama/ollama:latest
     hostname: ollama
     volumes:
       - ollama:/root/.ollama
-    expose:
-      - 11434
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
