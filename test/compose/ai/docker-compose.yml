@@ -2,14 +2,13 @@
 volumes:
   open_webui: {}
   chromadb: {}
-  ollama: {}
 
 services:
   open_webui:
     image: ghcr.io/open-webui/open-webui:main
     depends_on:
         - chromadb
-        - ollama
+        # - ollama
     environment:
       - CHROMA_HTTP_PORT=8000
       - CHROMA_HTTP_HOST=chromadb
@@ -28,6 +27,8 @@ services:
       - open_webui:/app/backend/data
     ports:
       - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   chromadb:
     hostname: chromadb
@@ -40,18 +41,3 @@ services:
       - PERSIST_DIRECTORY=/chroma/chroma
     ports:
       - "8000:8000"
-
-  ollama:
-    image: ollama/ollama:latest
-    hostname: ollama
-    volumes:
-      - ollama:/root/.ollama
-    ports:
-      - "11434:11434"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]

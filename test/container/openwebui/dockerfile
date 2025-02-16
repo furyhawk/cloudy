@@ -1,0 +1,28 @@
+---
+volumes:
+  ollama: {}
+
+services:
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    hostname: ollama
+    runtime: nvidia
+    devices:
+      - nvidia.com/gpu=all
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+      - LOG_LEVEL=debug
+    volumes:
+      - ai_ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
