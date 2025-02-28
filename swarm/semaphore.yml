@@ -3,7 +3,7 @@ services:
         image: semaphoreui/semaphore:v2.12.14
         environment:
             SEMAPHORE_DB_DIALECT: postgres
-            SEMAPHORE_DB_HOST: "db.${DOMAINNAME}"
+            SEMAPHORE_DB_HOST: "db.${DOMAIN}"
             SEMAPHORE_DB_NAME: semaphore
             SEMAPHORE_DB_USER: ${DATABASE__USERNAME}
             SEMAPHORE_DB_PASS: ${DATABASE__PASSWORD}
@@ -25,7 +25,7 @@ services:
                 - traefik.swarm.network=traefik-public
                 - traefik.constraint-label=traefik-public
                 - traefik.http.routers.semaphore.entrypoints=https
-                - traefik.http.routers.semaphore.rule=Host(`semaphore.${DOMAINNAME}`)
+                - traefik.http.routers.semaphore.rule=Host(`semaphore.${DOMAIN}`)
                 - traefik.http.routers.semaphore.tls.certresolver=le
                 - traefik.http.routers.semaphore.service=semaphore
                 - traefik.http.services.semaphore.loadbalancer.server.port=3000
