@@ -167,4 +167,12 @@ deploy-outline: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/outline.yml outline ;\
 	}
+deploy-semaphore: pull
+	{ \
+	echo "Deploying the semaphore stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/semaphore.yml semaphore ;\
+	}
 # git submodule update --init --recursive
