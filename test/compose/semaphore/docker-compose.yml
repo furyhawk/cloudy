@@ -1,0 +1,23 @@
+services:
+    semaphore:
+        image: semaphoreui/semaphore:v2.12.14
+        environment:
+            SEMAPHORE_DB_DIALECT: postgres
+            SEMAPHORE_DB_HOST: "db.${DOMAINNAME}"
+            SEMAPHORE_DB_NAME: semaphore
+            SEMAPHORE_DB_USER: ${DATABASE__USERNAME}
+            SEMAPHORE_DB_PASS: ${DATABASE__PASSWORD}
+            SEMAPHORE_ADMIN: admin
+            SEMAPHORE_ADMIN_PASSWORD: changeme
+            SEMAPHORE_ADMIN_NAME: Admin
+            SEMAPHORE_ADMIN_EMAIL: admin@localhost
+
+            SEMAPHORE_DB_OPTIONS: "{\"sslmode\":\"disable\"}"
+        ports:
+            - 3000:3000
+        volumes:
+            - semaphore_data:/var/lib/semaphore
+            - semaphore_config:/etc/semaphore
+volumes:
+    semaphore_data:
+    semaphore_config:
