@@ -3,6 +3,11 @@ volumes:
   open_webui: {}
   chromadb: {}
 
+networks:
+  host:
+    external: true
+    name: host
+
 services:
   open_webui:
     image: ghcr.io/open-webui/open-webui:ollama
@@ -27,15 +32,17 @@ services:
       - open_webui:/app/backend/data
     ports:
       - "8080:8080"
+    networks:
+      - host
     extra_hosts:
       - "host.docker.internal:host-gateway"
     deploy:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+          - driver: cdi
+            device_ids: ['nvidia.com/gpu=all']
+            capabilities: [gpu]
 
   chromadb:
     hostname: chromadb

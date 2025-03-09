@@ -1,11 +1,23 @@
 services:
-  test:
-    image: nvidia/cuda:12.3.1-base-ubuntu20.04
-    command: nvidia-smi
+  testgpupodman_count:
+    image: docker.io/ubuntu:latest
+    command: ["nvidia-smi"]
+    profiles: [gpu]
     deploy:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+  test:
+    image: docker.io/ubuntu:latest
+    command: ["nvidia-smi"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: cdi
+            count: 1
+            device_ids: ['nvidia.com/gpu=all']
+            capabilities: [gpu]
