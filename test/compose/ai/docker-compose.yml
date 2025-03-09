@@ -5,7 +5,7 @@ volumes:
 
 services:
   open_webui:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:ollama
     depends_on:
         - chromadb
         # - ollama
@@ -19,7 +19,7 @@ services:
       - WEBUI_URL=http://localhost:8080
       - ENABLE_OLLAMA_API=true
       # - CORS_ALLOW_ORIGIN="*"
-      - OLLAMA_BASE_URLS=http://ollama:11434
+      - OLLAMA_BASE_URLS=http://127.0.0.1:11434
       - RAG_EMBEDDING_ENGINE=ollama
       - RAG_EMBEDDING_MODEL=nomic-embed-text-v1.5
       - RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE="True"
@@ -29,10 +29,17 @@ services:
       - "8080:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   chromadb:
     hostname: chromadb
-    image: chromadb/chroma:latest
+    image: docker.io/chromadb/chroma:latest
     volumes:
       - chromadb:/chroma/chroma
     environment:
