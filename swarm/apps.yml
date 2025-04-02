@@ -27,6 +27,7 @@ services:
       PYTHONPATH: "/pgadmin4"
       TZ: Asia/Singapore
       DOMAIN: ${DOMAIN}
+      ADMINER_DESIGN: pepa-linha-dark
     volumes:
       - /var/data/adminer_data:/var/lib/pgadmin
     restart: unless-stopped
