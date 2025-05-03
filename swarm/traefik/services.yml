@@ -24,7 +24,8 @@ http:
       entryPoints:
         - https
       rule: Host(`dev.furyhawk.lol`)
-      tls: {}
+      tls:
+        certResolver: le
       service: dev_machine@file
 
     proxmox00:
