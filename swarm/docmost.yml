@@ -1,5 +1,6 @@
 volumes:
   docmost_redis_data: {}
+  docmost_redis_storage: {}
 
 networks:
   net:
@@ -55,7 +56,8 @@ services:
     restart: unless-stopped
     user: "${UID}:${GID}"
     volumes:
-      - docmost_redis_data:/app/data/storage
+      - docmost_redis_data:/data
+      - docmost_redis_storage:/app/data/storage
     networks:
       - net
     deploy:
