@@ -117,7 +117,7 @@ services:
       # Create an entrypoint "dns" listening on port 53
       # - --entrypoints.dns.address=:53
       # Create an entrypoint "postgres-socket" listening on port 5432
-      - --entrypoints.postgres-socket.address=:5432
+      # - --entrypoints.postgres-socket.address=:5432
       # Others entrypoints can be created, like a TCP entrypoint
       - --entrypoints.mqtt.address=:1883
       - --entrypoints.web-socket.address=:8083

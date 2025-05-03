@@ -54,7 +54,7 @@ services:
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: tasks.redis
-      AUTHENTIK_POSTGRESQL__HOST: ${DATABASE__HOSTNAME:-postgresql}
+      AUTHENTIK_POSTGRESQL__HOST: 192.168.50.220
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
@@ -92,7 +92,7 @@ services:
     command: worker
     environment:
       AUTHENTIK_REDIS__HOST: tasks.redis
-      AUTHENTIK_POSTGRESQL__HOST: ${DATABASE__HOSTNAME:-postgresql}
+      AUTHENTIK_POSTGRESQL__HOST: 192.168.50.220
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}

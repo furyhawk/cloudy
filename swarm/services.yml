@@ -6,7 +6,7 @@ services:
     depends_on:
       - postgres_db
     environment:
-      DATABASE__HOSTNAME: ${DATABASE__HOSTNAME}
+      DATABASE__HOSTNAME: 192.168.50.220
       DATABASE__USERNAME: ${POSTGRES_USER}
       DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
       DATABASE__PORT: ${DATABASE__PORT}
@@ -176,7 +176,7 @@ services:
         constraints:
           - node.labels.postgres.postgres_data == true
       labels:
-        - traefik.enable=true
+        - traefik.enable=false
         - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.tcp.routers.postgres.entrypoints=postgres-socket
