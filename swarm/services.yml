@@ -169,7 +169,9 @@ services:
       timeout: 10s
       retries: 10
     ports:
-      - 5432:5432
+      - target: 5432
+        published: 5432
+        mode: host
     networks:
       - net
       - traefik-public
