@@ -1,6 +1,5 @@
 volumes:
   docmost_redis_data: {}
-  docmost_redis_storage: {}
 
 networks:
   net:
@@ -57,7 +56,6 @@ services:
     user: "${UID}:${GID}"
     volumes:
       - docmost_redis_data:/data
-      - docmost_redis_storage:/app/data/storage
     networks:
       - net
     deploy:
