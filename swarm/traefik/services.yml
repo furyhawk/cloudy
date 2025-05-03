@@ -10,6 +10,23 @@ http:
         certResolver: le
       service: coco_desktop@file
 
+    pi_hole:
+      entryPoints:
+        - https
+      rule: Host(`pihole.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
+      tls:
+        certResolver: le
+      service: pi_hole@file
+
+    dev_machine:
+      entryPoints:
+        - https
+      rule: Host(`dev.furyhawk.lol`)
+      tls: {}
+      service: dev_machine@file
+
     proxmox00:
       entryPoints:
         - https
@@ -46,4 +63,14 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.201:8006
+
+    pi_hole:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.155
+
+    dev_machine:
+      loadBalancer:
+        servers:
+          - url: http://dev.lan
           
