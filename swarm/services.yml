@@ -168,6 +168,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
+    ports:
+      - 5432:5432
     networks:
       - net
       - traefik-public
