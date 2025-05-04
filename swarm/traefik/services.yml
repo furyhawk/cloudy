@@ -73,5 +73,5 @@ http:
     dev_machine:
       loadBalancer:
         servers:
-          - url: http://dev.lan:5173
+          - url: http://192.168.50.44:5173
           
