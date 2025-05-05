@@ -28,6 +28,22 @@ http:
         certResolver: le
       service: dev_machine@file
 
+    service_machine:
+      entryPoints:
+        - https
+      rule: Host(`service.furyhawk.lol`)
+      tls:
+        certResolver: le
+      service: service_machine@file
+
+    mail_machine:
+      entryPoints:
+        - https
+      rule: Host(`mail.furyhawk.lol`)
+      tls:
+        certResolver: le
+      service: mail_machine@file
+
     proxmox00:
       entryPoints:
         - https
@@ -74,4 +90,13 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.44:5173
-          
+
+    service_machine:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.44:8000
+
+    mail_machine:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.44:1080
