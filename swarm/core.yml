@@ -86,6 +86,8 @@ services:
         - traefik.http.routers.traefik-public-https.service=api@internal
         # Define the port inside of the Docker service to use
         - traefik.http.services.traefik-public.loadbalancer.server.port=8080
+        # - crowdsec.enable=true
+        # - crowdsec.labels.type=nginx
     volumes:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
       - /var/run/docker.sock:/var/run/docker.sock:ro
