@@ -87,7 +87,7 @@ services:
         - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.heynote.entrypoints=https
-        - traefik.http.routers.heynote.rule=Host(`note.${DOMAIN}`) || Host(`note0.${DOMAIN}`) || Host(`note1.${DOMAIN}`) || Host(`note2.${DOMAIN}`) || Host(`note3.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
+        - traefik.http.routers.heynote.rule=Host(`note.${DOMAIN}`) || Host(`note0.${DOMAIN}`) || Host(`n.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
         # - traefik.http.routers.heynote.rule=HostRegexp(`note[0-9]{0,2}.${DOMAIN}`) || Host(`pad.${DOMAIN}`)
         - traefik.http.routers.heynote.tls.certresolver=le
         - traefik.http.routers.heynote.service=heynote_app
