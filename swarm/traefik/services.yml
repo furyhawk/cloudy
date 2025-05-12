@@ -23,7 +23,7 @@ http:
     dev_machine:
       entryPoints:
         - https
-      rule: Host(`dev.furyhawk.lol`)
+      rule: Host(`dev.furyhawk.lol`) || Host(`staging.furyhawk.lol`) || Host(`prod.furyhawk.lol`)
       tls:
         certResolver: le
       service: dev_machine@file
@@ -40,6 +40,8 @@ http:
       entryPoints:
         - https
       rule: Host(`mail.furyhawk.lol`)
+      middlewares:
+        - admin-auth@swarm
       tls:
         certResolver: le
       service: mail_machine@file
