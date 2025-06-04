@@ -107,14 +107,6 @@ services:
         - traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAIN}`) || Host(`s3.${DOMAIN}`)
         - traefik.http.routers.minio-api-router.tls.certresolver=le
         - traefik.http.routers.minio-api-router.service=minio_api_service
-        # - traefik.http.routers.minio-local-router.entrypoints=https
-        # - traefik.http.routers.minio-local-router.rule=Host(`drive.${LOCALDOMAIN}`) || Host(`storage.${LOCALDOMAIN}`)
-        # - traefik.http.routers.minio-local-router.tls=true
-        # - traefik.http.routers.minio-local-router.service=minio_common_service
-        # - traefik.http.routers.minio-api-local-router.entrypoints=https
-        # - traefik.http.routers.minio-api-local-router.rule=Host(`minio.${LOCALDOMAIN}`) || Host(`s3.${LOCALDOMAIN}`)
-        # - traefik.http.routers.minio-api-local-router.tls=true
-        # - traefik.http.routers.minio-api-local-router.service=minio_api_service
         - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
 
   osrm-backend:
