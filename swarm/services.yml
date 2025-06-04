@@ -76,11 +76,11 @@ services:
     environment:
       MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
       MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
-      MINIO_OPTS: "--console-address :9001"
+      # MINIO_OPTS: "--console-address :9001"
       # MINIO_SERVER_URL: https://drive.${DOMAIN}
       DOMAIN: ${DOMAIN}
     restart: unless-stopped
-    command: server /data --address "https://drive.${DOMAIN}" --console-address ":9001"
+    command: server /data --address ":9000" --console-address ":9001"
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 60s
