@@ -9,6 +9,7 @@ volumes:
   open_webui: {}
   chromadb: {}
   ollama: {}
+  # hf-hub-cache: {}
 
 services:
   open_webui:
@@ -98,3 +99,12 @@ services:
         condition: any
         delay: 5s
         max_attempts: 3
+
+  # speaches:
+  #   image: ghcr.io/speaches-ai/speaches:latest-cpu
+  #   hostname: speaches
+  #   volumes:
+  #     - hf-hub-cache:/home/ubuntu/.cache/huggingface/hub
+  #   expose:
+  #     - 8000
+    
