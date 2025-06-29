@@ -1,6 +1,6 @@
 networks:
   seafile-network:
-    external: true
+    {}
   traefik-public:
     external: true
 
