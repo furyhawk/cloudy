@@ -140,41 +140,41 @@ services:
     depends_on:
       - mariadb
 
-  backups:
-    image: ${SEAFILE_MARIADB_IMAGE_TAG}
-    command: >-
-      sh -c "sleep $$BACKUP_INIT_SLEEP &&
-      while true; do
-        until mariadb -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" -e 'SELECT 1' > /dev/null 2>&1; do
-          echo 'Waiting for MariaDB to be ready...'
-          sleep 10
-        done &&
-        mariadb-dump -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" --all-databases | gzip > \"$$MARIADB_BACKUPS_PATH/$$MARIADB_BACKUP_NAME-$$(date '+%Y-%m-%d_%H-%M').gz\" &&
-        tar -zcpf $$DATA_BACKUPS_PATH/$$DATA_BACKUP_NAME-$$(date \"+%Y-%m-%d_%H-%M\").tar.gz --exclude-from=/dev/null -C $$(dirname $$DATA_PATH) $$(basename $$DATA_PATH) &&
-        find $$MARIADB_BACKUPS_PATH -type f -mtime +$$MARIADB_BACKUP_PRUNE_DAYS | xargs rm -f &&
-        find $$DATA_BACKUPS_PATH -type f -mtime +$$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
-        sleep $$BACKUP_INTERVAL; done"
-    volumes:
-      - seafile-mariadb-backup:/var/lib/mysql
-      - seafile-data:${DATA_PATH}
-      - seafile-data-backups:${DATA_BACKUPS_PATH}
-      - seafile-database-backups:${MARIADB_BACKUPS_PATH}
-    environment:
-      SEAFILE_MYSQL_DB_USER: ${SEAFILE_MYSQL_DB_USER}
-      SEAFILE_MYSQL_DB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
-      BACKUP_INIT_SLEEP: ${BACKUP_INIT_SLEEP}
-      BACKUP_INTERVAL: ${BACKUP_INTERVAL}
-      MARIADB_BACKUP_PRUNE_DAYS: ${MARIADB_BACKUP_PRUNE_DAYS}
-      DATA_BACKUP_PRUNE_DAYS: ${DATA_BACKUP_PRUNE_DAYS}
-      MARIADB_BACKUPS_PATH: ${MARIADB_BACKUPS_PATH}
-      DATA_BACKUPS_PATH: ${DATA_BACKUPS_PATH}
-      DATA_PATH: ${DATA_PATH}
-      MARIADB_BACKUP_NAME: ${MARIADB_BACKUP_NAME}
-      DATA_BACKUP_NAME: ${DATA_BACKUP_NAME}
-    networks:
-      - seafile-network
-    restart: unless-stopped
-    depends_on:
-      mariadb:
-        condition: service_healthy
+  # backups:
+  #   image: ${SEAFILE_MARIADB_IMAGE_TAG}
+  #   command: >-
+  #     sh -c "sleep $$BACKUP_INIT_SLEEP &&
+  #     while true; do
+  #       until mariadb -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" -e 'SELECT 1' > /dev/null 2>&1; do
+  #         echo 'Waiting for MariaDB to be ready...'
+  #         sleep 10
+  #       done &&
+  #       mariadb-dump -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" --all-databases | gzip > \"$$MARIADB_BACKUPS_PATH/$$MARIADB_BACKUP_NAME-$$(date '+%Y-%m-%d_%H-%M').gz\" &&
+  #       tar -zcpf $$DATA_BACKUPS_PATH/$$DATA_BACKUP_NAME-$$(date \"+%Y-%m-%d_%H-%M\").tar.gz --exclude-from=/dev/null -C $$(dirname $$DATA_PATH) $$(basename $$DATA_PATH) &&
+  #       find $$MARIADB_BACKUPS_PATH -type f -mtime +$$MARIADB_BACKUP_PRUNE_DAYS | xargs rm -f &&
+  #       find $$DATA_BACKUPS_PATH -type f -mtime +$$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
+  #       sleep $$BACKUP_INTERVAL; done"
+  #   volumes:
+  #     - seafile-mariadb-backup:/var/lib/mysql
+  #     - seafile-data:${DATA_PATH}
+  #     - seafile-data-backups:${DATA_BACKUPS_PATH}
+  #     - seafile-database-backups:${MARIADB_BACKUPS_PATH}
+  #   environment:
+  #     SEAFILE_MYSQL_DB_USER: ${SEAFILE_MYSQL_DB_USER}
+  #     SEAFILE_MYSQL_DB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
+  #     MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
+  #     BACKUP_INIT_SLEEP: ${BACKUP_INIT_SLEEP}
+  #     BACKUP_INTERVAL: ${BACKUP_INTERVAL}
+  #     MARIADB_BACKUP_PRUNE_DAYS: ${MARIADB_BACKUP_PRUNE_DAYS}
+  #     DATA_BACKUP_PRUNE_DAYS: ${DATA_BACKUP_PRUNE_DAYS}
+  #     MARIADB_BACKUPS_PATH: ${MARIADB_BACKUPS_PATH}
+  #     DATA_BACKUPS_PATH: ${DATA_BACKUPS_PATH}
+  #     DATA_PATH: ${DATA_PATH}
+  #     MARIADB_BACKUP_NAME: ${MARIADB_BACKUP_NAME}
+  #     DATA_BACKUP_NAME: ${DATA_BACKUP_NAME}
+  #   networks:
+  #     - seafile-network
+  #   restart: unless-stopped
+  #   depends_on:
+  #     mariadb:
+  #       condition: service_healthy
