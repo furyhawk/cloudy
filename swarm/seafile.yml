@@ -137,10 +137,7 @@ services:
 
     restart: unless-stopped
     depends_on:
-      mariadb:
-        condition: service_healthy
-      traefik:
-        condition: service_healthy
+      - mariadb
 
   backups:
     image: ${SEAFILE_MARIADB_IMAGE_TAG}
@@ -174,5 +171,4 @@ services:
       - seafile-network
     restart: unless-stopped
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
