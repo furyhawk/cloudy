@@ -12,22 +12,22 @@ volumes:
   seafile-database-backups:
 
 services:
-  seafile-init:
-    image: ${SEAFILE_IMAGE_TAG}
-    user: "0:0"
-    command: >
-      sh -c "
-        echo 'Fixing permissions for seafile data directory...' &&
-        mkdir -p ${DATA_PATH}/seafile &&
-        chmod -R a+rwx ${DATA_PATH}/seafile/ &&
-        chown -R 8000:8000 ${DATA_PATH} &&
-        echo 'Permissions fixed successfully - seafile directory has full permissions'
-      "
-    volumes:
-      - seafile-data:${DATA_PATH}
-    networks:
-      - seafile-network
-    restart: "no"
+  # seafile-init:
+  #   image: ${SEAFILE_IMAGE_TAG}
+  #   user: "0:0"
+  #   command: >
+  #     sh -c "
+  #       echo 'Fixing permissions for seafile data directory...' &&
+  #       mkdir -p ${DATA_PATH}/seafile &&
+  #       chmod -R a+rwx ${DATA_PATH}/seafile/ &&
+  #       chown -R 8000:8000 ${DATA_PATH} &&
+  #       echo 'Permissions fixed successfully - seafile directory has full permissions'
+  #     "
+  #   volumes:
+  #     - seafile-data:${DATA_PATH}
+  #   networks:
+  #     - seafile-network
+  #   restart: "no"
 
   mariadb:
     image: ${SEAFILE_MARIADB_IMAGE_TAG}
@@ -164,7 +164,7 @@ services:
 
     restart: unless-stopped
     depends_on:
-      - seafile-init
+      # - seafile-init
       - mariadb
       - memcached
 
