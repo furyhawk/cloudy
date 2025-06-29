@@ -20,6 +20,7 @@ services:
       MARIADB_USER: ${SEAFILE_MYSQL_DB_USER}
       MARIADB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
+      MARIADB_DATABASE: seafile
     networks:
       - seafile-network
     healthcheck:
@@ -144,8 +145,12 @@ services:
     command: >-
       sh -c "sleep $$BACKUP_INIT_SLEEP &&
       while true; do
+        until mariadb -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" -e 'SELECT 1' > /dev/null 2>&1; do
+          echo 'Waiting for MariaDB to be ready...'
+          sleep 10
+        done &&
         mariadb-dump -h mariadb -u $$SEAFILE_MYSQL_DB_USER -p\"$$SEAFILE_MYSQL_DB_PASSWORD\" --all-databases | gzip > \"$$MARIADB_BACKUPS_PATH/$$MARIADB_BACKUP_NAME-$$(date '+%Y-%m-%d_%H-%M').gz\" &&
-        tar -zcpf $$DATA_BACKUPS_PATH/$$DATA_BACKUP_NAME-$$(date \"+%Y-%m-%d_%H-%M\").tar.gz -C / $$DATA_PATH &&
+        tar -zcpf $$DATA_BACKUPS_PATH/$$DATA_BACKUP_NAME-$$(date \"+%Y-%m-%d_%H-%M\").tar.gz --exclude-from=/dev/null -C $$(dirname $$DATA_PATH) $$(basename $$DATA_PATH) &&
         find $$MARIADB_BACKUPS_PATH -type f -mtime +$$MARIADB_BACKUP_PRUNE_DAYS | xargs rm -f &&
         find $$DATA_BACKUPS_PATH -type f -mtime +$$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
         sleep $$BACKUP_INTERVAL; done"
@@ -171,4 +176,5 @@ services:
       - seafile-network
     restart: unless-stopped
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
