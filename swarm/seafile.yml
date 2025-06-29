@@ -1,0 +1,178 @@
+networks:
+  seafile-network:
+    external: true
+  traefik-public:
+    external: true
+
+volumes:
+  mariadb-data:
+  seafile-data:
+  seafile-mariadb-backup:
+  seafile-data-backups:
+  seafile-database-backups:
+
+services:
+  mariadb:
+    image: ${SEAFILE_MARIADB_IMAGE_TAG}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MARIADB_USER: ${SEAFILE_MYSQL_DB_USER}
+      MARIADB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
+    networks:
+      - seafile-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  memcached:
+    command: memcached -m 256M
+    image: ${SEAFILE_MEMCACHE_IMAGE_TAG}
+    networks:
+      - seafile-network
+    restart: unless-stopped
+
+  seafile:
+    image: ${SEAFILE_IMAGE_TAG}
+    volumes:
+      - seafile-data:${DATA_PATH}
+    environment:
+      - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-mariadb}
+      - DB_PORT=${SEAFILE_MYSQL_DB_PORT:-3306}
+      - DB_USER=${SEAFILE_MYSQL_DB_USER:-seafile}
+      - DB_ROOT_PASSWD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD:-}
+      - DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD:?Variable is not set or empty}
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=${SEAFILE_MYSQL_DB_CCNET_DB_NAME:-ccnet_db}
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=${SEAFILE_MYSQL_DB_SEAFILE_DB_NAME:-seafile_db}
+      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=${SEAFILE_MYSQL_DB_SEAHUB_DB_NAME:-seahub_db}
+      - TIME_ZONE=${TIME_ZONE:-Etc/UTC}
+      - INIT_SEAFILE_ADMIN_EMAIL=${INIT_SEAFILE_ADMIN_EMAIL:-me@example.com}
+      - INIT_SEAFILE_ADMIN_PASSWORD=${INIT_SEAFILE_ADMIN_PASSWORD:-asecret}
+      - SEAFILE_SERVER_HOSTNAME=${SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty}
+      - SEAFILE_SERVER_PROTOCOL=${SEAFILE_SERVER_PROTOCOL:-http}
+      - SITE_ROOT=${SITE_ROOT:-/}
+      - NON_ROOT=${NON_ROOT:-false}
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:?Variable is not set or empty}
+      - SEAFILE_LOG_TO_STDOUT=${SEAFILE_LOG_TO_STDOUT:-false}
+      - ENABLE_SEADOC=${ENABLE_SEADOC:-true}
+      - SEADOC_SERVER_URL=${SEAFILE_SERVER_PROTOCOL:-http}://${SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty}/sdoc-server    
+    networks:
+      - seafile-network
+      - traefik-public
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8000' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      # Global settings for compression middleware
+      - "traefik.http.middlewares.compresstraefik.compress=true"
+      # Match incoming requests on the specific hostname for Seafile/Seahub
+      - "traefik.http.routers.seafile.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`)"
+      # Assign the router to a named Traefik service
+      - "traefik.http.routers.seafile.service=seafile"
+      # Use the 'websecure' (HTTPS) entry point
+      - "traefik.http.routers.seafile.entrypoints=https"
+      # Define the internal container port for routing
+      - "traefik.http.services.seafile.loadbalancer.server.port=8000"
+      # Enable TLS on this router
+      - "traefik.http.routers.seafile.tls=true"
+      # Use Let's Encrypt for certificate management
+      - "traefik.http.routers.seafile.tls.certresolver=le"
+      # Pass the original Host header to the container
+      - "traefik.http.services.seafile.loadbalancer.passhostheader=true"
+      # Apply middlewares for security headers and compression
+      - "traefik.http.routers.seafile.middlewares=sec-headers,compresstraefik"
+      # Match incoming requests on the specific hostname for Seafdav
+      - "traefik.http.routers.seafile-dav.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`) && PathPrefix(`/seafdav`)"
+      # Assign the router to a named Traefik service
+      - "traefik.http.routers.seafile-dav.service=seafile-dav"
+      # Use the 'websecure' (HTTPS) entry point
+      - "traefik.http.routers.seafile-dav.entrypoints=https"
+      # Define the internal container port for routing
+      - "traefik.http.services.seafile-dav.loadbalancer.server.port=8080"
+      # Enable TLS on this router
+      - "traefik.http.routers.seafile-dav.tls=true"
+      # Use Let's Encrypt for certificate management
+      - "traefik.http.routers.seafile-dav.tls.certresolver=le"
+      # Pass the original Host header to the container
+      - "traefik.http.services.seafile-dav.loadbalancer.passhostheader=true"
+      # Apply compression middleware
+      - "traefik.http.routers.seafile-dav.middlewares=compresstraefik"
+      # Match incoming requests on the specific hostname for Seafhttp
+      - "traefik.http.routers.seafile-http.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`) && PathPrefix(`/seafhttp`)"
+      # Assign the router to a named Traefik service
+      - "traefik.http.routers.seafile-http.service=seafile-http"
+      # Use the 'websecure' (HTTPS) entry point
+      - "traefik.http.routers.seafile-http.entrypoints=https"
+      # Define the internal container port for routing
+      - "traefik.http.services.seafile-http.loadbalancer.server.port=8082"
+      # Enable TLS on this router
+      - "traefik.http.routers.seafile-http.tls=true"
+      # Use Let's Encrypt for certificate management
+      - "traefik.http.routers.seafile-http.tls.certresolver=le"
+      # Pass the original Host header to the container
+      - "traefik.http.services.seafile-http.loadbalancer.passhostheader=true"
+      # Apply middlewares for stripping prefix and compression
+      - "traefik.http.middlewares.seafile-strip.stripprefix.prefixes=/seafhttp"
+      - "traefik.http.routers.seafile-http.middlewares=seafile-strip,compresstraefik"
+      # Security headers settings
+      - "traefik.http.middlewares.sec-headers.headers.sslredirect=true"
+      - "traefik.http.middlewares.sec-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.sec-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.sec-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.sec-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.sec-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.sec-headers.headers.referrerPolicy=same-origin"
+      # Specify which Docker network Traefik should use for routing
+      - "traefik.docker.network=traefik-public"
+
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      traefik:
+        condition: service_healthy
+
+  backups:
+    image: ${SEAFILE_MARIADB_IMAGE_TAG}
+    command: >-
+      sh -c 'sleep $BACKUP_INIT_SLEEP &&
+      while true; do
+        mariadb-dump -h mariadb -u $SEAFILE_MYSQL_DB_USER -p"$SEAFILE_MYSQL_DB_PASSWORD" --all-databases | gzip > "$MARIADB_BACKUPS_PATH/$MARIADB_BACKUP_NAME-$(date '+%Y-%m-%d_%H-%M').gz" &&
+        tar -zcpf $DATA_BACKUPS_PATH/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz $DATA_PATH &&
+        find $MARIADB_BACKUPS_PATH -type f -mtime +$MARIADB_BACKUP_PRUNE_DAYS | xargs rm -f &&
+        find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
+        sleep $BACKUP_INTERVAL; done'
+    volumes:
+      - seafile-mariadb-backup:/var/lib/mysql
+      - seafile-data:${DATA_PATH}
+      - seafile-data-backups:${DATA_BACKUPS_PATH}
+      - seafile-database-backups:${MARIADB_BACKUPS_PATH}
+    environment:
+      SEAFILE_DB_USER: ${SEAFILE_MYSQL_DB_USER}
+      SEAFILE_DB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
+      BACKUP_INIT_SLEEP: ${BACKUP_INIT_SLEEP}
+      BACKUP_INTERVAL: ${BACKUP_INTERVAL}
+      MARIADB_BACKUP_PRUNE_DAYS: ${MARIADB_BACKUP_PRUNE_DAYS}
+      DATA_BACKUP_PRUNE_DAYS: ${DATA_BACKUP_PRUNE_DAYS}
+      MARIADB_BACKUPS_PATH: ${MARIADB_BACKUPS_PATH}
+      DATA_BACKUPS_PATH: ${DATA_BACKUPS_PATH}
+      DATA_PATH: ${DATA_PATH}
+      MARIADB_BACKUP_NAME: ${MARIADB_BACKUP_NAME}
+      DATA_BACKUP_NAME: ${DATA_BACKUP_NAME}
+    networks:
+      - seafile-network
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy

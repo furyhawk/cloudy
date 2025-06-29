@@ -86,6 +86,8 @@ services:
         - traefik.http.routers.traefik-public-https.service=api@internal
         # Define the port inside of the Docker service to use
         - traefik.http.services.traefik-public.loadbalancer.server.port=8080
+        # Pass the original Host header to the backend
+        # - "traefik.http.services.dashboard.loadbalancer.passhostheader=true"
         # - crowdsec.enable=true
         # - crowdsec.labels.type=nginx
     volumes:
