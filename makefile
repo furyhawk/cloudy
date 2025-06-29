@@ -175,4 +175,13 @@ deploy-semaphore: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/semaphore.yml semaphore ;\
 	}
+
+deploy-seafile: pull
+	{ \
+	echo "Deploying the seafile stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/seafile.yml seafile ;\
+	}
 # git submodule update --init --recursive
