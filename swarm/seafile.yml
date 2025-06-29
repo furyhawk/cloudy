@@ -147,10 +147,8 @@ services:
 
     restart: unless-stopped
     depends_on:
-      mariadb:
-        condition: service_healthy
-      memcached:
-        condition: service_healthy
+      - mariadb
+      - memcached
 
   # backups:
   #   image: ${SEAFILE_MARIADB_IMAGE_TAG}
