@@ -184,4 +184,5 @@ deploy-seafile: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/seafile.yml seafile ;\
 	}
+
 # git submodule update --init --recursive
