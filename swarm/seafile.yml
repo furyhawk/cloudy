@@ -19,9 +19,9 @@ services:
       sh -c "
         echo 'Fixing permissions for seafile data directory...' &&
         mkdir -p ${DATA_PATH}/seafile &&
-        chmod -R 755 ${DATA_PATH} &&
+        chmod -R a+rwx ${DATA_PATH}/seafile/ &&
         chown -R 8000:8000 ${DATA_PATH} &&
-        echo 'Permissions fixed successfully'
+        echo 'Permissions fixed successfully - seafile directory has full permissions'
       "
     volumes:
       - seafile-data:${DATA_PATH}
