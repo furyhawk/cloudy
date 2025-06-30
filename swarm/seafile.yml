@@ -30,7 +30,8 @@ services:
   #   restart: "no"
 
   mariadb:
-    image: ${SEAFILE_MARIADB_IMAGE_TAG}
+    image: ${SEAFILE_MARIADB_IMAGE_TAG:-mariadb:10.11}
+    container_name: seafile-mysql
     volumes:
       - mariadb-data:/var/lib/mysql
     environment:
@@ -38,38 +39,41 @@ services:
       MARIADB_PASSWORD: ${SEAFILE_MYSQL_DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
       MARIADB_DATABASE: seafile
+      MARIADB_AUTO_UPGRADE: 1
     networks:
       - seafile-network
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect", "--mariadbupgrade", "--innodb_initialized"]
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 60s
     restart: unless-stopped
 
   memcached:
-    command: memcached -m 256M
-    image: ${SEAFILE_MEMCACHE_IMAGE_TAG}
+    image: ${SEAFILE_MEMCACHE_IMAGE_TAG:-memcached:1.6.29}
+    container_name: seafile-memcached
+    entrypoint: memcached -m 256
     networks:
       - seafile-network
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "11211"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
     restart: unless-stopped
 
   seafile:
-    image: ${SEAFILE_IMAGE_TAG}
+    image: ${SEAFILE_IMAGE_TAG:-seafileltd/seafile-mc:12.0-latest}
+    container_name: seafile
     volumes:
       - seafile-data:${DATA_PATH}
     environment:
       - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-mariadb}
       - DB_PORT=${SEAFILE_MYSQL_DB_PORT:-3306}
       - DB_USER=${SEAFILE_MYSQL_DB_USER:-seafile}
-      - DB_ROOT_PASSWD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD:-}
+      - DB_ROOT_PASSWD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD:?Variable is not set or empty}
       - DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD:?Variable is not set or empty}
       - SEAFILE_MYSQL_DB_CCNET_DB_NAME=${SEAFILE_MYSQL_DB_CCNET_DB_NAME:-ccnet_db}
       - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=${SEAFILE_MYSQL_DB_SEAFILE_DB_NAME:-seafile_db}
@@ -83,7 +87,7 @@ services:
       - NON_ROOT=${NON_ROOT:-false}
       - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:?Variable is not set or empty}
       - SEAFILE_LOG_TO_STDOUT=${SEAFILE_LOG_TO_STDOUT:-false}
-      - ENABLE_SEADOC=${ENABLE_SEADOC:-true}
+      - ENABLE_SEADOC=${ENABLE_SEADOC:-false}
       - SEADOC_SERVER_URL=${SEAFILE_SERVER_PROTOCOL:-http}://${SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty}/sdoc-server
       - MEMCACHED_SERVER_HOST=memcached
       - MEMCACHED_SERVER_PORT=11211
@@ -93,7 +97,7 @@ services:
       - traefik-public
     healthcheck:
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8000' || exit 1
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 90s
