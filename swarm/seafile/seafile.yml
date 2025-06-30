@@ -38,10 +38,10 @@ services:
       MARIADB_ROOT_PASSWORD: ${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
       MARIADB_DATABASE: seafile
       MARIADB_AUTO_UPGRADE: 1
-    # volumes:
-    #   - mariadb-data:/var/lib/mysql
     volumes:
-      - "${SEAFILE_MYSQL_VOLUME:-/opt/seafile-mysql/db}:/var/lib/mysql"
+      - mariadb-data:/var/lib/mysql
+    # volumes:
+    #   - "${SEAFILE_MYSQL_VOLUME:-/opt/seafile-mysql/db}:/var/lib/mysql"
     networks:
       - seafile-network
     healthcheck:
@@ -72,7 +72,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ${SEAFILE_VOLUME:-/opt/seafile-data}:/shared
+      - seafile-data:/shared
     environment:
       - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-mariadb}
       - DB_PORT=${SEAFILE_MYSQL_DB_PORT:-3306}
