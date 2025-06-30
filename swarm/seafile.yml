@@ -65,7 +65,7 @@ services:
     image: ${SEAFILE_IMAGE:-seafileltd/seafile-mc:12.0-latest}
     container_name: seafile
     expose:
-      - 80
+      - 8000
     volumes:
       - seafile-data:/shared
     environment:
