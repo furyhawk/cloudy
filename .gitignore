@@ -181,3 +181,5 @@ kubernetes/talos/config
 kubernetes/talos/_out/
 kubernetes/config/
 kubernetes/_out/
+swarm/seafile/seafile-data/
+swarm/seafile/seafile-mysql/db/
