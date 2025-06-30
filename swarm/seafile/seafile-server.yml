@@ -1,5 +1,5 @@
 services:
-  db:
+  mariadb:
     image: ${SEAFILE_DB_IMAGE:-mariadb:10.11}
     container_name: seafile-mysql
     environment:
@@ -39,7 +39,7 @@ services:
     volumes:
       - ${SEAFILE_VOLUME:-/opt/seafile-data}:/shared
     environment:
-      - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-db}
+      - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-mariadb}
       - DB_PORT=${SEAFILE_MYSQL_DB_PORT:-3306}
       - DB_USER=${SEAFILE_MYSQL_DB_USER:-seafile}
       - DB_ROOT_PASSWD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD:-}
@@ -62,7 +62,7 @@ services:
       caddy: ${SEAFILE_SERVER_PROTOCOL:-http}://${SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty}
       caddy.reverse_proxy: "{{upstreams 80}}"
     depends_on:
-      db:
+      mariadb:
         condition: service_healthy
       memcached:
         condition: service_started
