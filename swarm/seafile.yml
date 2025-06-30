@@ -58,13 +58,6 @@ services:
     entrypoint: memcached -m 256
     networks:
       - seafile-network
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "11211"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-    restart: unless-stopped
 
   seafile:
     image: ${SEAFILE_IMAGE:-seafileltd/seafile-mc:12.0-latest}
