@@ -69,7 +69,7 @@ services:
     volumes:
       - seafile-data:/shared
     environment:
-      - DB_HOST=${SEAFILE_MYSQL_DB_HOST:-mariadb}
+      - DB_HOST=seafile-${SEAFILE_MYSQL_DB_HOST:-mariadb}
       - DB_PORT=${SEAFILE_MYSQL_DB_PORT:-3306}
       - DB_USER=${SEAFILE_MYSQL_DB_USER:-seafile}
       - DB_ROOT_PASSWD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD:?Variable is not set or empty}
