@@ -78,6 +78,10 @@ services:
         # - "traefik.http.middlewares.nextcloud-dav.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav"
         # - "traefik.http.middlewares.nextcloud-dav.redirectregex.replacement=https://cloud.${DOMAIN}/remote.php/dav/"
         # - "traefik.http.middlewares.nextcloud-dav.redirectregex.permanent=true"
+        - "traefik.http.routers.nextcloud.middlewares=nextcloud_redirectregex@swarm"
+        - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.permanent=true"
+        - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav"
+        - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.replacement=https://$${1}/remote.php/dav"
 
   # Note: Nginx is an external service. You can find more information about the configuration here:
   # https://hub.docker.com/_/nginx/
