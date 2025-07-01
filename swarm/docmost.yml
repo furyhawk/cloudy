@@ -18,7 +18,7 @@ services:
       APP_URL: "https://doc.${DOMAIN}"
       APP_SECRET: ${JWT_SECRET}
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@192.168.50.220:5432/docmost?schema=public"
-      REDIS_URL: "redis://tasks.redis:6379"
+      REDIS_URL: "redis://redis:6379"
     expose:
       - 3000
     restart: unless-stopped
@@ -52,6 +52,7 @@ services:
 
   redis:
     image: redis:7.2-alpine
+    hostname: redis
     restart: unless-stopped
     volumes:
       - docmost_redis_data:/data
