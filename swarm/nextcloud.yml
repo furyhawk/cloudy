@@ -7,8 +7,10 @@ services:
     restart: always
     volumes:
       - db:/var/lib/postgresql/data:Z
-    env_file:
-      - db.env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - nextcloud-net
 
@@ -27,10 +29,11 @@ services:
       - nextcloud:/var/www/html:z
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
     environment:
-      - POSTGRES_HOST=db
-      - REDIS_HOST=redis
-    env_file:
-      - db.env
+      POSTGRES_HOST: db
+      REDIS_HOST: redis
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - nextcloud-net
     depends_on:
