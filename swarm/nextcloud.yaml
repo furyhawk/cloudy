@@ -9,12 +9,16 @@ services:
       - db:/var/lib/postgresql/data:Z
     env_file:
       - db.env
+    networks:
+      - nextcloud-net
 
   # Note: Redis is an external service. You can find more information about the configuration here:
   # https://hub.docker.com/_/redis
   redis:
     image: redis:alpine
     restart: always
+    networks:
+      - nextcloud-net
 
   app:
     image: nextcloud:fpm-alpine
@@ -27,6 +31,8 @@ services:
       - REDIS_HOST=redis
     env_file:
       - db.env
+    networks:
+      - nextcloud-net
     depends_on:
       - db
       - redis
@@ -49,6 +55,7 @@ services:
       - app
     networks:
       - traefik-public
+      - nextcloud-net
     deploy:
       restart_policy:
         condition: any
@@ -70,6 +77,8 @@ services:
       - nextcloud:/var/www/html:z
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
     entrypoint: /cron.sh
+    networks:
+      - nextcloud-net
     depends_on:
       - db
       - redis
@@ -77,3 +86,10 @@ services:
 volumes:
   db:
   nextcloud:
+
+networks:
+  traefik-public:
+    external: true
+  nextcloud-net:
+    driver: overlay
+    attachable: true
