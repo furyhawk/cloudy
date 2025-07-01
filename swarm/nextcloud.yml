@@ -26,7 +26,7 @@ services:
 
   nextcloud:
     image: nextcloud:apache
-    hostname: nextcloud
+    hostname: cloud.${DOMAIN}
     restart: always
     volumes:
       - nextcloud:/var/www/html:z
