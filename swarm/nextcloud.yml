@@ -60,6 +60,24 @@ services:
         - traefik.http.routers.nextcloud.service=nextcloud
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
         - "traefik.http.services.nextcloud.loadbalancer.passHostHeader=true"
+        #Middlerwares
+        - "traefik.http.routers.nextcloud.middlewares=limit@docker,nextcloudHeader,compresstraefik" #adds limit and headers MWs to router in Traefik,  
+        #Compress
+        - "traefik.http.middlewares.compresstraefik.compress=true"      
+        #HSTS
+        - "traefik.http.middlewares.nextcloudHeader.headers.stsSeconds=15552000"
+        - "traefik.http.middlewares.nextcloudHeader.headers.stsIncludeSubdomains=true"
+        - "traefik.http.middlewares.nextcloudHeader.headers.stsPreload=true"
+        - "traefik.http.middlewares.nextcloudHeader.headers.forceSTSHeader=true"
+        - "traefik.http.middlewares.nextcloudHeader.headers.hostsProxyHeaders=X-Forwarded-Host"
+        #Buffering
+        - "traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=10737418240"
+        - "traefik.http.middlewares.limit.buffering.memRequestBodyBytes=50000000"   #200000000
+        - "traefik.http.middlewares.limit.buffering.memResponseBodyBytes=50000000"
+        #DAV
+        - "traefik.http.middlewares.nextcloud-dav.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav"
+        - "traefik.http.middlewares.nextcloud-dav.redirectregex.replacement=https://cloud.${DOMAIN}/remote.php/dav/"
+        - "traefik.http.middlewares.nextcloud-dav.redirectregex.permanent=true"
 
   # Note: Nginx is an external service. You can find more information about the configuration here:
   # https://hub.docker.com/_/nginx/
