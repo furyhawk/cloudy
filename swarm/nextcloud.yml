@@ -58,6 +58,7 @@ services:
         - traefik.http.routers.nextcloud.tls.certresolver=le
         - traefik.http.routers.nextcloud.service=nextcloud
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
+        - "traefik.http.services.nextcloud.loadbalancer.passHostHeader=true"
 
   # Note: Nginx is an external service. You can find more information about the configuration here:
   # https://hub.docker.com/_/nginx/
