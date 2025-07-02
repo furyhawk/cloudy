@@ -56,6 +56,7 @@ services:
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.nextcloud.entrypoints=https
         - traefik.http.routers.nextcloud.rule=Host(`cloud.${DOMAIN}`)
+        - "traefik.http.routers.nextcloud.tls=true"
         - traefik.http.routers.nextcloud.tls.certresolver=le
         - traefik.http.routers.nextcloud.service=nextcloud
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
