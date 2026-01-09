@@ -62,11 +62,11 @@ services:
     hostname: chromadb
     image: chromadb/chroma:latest
     volumes:
-      - chromadb:/chroma/chroma
+      - chromadb:/data
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
-      - PERSIST_DIRECTORY=/chroma/chroma
+      - PERSIST_DIRECTORY=/data
     expose:
       - 8000
     networks:
