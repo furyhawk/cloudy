@@ -59,13 +59,16 @@ services:
         max_attempts: 3
 
   chromadb:
+    hostname: chromadb
     image: chromadb/chroma:latest
     volumes:
       - chromadb:/data
     environment:
-      - IS_PERSISTENT=true
-      - ALLOW_RESET=true
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
       - PERSIST_DIRECTORY=/data
+      - ANONYMIZED_TELEMETRY=False
+      - CHROMA_SERVER_HOST=0.0.0.0
     expose:
       - 8000
     networks:
@@ -79,8 +82,15 @@ services:
         condition: any
         delay: 5s
         max_attempts: 3
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   ollama:
+    hostname: ollama
     image: ollama/ollama:latest
     volumes:
       - ollama:/root/.ollama
