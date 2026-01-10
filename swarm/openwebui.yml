@@ -40,6 +40,9 @@ services:
       - net
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.labels.open_webui.open_webui == true
       labels:
         - traefik.enable=true
         - traefik.swarm.network=traefik-public
@@ -68,6 +71,9 @@ services:
     networks:
       - net
     deploy:
+      placement:
+        constraints:
+          - node.labels.open_webui.open_webui == true
       replicas: 1
       restart_policy:
         condition: any
@@ -83,6 +89,9 @@ services:
     networks:
       - net
     deploy:
+      placement:
+        constraints:
+          - node.labels.open_webui.open_webui == true
       replicas: 1
       restart_policy:
         condition: any
