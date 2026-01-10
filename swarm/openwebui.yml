@@ -40,9 +40,6 @@ services:
       - net
       - traefik-public
     deploy:
-      placement:
-        constraints:
-          - node.labels.open_webui.open_webui == true
       labels:
         - traefik.enable=true
         - traefik.swarm.network=traefik-public
@@ -59,13 +56,12 @@ services:
         max_attempts: 3
 
   chromadb:
-    hostname: chromadb
     image: chromadb/chroma:latest
     volumes:
       - chromadb:/data
     environment:
-      - IS_PERSISTENT=TRUE
-      - ALLOW_RESET=TRUE
+      - IS_PERSISTENT=true
+      - ALLOW_RESET=true
       - PERSIST_DIRECTORY=/data
     expose:
       - 8000
@@ -77,16 +73,9 @@ services:
         condition: any
         delay: 5s
         max_attempts: 3
-    healthcheck: 
-      test: ["CMD-SHELL", "curl localhost:8000/api/v1/heartbeat || exit 1"]
-      interval: 10s
-      retries: 2
-      start_period: 5s
-      timeout: 10s
 
   ollama:
     image: ollama/ollama:latest
-    hostname: ollama
     volumes:
       - ollama:/root/.ollama
     expose:
