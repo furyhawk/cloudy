@@ -1,0 +1,683 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminer
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adminer
+  template:
+    metadata:
+      labels:
+        app: adminer
+    spec:
+      containers:
+        - name: adminer
+          image: adminer
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: PGADMIN_DEFAULT_EMAIL
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: PGADMIN_DEFAULT_PASSWORD
+            - name: PATH
+              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: PYTHONPATH
+              value: /pgadmin4
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: TZ
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+            - name: ADMINER_DESIGN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: ADMINER_DESIGN
+          volumeMounts:
+            - name: adminer-data
+              mountPath: /var/lib/pgadmin
+      volumes:
+        - name: adminer-data
+          persistentVolumeClaim:
+            claimName: adminer-data
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminer
+  namespace: swarm-converted
+spec:
+  selector:
+    app: adminer
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adminer
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`adminer.REPLACE_DOMAIN`) || Host(`dbadmin.REPLACE_DOMAIN`)
+      services:
+        - name: adminer
+          port: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cheatsheets-app
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cheatsheets-app
+  template:
+    metadata:
+      labels:
+        app: cheatsheets-app
+    spec:
+      containers:
+        - name: cheatsheets-app
+          image: furyhawk/cheatsheets:latest
+          ports:
+            - containerPort: 80
+              name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cheatsheets-app
+  namespace: swarm-converted
+spec:
+  selector:
+    app: cheatsheets-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cheatsheets-app
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`cheat.REPLACE_DOMAIN`)
+      services:
+        - name: cheatsheets-app
+          port: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heynote-app
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heynote-app
+  template:
+    metadata:
+      labels:
+        app: heynote-app
+    spec:
+      containers:
+        - name: heynote-app
+          image: furyhawk/heynote:latest
+          ports:
+            - containerPort: 5173
+              name: http
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: NODE_ENV
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: heynote-app
+  namespace: swarm-converted
+spec:
+  selector:
+    app: heynote-app
+  ports:
+    - name: http
+      port: 5173
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: heynote-app
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`note.REPLACE_DOMAIN`) || Host(`note0.REPLACE_DOMAIN`) || Host(`n.REPLACE_DOMAIN`) || Host(`pad.REPLACE_DOMAIN`)
+      services:
+        - name: heynote-app
+          port: 5173
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+        - name: jellyfin
+          image: jellyfin/jellyfin
+          ports:
+            - containerPort: 8096
+              name: http
+          env:
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+            - name: JELLYFIN_PublishedServerUrl
+              value: https://media.REPLACE_DOMAIN
+          volumeMounts:
+            - name: jellyfin-config
+              mountPath: /config
+            - name: jellyfin-cache
+              mountPath: /cache
+            - name: jellyfin-media
+              mountPath: /media
+      volumes:
+        - name: jellyfin-config
+          persistentVolumeClaim:
+            claimName: jellyfin-config
+        - name: jellyfin-cache
+          persistentVolumeClaim:
+            claimName: jellyfin-cache
+        - name: jellyfin-media
+          persistentVolumeClaim:
+            claimName: jellyfin-media
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: swarm-converted
+spec:
+  selector:
+    app: jellyfin
+  ports:
+    - name: http
+      port: 8096
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jellyfin
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`media.REPLACE_DOMAIN`)
+      services:
+        - name: jellyfin
+          port: 8096
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meshtastic-web
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meshtastic-web
+  template:
+    metadata:
+      labels:
+        app: meshtastic-web
+    spec:
+      containers:
+        - name: meshtastic-web
+          image: ghcr.io/meshtastic/web
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8443
+              name: https-alt
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: meshtastic-web
+  namespace: swarm-converted
+spec:
+  selector:
+    app: meshtastic-web
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+    - name: https-alt
+      port: 8443
+      targetPort: https-alt
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: meshtastic-web
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`mesh.REPLACE_DOMAIN`)
+      services:
+        - name: meshtastic-web
+          port: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privatebin
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privatebin
+  template:
+    metadata:
+      labels:
+        app: privatebin
+    spec:
+      containers:
+        - name: privatebin
+          image: privatebin/nginx-fpm-alpine:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: privatebin-data
+              mountPath: /srv/data
+      volumes:
+        - name: privatebin-data
+          persistentVolumeClaim:
+            claimName: privatebin-data
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: privatebin
+  namespace: swarm-converted
+spec:
+  selector:
+    app: privatebin
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: privatebin
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`bin.REPLACE_DOMAIN`) || Host(`paste.REPLACE_DOMAIN`)
+      services:
+        - name: privatebin
+          port: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-bai
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit-bai
+  template:
+    metadata:
+      labels:
+        app: streamlit-bai
+    spec:
+      containers:
+        - name: streamlit-bai
+          image: furyhawk/beyondallinfo:latest
+          command:
+            - sh
+            - -c
+          args:
+            - streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
+          ports:
+            - containerPort: 8502
+              name: http
+          env:
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+            - name: STREAMLIT_BAI_SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: STREAMLIT_BAI_SERVER_PORT
+            - name: BAI_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: BAI_LOCATION
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: GROQ_API_KEY
+          volumeMounts:
+            - name: bai-cache
+              mountPath: /app/cache
+      volumes:
+        - name: bai-cache
+          persistentVolumeClaim:
+            claimName: bai-cache
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-bai
+  namespace: swarm-converted
+spec:
+  selector:
+    app: streamlit-bai
+  ports:
+    - name: http
+      port: 8502
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: streamlit-bai
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`bai.REPLACE_DOMAIN`)
+      services:
+        - name: streamlit-bai
+          port: 8502
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-fin
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit-fin
+  template:
+    metadata:
+      labels:
+        app: streamlit-fin
+    spec:
+      containers:
+        - name: streamlit-fin
+          image: furyhawk/llama3toolsfin:main
+          ports:
+            - containerPort: 8501
+              name: http
+          env:
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+            - name: STREAMLIT_FIN_SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: STREAMLIT_FIN_SERVER_PORT
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: GROQ_API_KEY
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-fin
+  namespace: swarm-converted
+spec:
+  selector:
+    app: streamlit-fin
+  ports:
+    - name: http
+      port: 8501
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: streamlit-fin
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`fin.REPLACE_DOMAIN`)
+      services:
+        - name: streamlit-fin
+          port: 8501
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: site-server
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: site-server
+  template:
+    metadata:
+      labels:
+        app: site-server
+    spec:
+      containers:
+        - name: site-server
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: site-content
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: site-content
+          persistentVolumeClaim:
+            claimName: site-content
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: site-server
+  namespace: swarm-converted
+spec:
+  selector:
+    app: site-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: site-server
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`REPLACE_DOMAIN`) || Host(`www.REPLACE_DOMAIN`) || Host(`info.REPLACE_DOMAIN`) || Host(`124c41.REPLACE_DOMAIN`)
+      middlewares:
+        - name: no-www
+      services:
+        - name: site-server
+          port: 80
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: resume-redirect
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`resume.REPLACE_DOMAIN`)
+      middlewares:
+        - name: redirect-resume
+      services:
+        - name: site-server
+          port: 80
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: blog-redirect
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`blog.REPLACE_DOMAIN`)
+      middlewares:
+        - name: redirect-blog
+      services:
+        - name: site-server
+          port: 80
