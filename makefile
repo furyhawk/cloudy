@@ -191,5 +191,20 @@ deploy-nextcloud: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/nextcloud.yml nextcloud ;\
 	}
+deploy-jellyfin: pull
+	{ \
+	echo "Deploying the jellyfin stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/jellyfin.yml jellyfin ;\
+	}
+deploy-esphome: pull
+	{ \
+	echo "Deploying the esphome stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\	docker stack deploy --compose-file ./swarm/esphome.yml esphome ;\
+	}
 
 # git submodule update --init --recursive

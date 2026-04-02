@@ -1,0 +1,26 @@
+services:
+  esphome:
+    container_name: esphome
+    image: ghcr.io/esphome/esphome
+    environment:
+      - USERNAME=${ESPHOME_USERNAME}
+      - PASSWORD=${ESPHOME_PASSWORD}
+    volumes:
+      - /var/data/esphome/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    privileged: true
+    network_mode: host
+    deploy:
+      # placement:
+      #   constraints:
+      #     - node.labels.esphome.esphome_config == true
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.esphome.entrypoints=https
+        - traefik.http.routers.esphome.rule=Host(`esphome.${DOMAIN}`)
+        - traefik.http.routers.esphome.tls.certresolver=le
+        - traefik.http.routers.esphome.service=esphome_app
+        - traefik.http.services.esphome_app.loadbalancer.server.port=6052
