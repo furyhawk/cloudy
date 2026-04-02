@@ -1,14 +1,16 @@
+volume:
+  esphome_config: {}
+
 services:
   esphome:
     container_name: esphome
     image: ghcr.io/esphome/esphome
-    user: "0:0"
     environment:
       - USERNAME=${DATABASE__USERNAME}
       - PASSWORD=${DATABASE__PASSWORD}
       - TZ=${TZ:-UTC}
     volumes:
-      - /var/data/esphome/config:/config
+      - esphome_config:/config
     restart: always
     privileged: true
     network_mode: host
