@@ -3,8 +3,8 @@ services:
     container_name: esphome
     image: ghcr.io/esphome/esphome
     environment:
-      - USERNAME=${ESPHOME_USERNAME}
-      - PASSWORD=${ESPHOME_PASSWORD}
+      - USERNAME=${DATABASE__USERNAME}
+      - PASSWORD=${DATABASE__PASSWORD}
     volumes:
       - /var/data/esphome/config:/config
       - /etc/localtime:/etc/localtime:ro
