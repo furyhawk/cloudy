@@ -9,11 +9,13 @@ services:
       - USERNAME=${DATABASE__USERNAME}
       - PASSWORD=${DATABASE__PASSWORD}
       - TZ=${TZ:-UTC}
+      - DOMAIN=${DOMAIN}
     volumes:
       - esphome_config:/config
     restart: always
     privileged: true
-    network_mode: host
+    networks:
+      - traefik-public
     deploy:
       # placement:
       #   constraints:
