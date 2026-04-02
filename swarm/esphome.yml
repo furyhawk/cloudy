@@ -5,9 +5,9 @@ services:
     environment:
       - USERNAME=${DATABASE__USERNAME}
       - PASSWORD=${DATABASE__PASSWORD}
+      - TZ=${TZ:-UTC}
     volumes:
       - /var/data/esphome/config:/config
-      - /etc/localtime:/etc/localtime:ro
     restart: always
     privileged: true
     network_mode: host
