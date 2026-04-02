@@ -204,7 +204,8 @@ deploy-esphome: pull
 	echo "Deploying the esphome stack..." ;\
 	set -a ;\
 	. ./swarm/.env ;\
-	set +a ;\	docker stack deploy --compose-file ./swarm/esphome.yml esphome ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/esphome.yml esphome ;\
 	}
 
 # git submodule update --init --recursive
