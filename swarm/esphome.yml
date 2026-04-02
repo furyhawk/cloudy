@@ -1,4 +1,4 @@
-volume:
+volumes:
   esphome_config: {}
 
 services:
