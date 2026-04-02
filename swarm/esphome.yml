@@ -1,3 +1,7 @@
+networks:
+  traefik-public:
+    external: true
+
 volumes:
   esphome_config: {}
 
