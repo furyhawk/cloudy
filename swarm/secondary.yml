@@ -20,7 +20,7 @@ services:
     networks:
       - traefik-public
     volumes:
-      - /var/data/glance.yml:/app/glance.yml
+      - /var/data/glance:/app/config
       # - /etc/timezone:/etc/timezone:ro
       # - /etc/localtime:/etc/localtime:ro
     deploy:
