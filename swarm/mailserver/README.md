@@ -30,7 +30,7 @@ Create these DNS records for your mail domain:
 
 - A: mail.example.com -> your public IP
 - MX: example.com -> mail.example.com (priority 10)
-- SPF TXT: v=spf1 mx a:mail.example.com -all
+- SPF TXT: v=spf1 mx a:mail.example.com -all # v=spf1 include:spf.efwd.registrar-servers.com ~all
 - DKIM TXT: mail._domainkey.example.com -> generated DKIM key
 - DMARC TXT: _dmarc.example.com -> v=DMARC1; p=quarantine; rua=mailto:postmaster@example.com
 

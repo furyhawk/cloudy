@@ -39,7 +39,7 @@ http:
     mail_machine:
       entryPoints:
         - https
-      rule: Host(`mail.furyhawk.lol`)
+      rule: Host(`email.furyhawk.lol`)
       middlewares:
         - admin-auth@swarm
       tls:
