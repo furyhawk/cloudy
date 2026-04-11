@@ -23,9 +23,13 @@ acme_path, mail_domain, target_dir = sys.argv[1], sys.argv[2], sys.argv[3]
 with open(acme_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-cert_entries = data.get("letsencrypt", {}).get("Certificates", [])
+# Collect certificates from all resolvers in the store
+cert_entries = []
+for resolver_data in data.values():
+    if isinstance(resolver_data, dict):
+        cert_entries.extend(resolver_data.get("Certificates") or [])
 if not cert_entries:
-    raise SystemExit("No certificates found in acme.json")
+    raise SystemExit("No certificates found in acme.json (Traefik may not have issued any yet)")
 
 selected = None
 for entry in cert_entries:
