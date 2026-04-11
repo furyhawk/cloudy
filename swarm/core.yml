@@ -13,6 +13,18 @@ services:
       - target: 443
         published: 443
         mode: host
+      - target: 25
+        published: 25
+        mode: host
+      - target: 587
+        published: 587
+        mode: host
+      - target: 993
+        published: 993
+        mode: host
+      - target: 995
+        published: 995
+        mode: host
       - target: 1883
         published: 1883
         mode: host
@@ -123,6 +135,10 @@ services:
       # Create an entrypoint "postgres-socket" listening on port 5432
       # - --entrypoints.postgres-socket.address=:5432
       # Others entrypoints can be created, like a TCP entrypoint
+      - --entrypoints.smtp.address=:25
+      - --entrypoints.submission.address=:587
+      - --entrypoints.imaps.address=:993
+      - --entrypoints.pop3s.address=:995
       - --entrypoints.mqtt.address=:1883
       - --entrypoints.web-socket.address=:8083
       - --entrypoints.web-socket-secure.address=:8084

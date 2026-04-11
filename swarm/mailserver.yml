@@ -2,45 +2,43 @@ services:
   mail:
     image: mailserver/docker-mailserver:latest
     env_file: /var/data/docker-mailserver/docker-mailserver.env
+    hostname: mail
+    restart: unless-stopped
     volumes:
-      # - /var/data/docker-mailserver/maildata:/var/mail
-      # - /var/data/docker-mailserver/mailstate:/var/mail-state
-      # - /var/data/docker-mailserver/config:/tmp/docker-mailserver
+      - mail_data:/var/mail
+      - mail_state:/var/mail-state
+      - mail_logs:/var/log/mail
+      - mail_config:/tmp/docker-mailserver
       - /var/data/config/acme.json:/etc/letsencrypt/acme.json:ro
-    ports:
-      - target: 25
-        published: 25
-        protocol: tcp
-        mode: host
-      - target: 587
-        published: 587
-        protocol: tcp
-        mode: host
-      - target: 993
-        published: 993
-        protocol: tcp
-        mode: host
-      - target: 995
-        published: 995
-        protocol: tcp
-        mode: host
-    networks:
-      - internal
-
-  whoami:
-    image: docker.io/traefik/whoami:latest
     networks:
       - internal
       - traefik-public
     deploy:
+      placement:
+        constraints:
+          - node.role == manager
       labels:
         - traefik.enable=true
         - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.mailwhoami.entrypoints=https
-        - traefik.http.routers.mailwhoami.rule=Host(`mail.${DOMAIN}`)
-        - traefik.http.routers.mailwhoami.tls.certresolver=le
-        - traefik.http.services.mailwhoami.loadbalancer.server.port=80
+        - traefik.tcp.routers.mail-smtp.entrypoints=smtp
+        - traefik.tcp.routers.mail-smtp.rule=HostSNI(`*`)
+        - traefik.tcp.routers.mail-smtp.service=mail-smtp-svc
+        - traefik.tcp.services.mail-smtp-svc.loadbalancer.server.port=25
+        - traefik.tcp.routers.mail-submission.entrypoints=submission
+        - traefik.tcp.routers.mail-submission.rule=HostSNI(`*`)
+        - traefik.tcp.routers.mail-submission.service=mail-submission-svc
+        - traefik.tcp.services.mail-submission-svc.loadbalancer.server.port=587
+        - traefik.tcp.routers.mail-imaps.entrypoints=imaps
+        - traefik.tcp.routers.mail-imaps.rule=HostSNI(`*`)
+        - traefik.tcp.routers.mail-imaps.tls.passthrough=true
+        - traefik.tcp.routers.mail-imaps.service=mail-imaps-svc
+        - traefik.tcp.services.mail-imaps-svc.loadbalancer.server.port=993
+        - traefik.tcp.routers.mail-pop3s.entrypoints=pop3s
+        - traefik.tcp.routers.mail-pop3s.rule=HostSNI(`*`)
+        - traefik.tcp.routers.mail-pop3s.tls.passthrough=true
+        - traefik.tcp.routers.mail-pop3s.service=mail-pop3s-svc
+        - traefik.tcp.services.mail-pop3s-svc.loadbalancer.server.port=995
 
   # rainloop:
   #   image: nerzhul/rainloop-arm64
@@ -67,3 +65,9 @@ networks:
     ipam:
       config:
         - subnet: 172.16.2.0/24
+
+volumes:
+  mail_data: {}
+  mail_state: {}
+  mail_logs: {}
+  mail_config: {}
