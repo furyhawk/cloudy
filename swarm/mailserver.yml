@@ -9,7 +9,7 @@ services:
       - mail_state:/var/mail-state
       - mail_logs:/var/log/mail
       - mail_config:/tmp/docker-mailserver
-      - /var/data/config/acme.json:/etc/letsencrypt/acme.json:ro
+      - /var/data/docker-mailserver/ssl:/tmp/docker-mailserver/ssl:ro
     networks:
       - internal
       - traefik-public
