@@ -105,8 +105,8 @@ services:
     volumes:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Mount ACME storage file from host
-      - /var/data/config/traefik/acme.json:/certificates/acme.json
+      # Mount the volume to store the certificates
+      - traefik-public-certificates:/certificates
       # Mount the configuration file for Traefik
       - /var/data/config/traefik/services.yml:/etc/traefik/services.yml:ro
     command:
@@ -192,6 +192,12 @@ services:
       placement:
         constraints:
           - node.role==manager
+
+volumes:
+  # Create a volume to store the certificates, there is a constraint to make sure
+  # Traefik is always deployed to the same Docker node with the same volume containing
+  # the HTTPS certificates
+  traefik-public-certificates:
 
 networks:
   # Use the previously created public network "traefik-public", shared with other
