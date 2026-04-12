@@ -54,7 +54,8 @@ services:
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: tasks.redis
-      AUTHENTIK_POSTGRESQL__HOST: 192.168.50.220:5432
+      AUTHENTIK_POSTGRESQL__HOST: 192.168.50.220
+      AUTHENTIK_POSTGRESQL__PORT: 5432
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
@@ -64,6 +65,7 @@ services:
       - /var/data/authentik/custom-templates:/templates
     # env_file:
     #   - .env
+    shm_size: 512mb
     expose:
       - 9000
       - 9443
@@ -86,6 +88,7 @@ services:
         - traefik.http.routers.authentik-rtr.tls.certresolver=le
         - traefik.http.routers.authentik-rtr.service=authentik-svc
         - traefik.http.services.authentik-svc.loadbalancer.server.port=9000
+
   authentik-worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.2.1}
     restart: unless-stopped
@@ -93,10 +96,11 @@ services:
     environment:
       AUTHENTIK_REDIS__HOST: tasks.redis
       AUTHENTIK_POSTGRESQL__HOST: 192.168.50.220
+      AUTHENTIK_POSTGRESQL__PORT: 5432
       AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
     # https://goauthentik.io/docs/outposts/integrations/docker
@@ -109,6 +113,7 @@ services:
       - /var/data/authentik/media:/data
       - /var/data/authentik/certs:/certs
       - /var/data/authentik/custom-templates:/templates
+    shm_size: 512mb
     # env_file:
     #   - .env
     # depends_on:
