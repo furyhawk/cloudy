@@ -31,8 +31,8 @@ services:
     volumes:
       - /var/data/adminer_data:/var/lib/pgadmin
     restart: unless-stopped
-    depends_on:
-      - postgres_db
+    # depends_on:
+    #   - postgres_db
     networks:
       - traefik-public
     deploy:
