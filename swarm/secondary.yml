@@ -46,13 +46,13 @@ services:
       - USE_NEW_DESIGN=true
       - TITLE=LibreSpeed(${DOMAIN})
       - TELEMETRY=true
-      - GDPR_EMAIL=admin@${DOMAIN}
+      - GDPR_EMAIL=admin@mail.${DOMAIN}
       - ENABLE_ID_OBFUSCATION=true
       - DB_TYPE=postgresql
       - DB_HOSTNAME=${DATABASE__HOSTNAME}
       - DB_NAME=speedtest
-      - DB_USERNAME=${DATABASE__USERNAME}
-      - DB_PASSWORD=${DATABASE__PASSWORD}
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
       - PASSWORD=${DATABASE__PASSWORD}
 
     # user: "1000:1000"
