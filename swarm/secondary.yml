@@ -42,8 +42,19 @@ services:
       # - PUID=1000
       # - PGID=1000
       - TZ=${TZ}
-      # - PASSWORD=${DATABASE__PASSWORD}
       - MODE=standalone
+      - USE_NEW_DESIGN=true
+      - TITLE=LibreSpeed(${DOMAIN})
+      - TELEMETRY=true
+      - GDPR_EMAIL=admin@${DOMAIN}
+      - ENABLE_ID_OBFUSCATION=true
+      - DB_TYPE=postgresql
+      - DB_HOSTNAME=${DATABASE__HOSTNAME}
+      - DB_NAME=speedtest
+      - DB_USERNAME=${DATABASE__USERNAME}
+      - DB_PASSWORD=${DATABASE__PASSWORD}
+      - PASSWORD=${DATABASE__PASSWORD}
+
     # user: "1000:1000"
     # volumes:
     #   - librespeed_data:/config
