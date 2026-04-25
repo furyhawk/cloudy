@@ -66,6 +66,29 @@ http:
         certResolver: le
       service: proxmox01@file
 
+    xiaozhi_web:
+      entryPoints
+        - https
+      rule: Host(`xiaozhi.furyhawk.lol`)
+    tls:
+      certResolver: le
+    service: xiaozhi_web@file
+
+    xiaozhi_ota:
+      entryPoints
+        - https
+      rule: Host(`ota.furyhawk.lol`)
+    tls:
+      certResolver: le
+    service: xiaozhi_ota@file
+
+    xiaozhi_ws:
+      entryPoints
+        - https
+      rule: Host(`xiaozhi_ws.furyhawk.lol`)
+    tls:
+      certResolver: le
+
   services:
 
     coco_desktop:
@@ -102,3 +125,18 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.44:1080
+
+    xiaozhi_web:
+      loadBalancer:
+        servers
+          - url: http://192.168.50.44:8002
+
+    xiaozhi_ota:
+      loadBalancer:
+        servers
+          - url: http://192.168.50.44:8002/xiaozhi/ota/
+
+    xiaozhi_ws:
+      loadBalancer:
+        servers
+          - url: ws://192.168.50.44:8033/xiaozhi/v1/
