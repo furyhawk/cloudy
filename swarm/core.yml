@@ -143,6 +143,7 @@ services:
       - --entrypoints.web-socket.address=:8083
       - --entrypoints.web-socket-secure.address=:8084
       - --entrypoints.bolt-socket.address=:7687
+      - --entrypoints.xiaozhi-ws.address=:8033
       # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
       - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
       # Store the Let's Encrypt certificates in the mounted volume

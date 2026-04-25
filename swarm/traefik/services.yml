@@ -84,11 +84,11 @@ http:
 
     xiaozhi_ws:
       entryPoints:
-        - https
+        - xiaozhi-ws
       rule: Host(`xiaozhi_ws.furyhawk.lol`)
       tls:
         certResolver: le
-      service: xiaozhi_ws
+      service: xiaozhi_ws@file
 
   services:
 
@@ -140,4 +140,4 @@ http:
     xiaozhi_ws:
       loadBalancer:
         servers:
-          - url: ws://192.168.50.44:8033/xiaozhi/v1/
+          - url: ws://192.168.50.44:8033
