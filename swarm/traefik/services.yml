@@ -1,3 +1,21 @@
+  GNU nano 8.7                                 /var/data/config/traefik/services.yml                                           
+tcp:
+  routers:
+    xiaozhi_ws:
+      entryPoints:
+        - xiaozhi-ws
+      rule: HostSNI(`*`)
+      tls:
+        certResolver: le
+      service: xiaozhi_ws@file
+
+  services:
+
+    xiaozhi_ws:
+      loadBalancer:
+        servers:
+          - address: 192.168.50.44:8033
+
 http:
   routers:
     traefik-public-https:
@@ -82,13 +100,6 @@ http:
         certResolver: le
       service: xiaozhi_ota@file
 
-    xiaozhi_ws:
-      entryPoints:
-        - xiaozhi-ws
-      rule: Host(`xiaozhi_ws.furyhawk.lol`)
-      tls:
-        certResolver: le
-      service: xiaozhi_ws@file
 
   services:
 
@@ -137,7 +148,3 @@ http:
         servers:
           - url: http://192.168.50.44:8002/xiaozhi/ota/
 
-    xiaozhi_ws:
-      loadBalancer:
-        servers:
-          - url: ws://192.168.50.44:8033
