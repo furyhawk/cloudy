@@ -70,24 +70,25 @@ http:
       entryPoints:
         - https
       rule: Host(`xiaozhi.furyhawk.lol`)
-    tls:
-      certResolver: le
-    service: xiaozhi_web@file
+      tls:
+        certResolver: le
+      service: xiaozhi_web@file
 
     xiaozhi_ota:
       entryPoints:
         - https
       rule: Host(`ota.furyhawk.lol`)
-    tls:
-      certResolver: le
-    service: xiaozhi_ota@file
+      tls:
+        certResolver: le
+      service: xiaozhi_ota@file
 
     xiaozhi_ws:
       entryPoints:
         - https
       rule: Host(`xiaozhi_ws.furyhawk.lol`)
-    tls:
-      certResolver: le
+      tls:
+        certResolver: le
+      service: xiaozhi_ws
 
   services:
 
