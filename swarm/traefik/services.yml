@@ -67,7 +67,7 @@ http:
       service: proxmox01@file
 
     xiaozhi_web:
-      entryPoints
+      entryPoints:
         - https
       rule: Host(`xiaozhi.furyhawk.lol`)
     tls:
@@ -75,7 +75,7 @@ http:
     service: xiaozhi_web@file
 
     xiaozhi_ota:
-      entryPoints
+      entryPoints:
         - https
       rule: Host(`ota.furyhawk.lol`)
     tls:
@@ -83,7 +83,7 @@ http:
     service: xiaozhi_ota@file
 
     xiaozhi_ws:
-      entryPoints
+      entryPoints:
         - https
       rule: Host(`xiaozhi_ws.furyhawk.lol`)
     tls:
@@ -128,15 +128,15 @@ http:
 
     xiaozhi_web:
       loadBalancer:
-        servers
+        servers:
           - url: http://192.168.50.44:8002
 
     xiaozhi_ota:
       loadBalancer:
-        servers
+        servers:
           - url: http://192.168.50.44:8002/xiaozhi/ota/
 
     xiaozhi_ws:
       loadBalancer:
-        servers
+        servers:
           - url: ws://192.168.50.44:8033/xiaozhi/v1/
