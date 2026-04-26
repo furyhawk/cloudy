@@ -12,8 +12,8 @@ services:
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
       - /var/data/config/homeassistant:/config
-      - /etc/localtime:/etc/localtime:ro
-      - /run/dbus:/run/dbus:ro
+      # - /etc/localtime:/etc/localtime:ro
+      # - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     expose:
       - 8123
