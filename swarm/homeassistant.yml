@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     expose:
       - 8123
-    network:
+    networks:
       - traefik-public
     environment:
       - TZ=Asia/Singapore
