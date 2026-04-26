@@ -5,8 +5,7 @@ tcp:
       entryPoints:
         - xiaozhi-ws
       rule: HostSNI(`*`)
-      tls:
-        certResolver: le
+      tls: {}
       service: xiaozhi_ws@file
 
   services:

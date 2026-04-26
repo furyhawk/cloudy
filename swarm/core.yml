@@ -43,6 +43,9 @@ services:
       # - "8083:8083"
       # - "8084:8084"
       # - "7687:7687"
+      - target: 8033
+        published: 8033
+        mode: host
     deploy:
       placement:
         constraints:
