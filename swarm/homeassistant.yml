@@ -1,0 +1,35 @@
+x-environment: &app-environment
+  DOMAIN: "${DOMAIN:-furyhawk.lol}"
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /var/data/config/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    expose:
+      - 8123
+    network:
+      - traefik-public
+    environment:
+      - TZ=Asia/Singapore
+      - DOMAIN=${DOMAIN}
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.homeassistant.entrypoints=https
+        - traefik.http.routers.homeassistant.rule=Host(`ha.${DOMAIN}`)
+        - traefik.http.routers.homeassistant.tls.certresolver=le
+        - traefik.http.routers.homeassistant.service=homeassistant_srv
+        - traefik.http.services.homeassistant_srv.loadbalancer.server.port=8123

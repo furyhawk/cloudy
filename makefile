@@ -207,5 +207,12 @@ deploy-esphome: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/esphome.yml esphome ;\
 	}
-
+deploy-homeassistant: pull
+	{ \
+	echo "Deploying the homeassistant stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/homeassistant.yml homeassistant ;\
+	}
 # git submodule update --init --recursive
