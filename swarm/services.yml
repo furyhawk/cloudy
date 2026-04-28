@@ -110,13 +110,13 @@ services:
   #       - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
 
   # grant the necessary permissions to RUSTFS volumes path
-  rustfs_perms:
-    image: alpine
-    user: root
-    volumes:
-      - /var/data/rustfs:/fix_path
-    command: chown -R 10001:10001 /fix_path
-  # RustFS main service
+  # rustfs_perms:
+  #   image: alpine
+  #   user: root
+  #   volumes:
+  #     - /var/data/rustfs:/fix_path
+  #   command: chown -R 10001:10001 /fix_path
+  # # RustFS main service
   rustfs:
     security_opt:
       - "no-new-privileges:true"
@@ -139,9 +139,9 @@ services:
       # - RUSTFS_TLS_PATH=/opt/tls
       # - RUSTFS_OBS_ENDPOINT=http://otel-collector:4318
     volumes:
-      - /var/data/rustfs/pro:/data
-      - /var/data/rustfs/logs:/app/logs
-      # - /var/data/rustfs/certs/:/opt/tls # TLS configuration, you should create tls directory and put your tls files in it and then specify the path here
+      - rustfs_data:/data
+      - rustfs_logs:/app/logs
+      # - rustfs_certs:/opt/tls # TLS configuration, you should create tls directory and put your tls files in it and then specify the path here
     networks:
       - traefik-public
     restart: unless-stopped
@@ -157,7 +157,7 @@ services:
       retries: 3
       start_period: 40s
     depends_on:
-      - rustfs_perms
+      # - rustfs_perms
       # otel-collector:
       #   condition: service_started
       #   required: false
@@ -272,9 +272,12 @@ services:
         - traefik.http.services.whoami-svc.loadbalancer.server.port=80
 
 volumes:
-  minio_data: {}
+  # minio_data: {}
   # neo4j_data: {}
   # neo4j_logs: {}
+  rustfs_data: {}
+  rustfs_logs: {}
+  # rustfs_certs: {}
   postgres_data: {}
 networks:
   net:
