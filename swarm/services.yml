@@ -156,7 +156,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    depends_on:
+    # depends_on:
       # - rustfs_perms
       # otel-collector:
       #   condition: service_started
