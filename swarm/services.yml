@@ -71,43 +71,111 @@ services:
         # - traefik.http.routers.dozzle_auth.service=authentik_svc
         # - traefik.http.services.authentik_svc.loadbalancer.servers.url="http://authentik-server:9000/outpost.goauthentik.io"
 
-  minio-common:
-    image: minio/minio:latest
-    environment:
-      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
-      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
-      # MINIO_OPTS: "--console-address :9001"
-      # MINIO_SERVER_URL: https://drive.${DOMAIN}
-      DOMAIN: ${DOMAIN}
-    restart: unless-stopped
-    command: server /data --address ":9000" --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 60s
-      timeout: 5s
-      retries: 5
+  # minio-common:
+  #   image: minio/minio:latest
+  #   environment:
+  #     MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+  #     MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+  #     # MINIO_OPTS: "--console-address :9001"
+  #     # MINIO_SERVER_URL: https://drive.${DOMAIN}
+  #     DOMAIN: ${DOMAIN}
+  #   restart: unless-stopped
+  #   command: server /data --address ":9000" --console-address ":9001"
+  #   healthcheck:
+  #     test: ["CMD", "mc", "ready", "local"]
+  #     interval: 60s
+  #     timeout: 5s
+  #     retries: 5
+  #   volumes:
+  #     - minio_data:/data
+  #   expose:
+  #     - 9000
+  #     - 9001
+  #   networks:
+  #     - traefik-public
+  #   deploy:
+  #     labels:
+  #       - traefik.enable=true
+  #       - traefik.swarm.network=traefik-public
+  #       - traefik.constraint-label=traefik-public
+  #       - traefik.http.routers.minio-router.entrypoints=https
+  #       - traefik.http.routers.minio-router.rule=Host(`drive.${DOMAIN}`) || Host(`storage.${DOMAIN}`)
+  #       - traefik.http.routers.minio-router.tls.certresolver=le
+  #       - traefik.http.routers.minio-router.service=minio_common_service
+  #       - traefik.http.services.minio_common_service.loadbalancer.server.port=9001
+  #       - traefik.http.routers.minio-api-router.entrypoints=https
+  #       - traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAIN}`) || Host(`s3.${DOMAIN}`)
+  #       - traefik.http.routers.minio-api-router.tls.certresolver=le
+  #       - traefik.http.routers.minio-api-router.service=minio_api_service
+  #       - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
+
+  # grant the necessary permissions to RUSTFS volumes path
+  rustfs_perms:
+    image: alpine
+    user: root
     volumes:
-      - minio_data:/data
-    expose:
-      - 9000
-      - 9001
+      - /var/data/rustfs:/fix_path
+    command: chown -R 10001:10001 /fix_path
+  # RustFS main service
+  rustfs:
+    security_opt:
+      - "no-new-privileges:true"
+    image: rustfs/rustfs:latest
+    container_name: rustfs-server
+    ports:
+      - "9000:9000" # S3 API port
+      - "9001:9001" # Console port
+    environment:
+      - RUSTFS_VOLUMES=/data/rustfs{0..3} # Define 4 storage volumes
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+      - RUSTFS_OBS_LOGGER_LEVEL=info
+      # - RUSTFS_TLS_PATH=/opt/tls
+      # - RUSTFS_OBS_ENDPOINT=http://otel-collector:4318
+    volumes:
+      - /var/data/rustfs/pro:/data
+      - /var/data/rustfs/logs:/app/logs
+      # - /var/data/rustfs/certs/:/opt/tls # TLS configuration, you should create tls directory and put your tls files in it and then specify the path here
     networks:
       - traefik-public
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh", "-c",
+          "curl -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9001/rustfs/console/health"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      rustfs_perms:
+        condition: service_completed_successfully
+      # otel-collector:
+      #   condition: service_started
+      #   required: false
     deploy:
       labels:
         - traefik.enable=true
         - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.minio-router.entrypoints=https
-        - traefik.http.routers.minio-router.rule=Host(`drive.${DOMAIN}`) || Host(`storage.${DOMAIN}`)
-        - traefik.http.routers.minio-router.tls.certresolver=le
-        - traefik.http.routers.minio-router.service=minio_common_service
-        - traefik.http.services.minio_common_service.loadbalancer.server.port=9001
-        - traefik.http.routers.minio-api-router.entrypoints=https
-        - traefik.http.routers.minio-api-router.rule=Host(`minio.${DOMAIN}`) || Host(`s3.${DOMAIN}`)
-        - traefik.http.routers.minio-api-router.tls.certresolver=le
-        - traefik.http.routers.minio-api-router.service=minio_api_service
-        - traefik.http.services.minio_api_service.loadbalancer.server.port=9000
+        - traefik.http.routers.rustfs-router.entrypoints=https
+        - traefik.http.routers.rustfs-router.rule=Host(`drive.${DOMAIN}`) || Host(`storage.${DOMAIN}`)
+        - traefik.http.routers.rustfs-router.tls.certresolver=le
+        - traefik.http.routers.rustfs-router.service=rustfs_service
+        - traefik.http.services.rustfs_service.loadbalancer.server.port=9001
+        - traefik.http.routers.rustfs-api-router.entrypoints=https
+        - traefik.http.routers.rustfs-api-router.rule=Host(`s3.${DOMAIN}`)
+        - traefik.http.routers.rustfs-api-router.tls.certresolver=le
+        - traefik.http.routers.rustfs-api-router.service=rustfs_api_service
+        - traefik.http.services.rustfs_api_service.loadbalancer.server.port=9000
 
   osrm-backend:
     environment:
