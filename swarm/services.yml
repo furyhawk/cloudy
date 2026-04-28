@@ -156,8 +156,8 @@ services:
       retries: 3
       start_period: 40s
     depends_on:
-      rustfs_perms:
-        condition: service_completed_successfully
+      - rustfs_perms:
+          condition: service_completed_successfully
       # otel-collector:
       #   condition: service_started
       #   required: false
