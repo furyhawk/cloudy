@@ -135,7 +135,7 @@ services:
       - RUSTFS_ACCESS_KEY=rustfsadmin
       - RUSTFS_SECRET_KEY=rustfsadmin
       - RUSTFS_OBS_LOGGER_LEVEL=info
-      - RUSTFS_UNSAFE_BYPASS_DISK_CHECK=${RUSTFS_UNSAFE_BYPASS_DISK_CHECK:-false}
+      - RUSTFS_UNSAFE_BYPASS_DISK_CHECK=${RUSTFS_UNSAFE_BYPASS_DISK_CHECK:-true}
       # - RUSTFS_TLS_PATH=/opt/tls
       # - RUSTFS_OBS_ENDPOINT=http://otel-collector:4318
     volumes:
