@@ -21,4 +21,4 @@ server:
 ui:
   static_use_hash: true
 valkey:
-  url: redis://searxng_redis_valkey:6379/0
+  url: redis://redis_valkey:6379/0
