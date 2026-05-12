@@ -18,6 +18,10 @@ server:
   limiter: true  # can be disabled for a private instance
   image_proxy: true
 
+request:
+  # Proper User-Agent to avoid rate limiting and 403 errors
+  user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0'
+
 ui:
   static_use_hash: true
 valkey:
