@@ -1,14 +1,27 @@
 # see https://docs.searxng.org/admin/settings/settings.html#settings-use-default-settings
 use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "SearXNG"
+
+search:
+  safe_search: 2
+  autocomplete: 'duckduckgo'
+  formats:
+    - html
+    - json
+
 server:
   # base_url is defined in the SEARXNG_BASE_URL environment variable, see .env and docker-compose.yml
   secret_key: "ultrasecretkey"  # change this!
   limiter: true  # can be disabled for a private instance
   image_proxy: true
+  base_url: http://search.furyhawk.lol
 ui:
   static_use_hash: true
-redis:
-  url: redis://tasks.redis_valkey:6379/0
+valkey:
+  url: redis://searxng_redis_valkey:6379/0
 search:
   # remove format to deny access, use lower case.
   # formats: [html, csv, json, rss]
