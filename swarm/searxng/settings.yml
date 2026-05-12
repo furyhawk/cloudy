@@ -17,7 +17,7 @@ server:
   secret_key: "ultrasecretkey"  # change this!
   limiter: true  # can be disabled for a private instance
   image_proxy: true
-  base_url: http://search.furyhawk.lol
+
 ui:
   static_use_hash: true
 valkey:
