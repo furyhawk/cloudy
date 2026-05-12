@@ -25,4 +25,4 @@ request:
 ui:
   static_use_hash: true
 valkey:
-  url: redis://valkey_valkey:6379/0
+  url: valkey://valkey_valkey:6379/0
