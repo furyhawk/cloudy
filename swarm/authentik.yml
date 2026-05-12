@@ -49,7 +49,7 @@ services:
     networks:
       - authentik
   authentik-server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.2.1}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2026.2.2}
     restart: unless-stopped
     command: server
     environment:
@@ -60,6 +60,7 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 3600
     volumes:
       - /var/data/authentik/media:/data
       - /var/data/authentik/custom-templates:/templates
@@ -90,7 +91,7 @@ services:
         - traefik.http.services.authentik-svc.loadbalancer.server.port=9000
 
   authentik-worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.2.1}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2026.2.2}
     restart: unless-stopped
     command: worker
     environment:
