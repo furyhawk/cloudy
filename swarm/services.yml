@@ -210,18 +210,56 @@ services:
         # - traefik.http.routers.osrm-local-backend.service=osrm_backend_service
         - traefik.http.services.osrm_backend_service.loadbalancer.server.port=${OSRM_PORT:-5000}
 
+  # postgres_db:
+  #   image: postgres:16
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     PGDATA: "/var/lib/postgresql/data"
+  #     LANG: en_US.utf8
+  #     TZ: Asia/Singapore
+  #   command: ["postgres", "-c", "log_connections=on"]
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     # - ./config/postgresql.conf:/etc/postgresql.conf
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 10
+  #   ports:
+  #     - target: 5432
+  #       published: 5432
+  #       mode: host
+  #   networks:
+  #     - net
+  #     - traefik-public
+  #   deploy:
+  #     placement:
+  #       constraints:
+  #         - node.labels.postgres.postgres_data == true
+  #     labels:
+  #       - traefik.enable=false
+  #       - traefik.swarm.network=traefik-public
+  #       - traefik.constraint-label=traefik-public
+        # - traefik.tcp.routers.postgres.entrypoints=postgres-socket
+        # - traefik.tcp.routers.postgres.rule=HostSNI(`*`)
+        # - traefik.tcp.routers.postgres.service=postgres_service
+        # - traefik.tcp.services.postgres_service.loadbalancer.server.port=5432
+
   postgres_db:
-    image: postgres:18
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: "/var/lib/postgresql/data"
+      PGDATA: "/var/lib/postgresql"
       LANG: en_US.utf8
       TZ: Asia/Singapore
     command: ["postgres", "-c", "log_connections=on"]
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data18:/var/lib/postgresql
       # - ./config/postgresql.conf:/etc/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -243,10 +281,10 @@ services:
         - traefik.enable=false
         - traefik.swarm.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.tcp.routers.postgres.entrypoints=postgres-socket
-        - traefik.tcp.routers.postgres.rule=HostSNI(`*`)
-        - traefik.tcp.routers.postgres.service=postgres_service
-        - traefik.tcp.services.postgres_service.loadbalancer.server.port=5432
+        # - traefik.tcp.routers.postgres.entrypoints=postgres-socket
+        # - traefik.tcp.routers.postgres.rule=HostSNI(`*`)
+        # - traefik.tcp.routers.postgres.service=postgres_service
+        # - traefik.tcp.services.postgres_service.loadbalancer.server.port=5432
 
   # WhoAmI - For Testing and Troubleshooting
   whoami:
@@ -279,6 +317,7 @@ volumes:
   rustfs_logs: {}
   # rustfs_certs: {}
   postgres_data: {}
+  postgres_data18: {}
 networks:
   net:
     driver: overlay
