@@ -1,0 +1,36 @@
+networks:
+  net:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+services:
+  gitea:
+    image: docker.gitea.com/gitea/gitea:latest
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      GITEA__database__DB_TYPE: "postgres"
+      GITEA__database__HOST: ${DATABASE__HOSTNAME}
+      GITEA__database__NAME: "gitea"
+      GITEA__database__USER: ${POSTGRES_USER}
+      GITEA__database__PASSWD: ${POSTGRES_PASSWORD}
+    expose:
+      - 3000
+    restart: unless-stopped
+    volumes:
+      - /var/data/gitea_data:/data
+    networks:
+      - net
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.gitea.entrypoints=https
+        - traefik.http.routers.gitea.rule=Host(`git.${DOMAIN}`)
+        - traefik.http.routers.gitea.tls.certresolver=le
+        - traefik.http.routers.gitea.service=gitea_service
+        - traefik.http.services.gitea_service.loadbalancer.server.port=3000

@@ -215,4 +215,12 @@ deploy-homeassistant: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/homeassistant.yml homeassistant ;\
 	}
+deploy-gitea: pull
+	{ \
+	echo "Deploying the gitea stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/gitea.yml gitea ;\
+	}
 # git submodule update --init --recursive
