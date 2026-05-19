@@ -5,6 +5,9 @@ networks:
   traefik-public:
     external: true
 
+volumes:
+  gitea_data: {}
+
 services:
   gitea:
     image: docker.gitea.com/gitea:latest
@@ -20,7 +23,7 @@ services:
       - 3000
     restart: unless-stopped
     volumes:
-      - /var/data/gitea_data:/data
+      - gitea_data:/data
     networks:
       - net
       - traefik-public
