@@ -7,7 +7,7 @@ networks:
 
 services:
   gitea:
-    image: docker.gitea.com/gitea/gitea:latest
+    image: docker.gitea.com/gitea:latest
     environment:
       USER_UID: 1000
       USER_GID: 1000
