@@ -132,12 +132,12 @@ http:
     dev_machine:
       loadBalancer:
         servers:
-          - url: http://192.168.50.44:5173
+          - url: http://192.168.50.158:5173
 
     service_machine:
       loadBalancer:
         servers:
-          - url: http://192.168.50.44:8000
+          - url: http://192.168.50.158:8000
 
     mail_machine:
       loadBalancer:
