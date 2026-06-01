@@ -110,9 +110,19 @@ http:
       entryPoints:
         - https
       rule: Host(`bus.furyhawk.lol`)
+      priority: 10
       tls:
         certResolver: le
-      service: bus_app@file
+      service: bus_frontend@file
+
+    bus_api:
+      entryPoints:
+        - https
+      rule: Host(`bus.furyhawk.lol`) && PathPrefix(`/api`)
+      priority: 100
+      tls:
+        certResolver: le
+      service: bus_api@file
 
   services:
 
@@ -166,7 +176,12 @@ http:
         servers:
           - url: http://192.168.50.50:8123
 
-    bus_app:
+    bus_frontend:
       loadBalancer:
         servers:
           - url: http://192.168.50.158:3001
+
+    bus_api:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.158:8068
