@@ -184,4 +184,4 @@ http:
     bus_api:
       loadBalancer:
         servers:
-          - url: http://192.168.50.158:8068
+          - url: http://192.168.50.158:9080
