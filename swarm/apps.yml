@@ -150,7 +150,7 @@ services:
         - traefik.http.services.meshtastic_app.loadbalancer.server.port=8080
 
   privatebin:
-    image: privatebin/nginx-fpm-alpine:latest
+    image: docker.io/privatebin/nginx-fpm-alpine:latest
     read_only: true
     volumes:
       - /var/data/privatebin_data:/srv/data # data volume for pastes allows pastes
