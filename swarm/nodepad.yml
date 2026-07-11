@@ -1,0 +1,30 @@
+services:
+  nodepad:
+    container_name: nodepad
+    build:
+      context: .
+      dockerfile: inline.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Add your AI model API keys below if needed by the app:
+      # - OPENAI_API_KEY=your_key_here
+      # - ANTHROPIC_API_KEY=your_key_here
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.nodepad.entrypoints=https
+        - traefik.http.routers.nodepad.rule=Host(`pad.${DOMAIN}`)
+        - traefik.http.routers.nodepad.tls.certresolver=le
+        - traefik.http.routers.nodepad.service=nodepad_app
+        - traefik.http.routers.nodepad-local.entrypoints=https
+        - traefik.http.routers.nodepad-local.rule=Host(`pad.${LOCALDOMAIN}`)
+        - traefik.http.routers.nodepad-local.tls=true
+        - traefik.http.routers.nodepad-local.service=nodepad_app
+        - traefik.http.services.nodepad_app.loadbalancer.server.port=3000
