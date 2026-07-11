@@ -223,4 +223,28 @@ deploy-gitea: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/gitea.yml gitea ;\
 	}
+deploy-grafana: pull
+	{ \
+	echo "Deploying the grafana stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/grafana.yml grafana ;\
+	}
+deploy-prometheus: pull
+	{ \
+	echo "Deploying the prometheus stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/prometheus.yml prometheus ;\
+	}
+deploy-nodepad: pull
+	{ \
+	echo "Deploying the nodepad stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/nodepad.yml nodepad ;\
+	}
 # git submodule update --init --recursive
