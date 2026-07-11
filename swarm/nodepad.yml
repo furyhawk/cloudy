@@ -1,3 +1,7 @@
+networks:
+  traefik-public:
+    external: true
+
 services:
   nodepad:
     image: nodepad:latest
