@@ -1,0 +1,38 @@
+volumes:
+  grafana_data: {}
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-}
+      - GF_SERVER_ROOT_URL=https://grafana.${DOMAIN}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - /var/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - /var/data/grafana/provisioning:/etc/grafana/provisioning:ro
+      - /var/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - traefik-public
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.grafana-https.rule=Host(`grafana.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.grafana-https.entrypoints=https
+        - traefik.http.routers.grafana-https.tls=true
+        - traefik.http.routers.grafana-https.tls.certresolver=le
+        - traefik.http.services.grafana.loadbalancer.server.port=3000

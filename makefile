@@ -241,6 +241,8 @@ deploy-prometheus: pull
 	}
 deploy-nodepad: pull
 	{ \
+	echo "Building the nodepad image..." ;\
+	docker build -t nodepad:latest -f ./swarm/inline.Dockerfile ./swarm ;\
 	echo "Deploying the nodepad stack..." ;\
 	set -a ;\
 	. ./swarm/.env ;\

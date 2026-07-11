@@ -1,6 +1,6 @@
 services:
   nodepad:
-    container_name: nodepad
+    image: nodepad:latest
     build:
       context: .
       dockerfile: inline.Dockerfile
@@ -11,7 +11,6 @@ services:
       # Add your AI model API keys below if needed by the app:
       # - OPENAI_API_KEY=your_key_here
       # - ANTHROPIC_API_KEY=your_key_here
-    restart: unless-stopped
     networks:
       - traefik-public
     deploy:

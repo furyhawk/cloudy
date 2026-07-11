@@ -1,0 +1,40 @@
+volumes:
+  prometheus_data: {}
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-30d}'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - prometheus_data:/prometheus
+      - /var/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /var/data/prometheus/rules:/etc/prometheus/rules:ro
+    networks:
+      - traefik-public
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.prometheus-https.entrypoints=https
+        - traefik.http.routers.prometheus-https.tls=true
+        - traefik.http.routers.prometheus-https.tls.certresolver=le
+        - traefik.http.services.prometheus.loadbalancer.server.port=9090
+        - traefik.http.middlewares.prometheus-auth.basicauth.users=${ADMIN_USER?Variable not set}:${HASHED_PASSWORD?Variable not set}
+        - traefik.http.routers.prometheus-https.middlewares=prometheus-auth
