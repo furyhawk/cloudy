@@ -229,6 +229,8 @@ deploy-grafana: pull
 	set -a ;\
 	. ./swarm/.env ;\
 	set +a ;\
+	echo "Removing old immutable configs..." ;\
+	docker config rm grafana_grafana_prometheus_datasource 2>/dev/null || true ;\
 	docker stack deploy --compose-file ./swarm/grafana.yml grafana ;\
 	}
 deploy-prometheus: pull
@@ -237,6 +239,8 @@ deploy-prometheus: pull
 	set -a ;\
 	. ./swarm/.env ;\
 	set +a ;\
+	echo "Removing old immutable config..." ;\
+	docker config rm prometheus_prometheus_config 2>/dev/null || true ;\
 	docker stack deploy --compose-file ./swarm/prometheus.yml prometheus ;\
 	}
 deploy-nodepad: pull
