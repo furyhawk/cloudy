@@ -1,10 +1,6 @@
 volumes:
   prometheus_data: {}
 
-configs:
-  prometheus_config:
-    file: ./prometheus/prometheus.yml
-
 networks:
   traefik-public:
     external: true
@@ -22,9 +18,7 @@ services:
     volumes:
       - prometheus_data:/prometheus
       - /var/data/prometheus/rules:/etc/prometheus/rules:ro
-    configs:
-      - source: prometheus_config
-        target: /etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       - traefik-public
     deploy:
