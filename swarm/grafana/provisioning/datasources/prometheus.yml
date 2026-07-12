@@ -1,13 +1,13 @@
 # Provisioning config for the Prometheus datasource in Grafana.
-# Both services are on the traefik-public overlay network,
-# so 'prometheus' resolves via Swarm DNS.
+# The service VIP for 'prometheus' on traefik-public is not reliably routing
+# in this stack, so use task DNS to reach the live Prometheus task directly.
 apiVersion: 1
 
 datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://prometheus:9090
+    url: http://tasks.prometheus:9090
     isDefault: true
     editable: true
     jsonData:

@@ -227,8 +227,8 @@ setup-grafana:
 	{ \
 	echo "Setting up grafana config on host..." ;\
 	mkdir -p /var/data/grafana/provisioning/datasources /var/data/grafana/dashboards ;\
-	cp -n ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini 2>/dev/null || echo "grafana.ini already exists, skipping" ;\
-	cp -n ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || echo "prometheus datasource already exists, skipping" ;\
+	cmp -s ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini 2>/dev/null || cp ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini ;\
+	cmp -s ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || cp ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml ;\
 	}
 deploy-grafana: pull setup-grafana
 	{ \
@@ -250,7 +250,7 @@ setup-prometheus:
 	{ \
 	echo "Setting up prometheus config on host..." ;\
 	mkdir -p /var/data/prometheus ;\
-	cp -n ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml 2>/dev/null || echo "prometheus.yml already exists, skipping" ;\
+	cmp -s ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml 2>/dev/null || cp ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml ;\
 	}
 deploy-monitoring: pull setup-grafana setup-prometheus
 	{ \
