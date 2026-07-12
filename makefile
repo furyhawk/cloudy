@@ -252,6 +252,14 @@ setup-prometheus:
 	mkdir -p /var/data/prometheus ;\
 	cp -n ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml 2>/dev/null || echo "prometheus.yml already exists, skipping" ;\
 	}
+deploy-monitoring: pull setup-grafana setup-prometheus
+	{ \
+	echo "Deploying the monitoring stack (prometheus + grafana)..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/prometheus-grafana.yml monitoring ;\
+	}
 deploy-nodepad: pull
 	{ \
 	echo "Building the nodepad image..." ;\

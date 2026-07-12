@@ -1,0 +1,74 @@
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-30d}'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - prometheus_data:/prometheus
+      - /var/data/prometheus/rules:/etc/prometheus/rules:ro
+      - /var/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - traefik-public
+    ports:
+      - target: 9090
+        published: 9090
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.prometheus-https.entrypoints=https
+        - traefik.http.routers.prometheus-https.tls=true
+        - traefik.http.routers.prometheus-https.tls.certresolver=le
+        - traefik.http.routers.prometheus-https.middlewares=admin-auth@swarm
+        - traefik.http.services.prometheus.loadbalancer.server.port=9090
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-}
+      - GF_SERVER_ROOT_URL=https://grafana.${DOMAIN}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - /var/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - /var/data/grafana/provisioning:/etc/grafana/provisioning:ro
+      - /var/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - traefik-public
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.grafana-https.rule=Host(`grafana.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.grafana-https.entrypoints=https
+        - traefik.http.routers.grafana-https.tls=true
+        - traefik.http.routers.grafana-https.tls.certresolver=le
+        - traefik.http.services.grafana.loadbalancer.server.port=3000
