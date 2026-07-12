@@ -11,9 +11,10 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   # Scrape Traefik Prometheus metrics
-  # Both services are on the traefik-public overlay network,
-  # so 'traefik' resolves via Swarm DNS.
+  # Both services are on the traefik-public overlay network.
+  # Traefik is in the 'core' stack, so the Swarm DNS name is core_traefik.
+  # Metrics are served on the dedicated "metrics" entrypoint (port 8082).
   - job_name: 'traefik'
     static_configs:
-      - targets: ['core_traefik:8080']
+      - targets: ['core_traefik:8082']
     metrics_path: /metrics
