@@ -1,0 +1,19 @@
+# Prometheus configuration for the Swarm stack.
+# Mounted into the Prometheus container as a Docker config.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scrape Traefik Prometheus metrics
+  # Both services are on the traefik-public overlay network,
+  # so 'traefik' resolves via Swarm DNS.
+  - job_name: 'traefik'
+    static_configs:
+      - targets: ['traefik:8080']
+    metrics_path: /metrics

@@ -162,6 +162,11 @@ services:
       - --log.level=INFO
       # Enable the Dashboard and API
       - --api=true
+      # Enable Prometheus metrics for scraping by Prometheus
+      - --metrics.prometheus=true
+      - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
+      - --metrics.prometheus.addEntryPointsLabels=true
+      - --metrics.prometheus.addServicesLabels=true
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
