@@ -16,4 +16,4 @@ scrape_configs:
   # Metrics are served on the dedicated "metrics" entrypoint (port 8082).
   - job_name: 'traefik'
     static_configs:
-      - targets: ['192.168.50.220/:8082']
+      - targets: ['192.168.50.220:8082']
