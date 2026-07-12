@@ -147,6 +147,8 @@ services:
       - --entrypoints.web-socket-secure.address=:8084
       - --entrypoints.bolt-socket.address=:7687
       - --entrypoints.xiaozhi-ws.address=:8033
+      # Create an entrypoint "metrics" for Prometheus scraping (not published externally)
+      - --entrypoints.metrics.address=:8082
       # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
       - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
       # Store the Let's Encrypt certificates in the mounted volume
@@ -163,7 +165,9 @@ services:
       # Enable the Dashboard and API
       - --api=true
       # Enable Prometheus metrics for scraping by Prometheus
+      # Metrics are served on the dedicated "metrics" entrypoint (port 8082)
       - --metrics.prometheus=true
+      - --metrics.prometheus.entryPoint=metrics
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
       - --metrics.prometheus.addEntryPointsLabels=true
       - --metrics.prometheus.addServicesLabels=true
