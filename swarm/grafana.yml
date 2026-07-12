@@ -1,6 +1,10 @@
 volumes:
   grafana_data: {}
 
+configs:
+  grafana_prometheus_datasource:
+    file: ./grafana/provisioning/datasources/prometheus.yml
+
 networks:
   traefik-public:
     external: true
@@ -19,6 +23,9 @@ services:
       - /var/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - /var/data/grafana/provisioning:/etc/grafana/provisioning:ro
       - /var/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    configs:
+      - source: grafana_prometheus_datasource
+        target: /etc/grafana/provisioning/datasources/prometheus.yml
     networks:
       - traefik-public
     deploy:

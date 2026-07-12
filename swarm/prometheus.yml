@@ -42,5 +42,4 @@ services:
         - traefik.http.routers.prometheus-https.tls=true
         - traefik.http.routers.prometheus-https.tls.certresolver=le
         - traefik.http.services.prometheus.loadbalancer.server.port=9090
-        - traefik.http.middlewares.prometheus-auth.basicauth.users=${ADMIN_USER?Variable not set}:${HASHED_PASSWORD?Variable not set}
-        - traefik.http.routers.prometheus-https.middlewares=prometheus-auth
+        - traefik.http.routers.prometheus.middlewares=admin-auth@swarm
