@@ -15,6 +15,7 @@ scrape_configs:
   # Traefik is in the 'core' stack, so the Swarm DNS name is core_traefik.
   # Metrics are served on the dedicated "metrics" entrypoint (port 8082).
   - job_name: 'traefik'
-    static_configs:
-      - targets: ['core_traefik:8082']
-    metrics_path: /metrics
+    dns_sd_configs:
+    - names: ['core_traefik']
+      type: 'A'
+      port: 8082
