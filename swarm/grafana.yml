@@ -19,7 +19,6 @@ services:
       - /var/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - /var/data/grafana/provisioning:/etc/grafana/provisioning:ro
       - /var/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
-      - ./grafana/provisioning/datasources/prometheus.yml:/etc/grafana/provisioning/datasources/prometheus.yml:ro
     networks:
       - traefik-public
     deploy:

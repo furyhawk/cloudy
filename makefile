@@ -238,13 +238,19 @@ deploy-grafana: pull setup-grafana
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/grafana.yml grafana ;\
 	}
-deploy-prometheus: pull
+deploy-prometheus: pull setup-prometheus
 	{ \
 	echo "Deploying the prometheus stack..." ;\
 	set -a ;\
 	. ./swarm/.env ;\
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/prometheus.yml prometheus ;\
+	}
+setup-prometheus:
+	{ \
+	echo "Setting up prometheus config on host..." ;\
+	mkdir -p /var/data/prometheus ;\
+	cp -n ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml 2>/dev/null || echo "prometheus.yml already exists, skipping" ;\
 	}
 deploy-nodepad: pull
 	{ \
