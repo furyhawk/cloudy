@@ -21,6 +21,9 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       - traefik-public
+    ports:
+      - target: 9090
+        published: 9090
     deploy:
       mode: replicated
       replicas: 1
