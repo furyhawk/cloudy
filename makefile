@@ -226,9 +226,11 @@ deploy-gitea: pull
 setup-grafana:
 	{ \
 	echo "Setting up grafana config on host..." ;\
-	mkdir -p /var/data/grafana/provisioning/datasources /var/data/grafana/dashboards ;\
+	mkdir -p /var/data/grafana/provisioning/datasources /var/data/grafana/provisioning/dashboards /var/data/grafana/dashboards ;\
 	cmp -s ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini 2>/dev/null || cp ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini ;\
 	cmp -s ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || cp ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml ;\
+	cmp -s ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml 2>/dev/null || cp ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml ;\
+	cmp -s ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json ;\
 	}
 deploy-grafana: pull setup-grafana
 	{ \
