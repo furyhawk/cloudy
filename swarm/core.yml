@@ -46,6 +46,9 @@ services:
       - target: 8033
         published: 8033
         mode: host
+      - target: 8082
+        published: 8082
+        mode: host
     deploy:
       placement:
         constraints:
