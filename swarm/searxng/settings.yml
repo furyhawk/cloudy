@@ -24,5 +24,14 @@ request:
 
 ui:
   static_use_hash: true
+
+engines:
+  - name: brave
+    disabled: true
+  - name: ahmia
+    disabled: true
+  - name: torch
+    disabled: true
+
 valkey:
   url: valkey://tasks.valkey_valkey:6379/0

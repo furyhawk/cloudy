@@ -41,6 +41,20 @@
 - Swarm services deploy: `make deploy-services`
 - Ansible RKE2 cluster bootstrap: `cd ansible/rke2 && ansible-playbook site.yaml -i inventory/hosts.ini --key-file ~/.ssh/id_rsa -K`
 
+## Fast Debug Workflow
+- Use this order for quicker triage: identify failing unit -> inspect recent logs -> verify rendered config -> apply smallest restart.
+- Find suspect Swarm services quickly: `docker service ls`
+- Inspect service state and recent task failures: `docker service ps <service> --no-trunc`
+- Tail recent service logs with timestamps: `docker service logs --since 10m <service>`
+- Follow logs live during a rollout: `docker service logs -f <service>`
+- Restart only one service after config changes: `docker service update --force <service>`
+- Confirm service converged after update: `docker service ps <service>`
+- Validate compose syntax and env interpolation before deploy: `docker compose -f compose.yml config`
+- Render a Swarm stack file locally for sanity checks: `docker compose -f swarm/<stack>.yml config`
+- For SearXNG specifically, runtime config is host-mounted at `/var/data/config/searxng`; repo edits in `swarm/searxng/` require syncing to host path before restart.
+- For Traefik/router issues, verify labels and entrypoints first, then check `traefik` service logs before changing domains or ports.
+- Prefer `--since 5m` or `--since 10m` during incident response to avoid scanning stale logs.
+
 ## Lint And Validation Commands
 - There is no repo-wide lint target or CI workflow checked into the repository.
 - There are no configured `ruff`, `black`, `flake8`, `mypy`, `yamllint`, `ansible-lint`, or `pytest` configs in the root.
