@@ -8,13 +8,13 @@ services:
     build:
       context: .
       dockerfile: inline.Dockerfile
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=production
       # Add your AI model API keys below if needed by the app:
       # - OPENAI_API_KEY=your_key_here
       # - ANTHROPIC_API_KEY=your_key_here
+    expose:
+      - 3000
     networks:
       - traefik-public
     deploy:
