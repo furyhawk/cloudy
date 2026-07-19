@@ -4,7 +4,7 @@ services:
     networks:
       - crowdsec-internal
     environment:
-      DOCKER_HOST: tcp://socket-proxy:2375
+      DOCKER_HOST: tcp://tasks.socket-proxy:2375
       COLLECTIONS: "crowdsecurity/traefik"
       CUSTOM_CS_LAPI_KEY: ${CROWDSEC_LAPI_KEY:?Variable not set}
     deploy:
@@ -16,10 +16,10 @@ services:
       - crowdsec-config:/etc/crowdsec/
 
   traefik-bouncer:
-    image: crowdsecurity/traefik-bouncer:latest
+    image: fbonalair/traefik-crowdsec-bouncer:latest
     environment:
-      CROWDSEC_LAPI_URL: http://crowdsec:8080
-      CROWDSEC_LAPI_KEY: ${CROWDSEC_BOUNCER_KEY:?Variable not set}
+      CROWDSEC_AGENT_HOST: tasks.crowdsec:8080
+      CROWDSEC_BOUNCER_API_KEY: ${CROWDSEC_BOUNCER_KEY:?Variable not set}
     expose:
       - "8080"
     networks:
@@ -35,7 +35,10 @@ services:
       - crowdsec-internal
     environment:
       INFO: 1
+      PING: 1
+      VERSION: 1
       CONTAINERS: 1
+      EVENTS: 1
       POST: 0
       BUILD: 0
       COMMIT: 0
