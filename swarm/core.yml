@@ -91,7 +91,7 @@ services:
         - traefik.http.middlewares.xbot.headers.stsIncludeSubdomains=true
         - traefik.http.middlewares.xbot.headers.permissionsPolicy="accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), layout-animations=(), legacy-image-formats=(), magnetometer=(), microphone=(), midi=(), oversized-images=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), sync-xhr=(), usb=(), wake-lock=(), xr-spatial-tracking=()"
         - traefik.http.middlewares.xbot.headers.referrerPolicy="no-referrer"
-        - traefik.http.middlewares.crowdsec-bouncer.forwardauth.address=http://traefik-bouncer:8080/api/v1/forwardAuth
+        - traefik.http.middlewares.crowdsec-bouncer.forwardauth.address=http://tasks.crowdsec_traefik-bouncer:8080/api/v1/forwardAuth
         - traefik.http.middlewares.crowdsec-bouncer.forwardauth.trustForwardHeader=true
         - treafik.http.middlewares.neo4j_strip.stripprefix.prefixes=/neo4j
         # traefik-https the actual router using HTTPS
