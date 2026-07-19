@@ -1,3 +1,6 @@
 source: docker
 use_container_labels: true ## https://docs.crowdsec.net/docs/next/data_sources/docker#use_container_labels
+# Traefik service must set these docker labels so CrowdSec can classify logs correctly:
+# - crowdsec.enable=true
+# - crowdsec.labels.type=traefik
 check_interval: 10s ## How often to check for new containers https://docs.crowdsec.net/docs/next/appsec/quickstart/traefik

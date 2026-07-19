@@ -91,6 +91,8 @@ services:
         - traefik.http.middlewares.xbot.headers.stsIncludeSubdomains=true
         - traefik.http.middlewares.xbot.headers.permissionsPolicy="accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), layout-animations=(), legacy-image-formats=(), magnetometer=(), microphone=(), midi=(), oversized-images=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), sync-xhr=(), usb=(), wake-lock=(), xr-spatial-tracking=()"
         - traefik.http.middlewares.xbot.headers.referrerPolicy="no-referrer"
+        - traefik.http.middlewares.crowdsec-bouncer.forwardauth.address=http://traefik-bouncer:8080/api/v1/forwardAuth
+        - traefik.http.middlewares.crowdsec-bouncer.forwardauth.trustForwardHeader=true
         - treafik.http.middlewares.neo4j_strip.stripprefix.prefixes=/neo4j
         # traefik-https the actual router using HTTPS
         - traefik.http.routers.traefik-public-https.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
@@ -106,8 +108,9 @@ services:
         - traefik.http.services.traefik-public.loadbalancer.server.port=8080
         # Pass the original Host header to the backend
         # - "traefik.http.services.dashboard.loadbalancer.passhostheader=true"
-        # - crowdsec.enable=true
-        # - crowdsec.labels.type=nginx
+        # CrowdSec log acquisition for Traefik is label-based via docker source.
+        - crowdsec.enable=true
+        - crowdsec.labels.type=traefik
     volumes:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -132,6 +135,8 @@ services:
       - --entrypoints.http.address=:80
       # Create an entrypoint "https" listening on port 443
       - --entrypoints.https.address=:443
+      # Apply CrowdSec bouncer globally to all HTTPS routers discovered by Traefik.
+      - --entrypoints.https.http.middlewares=crowdsec-bouncer@swarm
       # Redirect HTTP to HTTPS
       - --entrypoints.http.http.redirections.entrypoint.to=https
       - --entrypoints.http.http.redirections.entrypoint.scheme=https

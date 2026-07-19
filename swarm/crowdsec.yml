@@ -1,27 +1,38 @@
 services:
   crowdsec:
     image: crowdsecurity/crowdsec:slim
-    restart: always
     networks:
-      crowdsec:
+      - crowdsec-internal
     environment:
       DOCKER_HOST: tcp://socket-proxy:2375
-      COLLECTIONS: "crowdsecurity/nginx"
-    ports:
-      - "127.0.0.1:8080:8080"
-    depends_on:
-      - 'socket-proxy'
+      COLLECTIONS: "crowdsecurity/traefik"
+      CUSTOM_CS_LAPI_KEY: ${CROWDSEC_LAPI_KEY:?Variable not set}
+    deploy:
+      restart_policy:
+        condition: any
     volumes:
-      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - /var/data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
 
-  socket-proxy:
+  traefik-bouncer:
+    image: crowdsecurity/traefik-bouncer:latest
+    environment:
+      CROWDSEC_LAPI_URL: http://crowdsec:8080
+      CROWDSEC_LAPI_KEY: ${CROWDSEC_BOUNCER_KEY:?Variable not set}
+    expose:
+      - "8080"
     networks:
-      crowdsec:
-    restart: always
+      - crowdsec-internal
+      - traefik-public
+    deploy:
+      restart_policy:
+        condition: any
+
+  socket-proxy:
     image: lscr.io/linuxserver/socket-proxy:latest
-    container_name: socket-proxy
+    networks:
+      - crowdsec-internal
     environment:
       INFO: 1
       CONTAINERS: 1
@@ -38,10 +49,13 @@ services:
       PLUGINS: 0
       SERVICES: 0
       SESSION: 0
-      SWARM: 0
+      SWARM: 1
       SYSTEM: 0
       TASKS: 0
       VOLUMES: 0
+    deploy:
+      restart_policy:
+        condition: any
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     read_only: true
@@ -53,5 +67,8 @@ volumes:
   crowdsec-config:
 
 networks:
-  crowdsec:
-    driver: bridge
+  crowdsec-internal:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true

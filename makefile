@@ -33,6 +33,37 @@ deploy-core: pull
 remove-core:
 	docker stack rm core
 
+setup-crowdsec:
+	{ \
+	echo "Setting up crowdsec config on host..." ;\
+	mkdir -p /var/data/crowdsec ;\
+	cmp -s ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml 2>/dev/null || cp ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml ;\
+	}
+
+deploy-crowdsec: pull setup-crowdsec
+	{ \
+	echo "Deploying the crowdsec stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/crowdsec.yml crowdsec ;\
+	}
+
+register-crowdsec-bouncer:
+	{ \
+	echo "Registering crowdsec traefik bouncer..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	bash ./scripts/register-crowdsec-bouncer.sh ;\
+	}
+
+deploy-crowdsec-all: deploy-crowdsec register-crowdsec-bouncer deploy-core
+	@echo "CrowdSec + bouncer registration + core deploy completed."
+
+remove-crowdsec:
+	docker stack rm crowdsec
+
 deploy-portainer: pull
 	{ \
 	echo "Deploying the portainer stack..." ;\

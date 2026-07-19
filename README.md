@@ -44,6 +44,56 @@ make deploy-core
 docker service logs core_traefik --details
 ```
 
+## CrowdSec Runbook (Swarm + Traefik)
+
+### 1) Set keys in swarm env
+In `swarm/.env`, set:
+
+```env
+CROWDSEC_LAPI_KEY=<openssl rand -base64 32>
+CROWDSEC_BOUNCER_KEY=<openssl rand -base64 32>
+```
+
+### 2) Deploy CrowdSec stack
+```bash
+make deploy-crowdsec
+```
+
+### 3) Register the Traefik bouncer
+```bash
+make register-crowdsec-bouncer
+```
+
+### 4) (Re)deploy Traefik core
+This ensures the global HTTPS forwardAuth middleware is active.
+
+```bash
+make deploy-core
+```
+
+### 5) Verify health and wiring
+```bash
+docker service ls | grep crowdsec
+docker service logs --since 10m crowdsec_traefik-bouncer
+docker service logs --since 10m core_traefik
+docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec
+```
+
+### 6) Verify decisions and blocking
+```bash
+# Show parser/scenario metrics
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli metrics
+
+# Add a temporary test decision for your client IP and verify HTTPS returns 403
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli decisions add --ip <YOUR_TEST_IP>
+```
+
+Cleanup test decision when done:
+
+```bash
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli decisions delete --ip <YOUR_TEST_IP>
+```
+
 ### Notes:
 ```yaml
 # Declaring the user list
