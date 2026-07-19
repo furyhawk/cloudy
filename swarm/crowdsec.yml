@@ -7,6 +7,10 @@ services:
       DOCKER_HOST: tcp://tasks.socket-proxy:2375
       COLLECTIONS: "crowdsecurity/traefik"
       CUSTOM_CS_LAPI_KEY: ${CROWDSEC_LAPI_KEY:?Variable not set}
+      # Optional CrowdSec Console enrollment (https://app.crowdsec.net)
+      ENROLL_KEY: ${CROWDSEC_ENROLL_KEY:-}
+      ENROLL_INSTANCE_NAME: ${CROWDSEC_ENROLL_INSTANCE_NAME:-}
+      ENROLL_TAGS: ${CROWDSEC_ENROLL_TAGS:-}
     deploy:
       restart_policy:
         condition: any

@@ -94,6 +94,30 @@ Cleanup test decision when done:
 docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli decisions delete --ip <YOUR_TEST_IP>
 ```
 
+### 7) Optional: enable CrowdSec Console (web UI)
+1. Open https://app.crowdsec.net and create/get an enrollment key for this instance.
+2. In `swarm/.env`, set:
+
+```env
+CROWDSEC_ENROLL_KEY=<paste_enroll_key_from_console>
+CROWDSEC_ENROLL_INSTANCE_NAME=swarm-edge-01
+CROWDSEC_ENROLL_TAGS=swarm,traefik,production
+```
+
+3. Redeploy CrowdSec:
+
+```bash
+make deploy-crowdsec
+```
+
+4. Confirm enrollment from logs:
+
+```bash
+docker service logs --since 10m crowdsec_crowdsec
+```
+
+5. Access the web UI at https://app.crowdsec.net (your instance should appear under your organization).
+
 ### Notes:
 ```yaml
 # Declaring the user list
