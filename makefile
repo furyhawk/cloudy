@@ -262,6 +262,7 @@ setup-grafana:
 	cmp -s ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || cp ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml ;\
 	cmp -s ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml 2>/dev/null || cp ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml ;\
 	cmp -s ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json ;\
+	cmp -s ./swarm/grafana/dashboards/crowdsec-overview.json /var/data/grafana/dashboards/crowdsec-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/crowdsec-overview.json /var/data/grafana/dashboards/crowdsec-overview.json ;\
 	cmp -s ./swarm/grafana/dashboards/traefik-overview.json /var/data/grafana/dashboards/traefik-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/traefik-overview.json /var/data/grafana/dashboards/traefik-overview.json ;\
 	}
 deploy-grafana: pull setup-grafana

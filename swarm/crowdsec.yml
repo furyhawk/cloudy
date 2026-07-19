@@ -3,10 +3,13 @@ services:
     image: crowdsecurity/crowdsec:slim
     networks:
       - crowdsec-internal
+      - traefik-public
     environment:
       DOCKER_HOST: tcp://tasks.socket-proxy:2375
       COLLECTIONS: "crowdsecurity/traefik"
       CUSTOM_CS_LAPI_KEY: ${CROWDSEC_LAPI_KEY:?Variable not set}
+      METRICS_PORT: "6060"
+      METRICS_LEVEL: "full"
       # Optional CrowdSec Console enrollment (https://app.crowdsec.net)
       ENROLL_KEY: ${CROWDSEC_ENROLL_KEY:-}
       ENROLL_INSTANCE_NAME: ${CROWDSEC_ENROLL_INSTANCE_NAME:-}

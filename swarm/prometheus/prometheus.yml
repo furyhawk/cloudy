@@ -17,3 +17,11 @@ scrape_configs:
   - job_name: 'traefik'
     static_configs:
       - targets: ['192.168.50.220:8082']
+
+  # Scrape CrowdSec metrics.
+  # CrowdSec joins the traefik-public network in swarm/crowdsec.yml.
+  # Use task DNS with the fully qualified Swarm service name.
+  - job_name: 'crowdsec'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['tasks.crowdsec_crowdsec:6060']
