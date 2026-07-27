@@ -126,7 +126,7 @@ services:
       - authentik
 
   authentik-proxy:
-    image: ghcr.io/goauthentik/proxy
+    image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG:-2026.5}
     restart: unless-stopped
     environment:
       AUTHENTIK_HOST: https://authentik.${DOMAIN}
