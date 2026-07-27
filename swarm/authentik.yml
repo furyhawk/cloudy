@@ -135,13 +135,3 @@ services:
     networks:
       - authentik
       - traefik-public
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.swarm.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.authentik-proxy-rtr.entrypoints=https
-        - traefik.http.routers.authentik-proxy-rtr.rule=Host(`authentik.${DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
-        - traefik.http.routers.authentik-proxy-rtr.tls.certresolver=le
-        - traefik.http.routers.authentik-proxy-rtr.service=authentik-proxy-svc
-        - traefik.http.services.authentik-proxy-svc.loadbalancer.server.port=9000
