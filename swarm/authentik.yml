@@ -62,6 +62,7 @@ services:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 60
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - /var/data/authentik/media:/data
       - /var/data/authentik/custom-templates:/templates
     # env_file:
