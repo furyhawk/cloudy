@@ -131,7 +131,7 @@ services:
     environment:
       AUTHENTIK_HOST: https://authentik.${DOMAIN}
       AUTHENTIK_INSECURE: "false"
-      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:?proxy token required - generate in Authentik Admin > Outposts}
+      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:?generate in Authentik Admin Outposts}
     networks:
       - authentik
       - traefik-public
