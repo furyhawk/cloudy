@@ -124,6 +124,22 @@ http:
         certResolver: le
       service: bus_api@file
 
+    rag:
+      entryPoints:
+        - https
+      rule: Host(`rag.furyhawk.lol`)
+      tls:
+        certResolver: le
+      service: rag@file
+  
+    mysterium:
+      entryPoints:
+        - https
+      rule: Host(`mysterium.furyhawk.lol`)
+      tls:
+        certResolver: le
+      service: mysterium@file
+
   services:
 
     coco_desktop:
@@ -185,3 +201,13 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.158:9080
+
+    rag:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.158:8100
+
+    mysterium:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.158:8200

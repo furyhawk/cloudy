@@ -60,7 +60,7 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-      AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 3600
+      AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 60
     volumes:
       - /var/data/authentik/media:/data
       - /var/data/authentik/custom-templates:/templates
@@ -102,7 +102,7 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-      AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 3600
+      AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 60
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
     # https://goauthentik.io/docs/outposts/integrations/docker
