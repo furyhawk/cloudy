@@ -173,11 +173,13 @@ http:
       loadBalancer:
         servers:
           - url: https://192.168.50.210:8006
+        serversTransport: proxmox-transport
 
     proxmox01:
       loadBalancer:
         servers:
           - url: https://192.168.50.201:8006
+        serversTransport: proxmox-transport
 
     pi_hole:
       loadBalancer:
@@ -233,3 +235,7 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.158:8200
+
+  serversTransports:
+      proxmox-transport:
+        insecureSkipVerify: true
