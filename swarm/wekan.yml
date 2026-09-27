@@ -31,6 +31,7 @@ services:
       ROOT_URL: https://board.${DOMAIN}
       PORT: "8080"
       BROWSER_POLICY: "false"
+      NODE_OPTIONS: --max-old-space-size=4096
     volumes:
       - wekan_data:/data
     expose:
