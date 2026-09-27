@@ -6,28 +6,82 @@ networks:
     external: true
 
 volumes:
-  wekan_mongo_data: {}
+  ferretdb_data: {}
   wekan_data: {}
 
 services:
-  wekan-mongo:
-    image: mongo:7
+  ferretdb:
+    image: debian:bookworm-slim
     restart: unless-stopped
+    environment:
+      DO_NOT_TRACK: "1"
+      FERRETDB_TELEMETRY: disable
+      FERRETDB_RELEASE: ${FERRETDB_RELEASE:-latest/download}
+    command:
+      - sh
+      - -c
+      - |
+        set -eu
+        BIN=/data/bin/ferretdb
+        RELEASE_FILE=/data/bin/ferretdb.release
+        if ! command -v curl >/dev/null 2>&1; then
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends curl ca-certificates >/dev/null
+        fi
+        DOWNLOAD_RELEASE="$${FERRETDB_RELEASE}"
+        REQUIRED_RELEASE="$${FERRETDB_RELEASE}"
+        if [ "$${FERRETDB_RELEASE}" = latest/download ]; then
+          LATEST_URL="$$(curl -fsSIL --retry 5 -o /dev/null -w '%{url_effective}' https://github.com/wekan/FerretDB/releases/latest)"
+          REQUIRED_RELEASE="$${LATEST_URL##*/}"
+          [ -n "$${REQUIRED_RELEASE}" ]
+          DOWNLOAD_RELEASE="download/$$REQUIRED_RELEASE"
+        fi
+        CACHED_RELEASE="$$(cat "$${RELEASE_FILE}" 2>/dev/null || true)"
+        if [ ! -x "$${BIN}" ] || [ "$${CACHED_RELEASE}" != "$${REQUIRED_RELEASE}" ]; then
+          echo "Fetching newest FerretDB v1 $${REQUIRED_RELEASE} from the wekan/FerretDB release ..."
+          arch="$$(dpkg --print-architecture)"
+          case "$${arch}" in ppc64el) arch=ppc64le ;; esac
+          mkdir -p /data/bin
+          curl -fSL --retry 5 -o "$${BIN}.new" "https://github.com/wekan/FerretDB/releases/$${DOWNLOAD_RELEASE}/ferretdb-$${arch}"
+          curl -fSL --retry 5 -o "$${BIN}.new.sha256sum" "https://github.com/wekan/FerretDB/releases/$${DOWNLOAD_RELEASE}/ferretdb-$${arch}.sha256sum"
+          EXPECTED="$$(awk '{print $$1; exit}' "$${BIN}.new.sha256sum")"
+          ACTUAL="$$(sha256sum "$${BIN}.new" | awk '{print $$1}')"
+          [ -n "$${EXPECTED}" ] && [ "$${ACTUAL}" = "$${EXPECTED}" ]
+          chmod +x "$${BIN}.new"
+          mv "$${BIN}.new" "$${BIN}"
+          rm "$${BIN}.new.sha256sum"
+          printf '%s\n' "$${REQUIRED_RELEASE}" > "$${RELEASE_FILE}"
+          chmod +x "$${BIN}"
+        fi
+        mkdir -p /data/files/db
+        exec "$${BIN}" \
+          --handler=sqlite \
+          --sqlite-url=file:/data/files/db/ \
+          --listen-addr=0.0.0.0:27017 \
+          --telemetry=disable \
+          --log-level=error
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/27017' 2>/dev/null"]
+      interval: 5s
+      timeout: 3s
+      retries: 40
+      start_period: 30s
     volumes:
-      - wekan_mongo_data:/data/db
+      - ferretdb_data:/data
     networks:
       - wekan
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
 
   wekan:
     image: ghcr.io/wekan/wekan:latest
+    restart: unless-stopped
     depends_on:
-      - wekan-mongo
+      - ferretdb
     environment:
-      MONGO_URL: mongodb://wekan-mongo:27017/wekan
+      DEFAULT_METEOR_REACTIVITY_ORDER: polling
+      METEOR_REACTIVITY_ORDER: polling
+      DDP_TRANSPORT: sockjs
+      WRITABLE_PATH: /data
+      MONGO_URL: mongodb://ferretdb:27017/wekan
       ROOT_URL: https://board.${DOMAIN}
       PORT: "8080"
       BROWSER_POLICY: "false"
