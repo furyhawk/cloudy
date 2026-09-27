@@ -198,6 +198,14 @@ deploy-outline: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/outline.yml outline ;\
 	}
+deploy-wekan: pull
+	{ \
+	echo "Deploying the wekan stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/wekan.yml wekan ;\
+	}
 deploy-semaphore: pull
 	{ \
 	echo "Deploying the semaphore stack..." ;\

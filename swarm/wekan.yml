@@ -1,0 +1,51 @@
+networks:
+  wekan:
+    driver: overlay
+    attachable: true
+  traefik-public:
+    external: true
+
+volumes:
+  wekan_mongo_data: {}
+  wekan_data: {}
+
+services:
+  wekan-mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - wekan_mongo_data:/data/db
+    networks:
+      - wekan
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  wekan:
+    image: ghcr.io/wekan/wekan:latest
+    depends_on:
+      - wekan-mongo
+    environment:
+      MONGO_URL: mongodb://wekan-mongo:27017/wekan
+      ROOT_URL: https://board.${DOMAIN}
+      PORT: "8080"
+      BROWSER_POLICY: "false"
+    volumes:
+      - wekan_data:/data
+    expose:
+      - "8080"
+    networks:
+      - wekan
+      - traefik-public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.swarm.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.wekan.entrypoints=https
+        - traefik.http.routers.wekan.rule=Host(`board.${DOMAIN}`)
+        - traefik.http.routers.wekan.middlewares=authentik-fwd@file
+        - traefik.http.routers.wekan.tls.certresolver=le
+        - traefik.http.routers.wekan.service=wekan
+        - traefik.http.services.wekan.loadbalancer.server.port=8080
