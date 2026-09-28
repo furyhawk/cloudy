@@ -86,6 +86,7 @@ services:
       PORT: "8080"
       BROWSER_POLICY: "false"
       NODE_OPTIONS: --max-old-space-size=4096
+      WITH_API: "true"
     volumes:
       - wekan_data:/data
     expose:
