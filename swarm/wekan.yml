@@ -81,7 +81,7 @@ services:
       METEOR_REACTIVITY_ORDER: polling
       DDP_TRANSPORT: sockjs
       WRITABLE_PATH: /data
-      MONGO_URL: mongodb://ferretdb:27017/wekan
+      MONGO_URL: mongodb://tasks.wekan_ferretdb:27017/wekan
       ROOT_URL: https://board.${DOMAIN}
       PORT: "8080"
       BROWSER_POLICY: "false"
