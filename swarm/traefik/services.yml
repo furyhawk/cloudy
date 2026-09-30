@@ -162,6 +162,16 @@ http:
         certResolver: le
       service: mysterium@file
 
+    ragflow:
+      entryPoints:
+        - https
+      rule: Host(`ai.furyhawk.lol`)
+      middlewares:
+        - authentik-fwd
+      tls:
+        certResolver: le
+      service: ragflow@file
+
   services:
 
     coco_desktop:
@@ -235,6 +245,11 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.158:8200
+
+    ragflow:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.239
 
   serversTransports:
       proxmox-transport:
