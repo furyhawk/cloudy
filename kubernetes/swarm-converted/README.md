@@ -61,9 +61,9 @@ Preferred (works for all listed apps): create wildcard DNS records on your local
 
 If your DNS server does not support wildcard records, add explicit host records for the subdomains used by this stack:
 
-- `api`, `log`, `drive`, `storage`, `minio`, `s3`, `osrm`, `whoami`
+- `api`, `drive`, `storage`, `minio`, `s3`, `osrm`, `whoami`
 - `adminer`, `dbadmin`, `cheat`, `bai`, `fin`, `media`, `mesh`
-- `n`, `note`, `note0`, `pad`, `paste`, `info`, `www`, `resume`, `blog`, `124c41`
+- `n`, `note`, `note0`, `pad`, `paste`, `bin`, `info`, `www`, `resume`, `blog`, `124c41`
 
 Each record should point to the same VM IP (or ingress LoadBalancer IP).
 
@@ -82,7 +82,7 @@ Common patterns:
 From repo root:
 
 ```bash
-perl -pi -e 's/REPLACE_DOMAIN/cloudy.home.arpa/g' kubernetes/swarm-converted/*.yaml kubernetes/swarm-converted/phases/setup/*.yaml kubernetes/swarm-converted/phases/up/*.yaml
+perl -pi -e 's/REPLACE_DOMAIN/cloudy.home.arpa/g' kubernetes/swarm-converted/phases/setup/*.yaml kubernetes/swarm-converted/phases/up/*.yaml
 ```
 
 ### 5) Deploy by phase
