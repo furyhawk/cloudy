@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: swarm-converted-config
+  namespace: swarm-converted
+data:
+  DOMAIN: REPLACE_DOMAIN
+  DATABASE__HOSTNAME: postgres-db
+  DATABASE__PORT: "5432"
+  DATABASE__DB: app
+  SECURITY__BACKEND_CORS_ORIGINS: https://REPLACE_DOMAIN
+  SECURITY__ALLOWED_HOSTS: api.REPLACE_DOMAIN,REPLACE_DOMAIN
+  POSTGRES_DB: app
+  TZ: Asia/Singapore
+  LANG: en_US.utf8
+  PGDATA: /var/lib/postgresql/data
+  OSRM_ALGORITHM: mld
+  OSRM_THREADS: "2"
+  OSRM_PORT: "5000"
+  OSRM_PROFILE: /opt/car.lua
+  OSRM_MAP_NAME: singapore
+  OSRM_GEOFABRIK_PATH: /data
+  OSRM_NOTIFY_FILEPATH: /data/osrm_notify.txt
+  STREAMLIT_FIN_SERVER_PORT: "8501"
+  STREAMLIT_BAI_SERVER_PORT: "8502"
+  BAI_LOCATION: ""
+  ADMINER_DESIGN: pepa-linha-dark
+  NODE_ENV: production
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: swarm-converted-secret
+  namespace: swarm-converted
+type: Opaque
+stringData:
+  POSTGRES_USER: change-me
+  POSTGRES_PASSWORD: change-me
+  SECURITY__JWT_SECRET_KEY: change-me
+  MINIO_ROOT_USER: minioadmin
+  MINIO_ROOT_PASSWORD: minioadmin
+  GROQ_API_KEY: change-me
+  PGADMIN_DEFAULT_EMAIL: admin@example.com
+  PGADMIN_DEFAULT_PASSWORD: change-me
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-basic-auth
+  namespace: swarm-converted
+type: Opaque
+stringData:
+  users: user:$apr1$replace$replacehashedvalue
