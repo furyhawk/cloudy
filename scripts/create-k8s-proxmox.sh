@@ -53,14 +53,14 @@ K8S_TAG="${K8S_TAG:-k8s}"                    # Proxmox tag applied to the VMs
 PVE_POOL="${PVE_POOL:-}"                     # optional resource pool
 
 TEMPLATE_ID="${TEMPLATE_ID:-9000}"           # cloud-init template VMID
-TEMPLATE_NAME="${TEMPLATE_NAME:-ubuntu-2404-cloudinit}"
+TEMPLATE_NAME="${TEMPLATE_NAME:-ubuntu-2604-cloudinit}"
 case "$(uname -m)" in
   x86_64 | amd64) IMAGE_ARCH=amd64 ;;
   aarch64 | arm64) IMAGE_ARCH=arm64 ;;
   *) IMAGE_ARCH=amd64 ;;
 esac
-IMAGE_URL="${IMAGE_URL:-https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-${IMAGE_ARCH}.img}"
-IMAGE_FILE="${IMAGE_FILE:-/var/lib/vz/template/iso/noble-server-cloudimg-${IMAGE_ARCH}.img}"
+IMAGE_URL="${IMAGE_URL:-https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-${IMAGE_ARCH}.img}"
+IMAGE_FILE="${IMAGE_FILE:-/var/lib/vz/template/iso/resolute-server-cloudimg-${IMAGE_ARCH}.img}"
 
 DISK_STORAGE="${DISK_STORAGE:-local-lvm}"    # storage for VM disks
 DISK_SIZE="${DISK_SIZE:-32G}"
