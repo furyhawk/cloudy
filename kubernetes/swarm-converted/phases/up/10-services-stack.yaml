@@ -1,0 +1,532 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-server
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      containers:
+        - name: api-server
+          image: furyhawk/listen:v0.1.17
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: DATABASE__HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DATABASE__HOSTNAME
+            - name: DATABASE__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: POSTGRES_USER
+            - name: DATABASE__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: POSTGRES_PASSWORD
+            - name: DATABASE__PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DATABASE__PORT
+            - name: DATABASE__DB
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DATABASE__DB
+            - name: SECURITY__JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: SECURITY__JWT_SECRET_KEY
+            - name: SECURITY__BACKEND_CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: SECURITY__BACKEND_CORS_ORIGINS
+            - name: SECURITY__ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: SECURITY__ALLOWED_HOSTS
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-server
+  namespace: swarm-converted
+spec:
+  selector:
+    app: api-server
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-server
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`api.REPLACE_DOMAIN`)
+      services:
+        - name: api-server
+          port: 8000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dozzle
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dozzle
+  template:
+    metadata:
+      labels:
+        app: dozzle
+    spec:
+      containers:
+        - name: dozzle
+          image: amir20/dozzle:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+              readOnly: true
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dozzle
+  namespace: swarm-converted
+spec:
+  selector:
+    app: dozzle
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dozzle
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`log.REPLACE_DOMAIN`)
+      middlewares:
+        - name: admin-auth
+      services:
+        - name: dozzle
+          port: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-common
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio-common
+  template:
+    metadata:
+      labels:
+        app: minio-common
+    spec:
+      containers:
+        - name: minio-common
+          image: minio/minio:latest
+          args:
+            - server
+            - /data
+            - --address
+            - :9000
+            - --console-address
+            - :9001
+          ports:
+            - containerPort: 9000
+              name: api
+            - containerPort: 9001
+              name: console
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: MINIO_ROOT_PASSWORD
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+          volumeMounts:
+            - name: minio-data
+              mountPath: /data
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: minio-data
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-common
+  namespace: swarm-converted
+spec:
+  selector:
+    app: minio-common
+  ports:
+    - name: api
+      port: 9000
+      targetPort: api
+    - name: console
+      port: 9001
+      targetPort: console
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-console
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`drive.REPLACE_DOMAIN`) || Host(`storage.REPLACE_DOMAIN`)
+      services:
+        - name: minio-common
+          port: 9001
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-api
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`minio.REPLACE_DOMAIN`) || Host(`s3.REPLACE_DOMAIN`)
+      services:
+        - name: minio-common
+          port: 9000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osrm-backend
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osrm-backend
+  template:
+    metadata:
+      labels:
+        app: osrm-backend
+    spec:
+      containers:
+        - name: osrm-backend
+          image: furyhawk/osrm-backend:latest
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: OSRM_ALGORITHM
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_ALGORITHM
+            - name: OSRM_THREADS
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_THREADS
+            - name: OSRM_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_PORT
+            - name: OSRM_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_PROFILE
+            - name: OSRM_MAP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_MAP_NAME
+            - name: OSRM_GEOFABRIK_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_GEOFABRIK_PATH
+            - name: OSRM_NOTIFY_FILEPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: OSRM_NOTIFY_FILEPATH
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: DOMAIN
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: osrm-backend
+  namespace: swarm-converted
+spec:
+  selector:
+    app: osrm-backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: osrm-backend
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`osrm.REPLACE_DOMAIN`)
+      middlewares:
+        - name: rate-limit
+      services:
+        - name: osrm-backend
+          port: 5000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres-db
+          image: postgres:16
+          command:
+            - postgres
+            - -c
+            - log_connections=on
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: swarm-converted-secret
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: PGDATA
+            - name: LANG
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: LANG
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: swarm-converted-config
+                  key: TZ
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  namespace: swarm-converted
+spec:
+  selector:
+    app: postgres-db
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: postgres-db
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - postgres
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: postgres-db
+          port: 5432
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: swarm-converted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami
+          ports:
+            - containerPort: 80
+              name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: swarm-converted
+spec:
+  selector:
+    app: whoami
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami
+  namespace: swarm-converted
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`whoami.REPLACE_DOMAIN`)
+      services:
+        - name: whoami
+          port: 80

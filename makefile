@@ -313,4 +313,12 @@ deploy-nodepad: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/nodepad.yml nodepad ;\
 	}
+
+k8s-setup:
+	@echo "Applying Kubernetes setup phase..."
+	kubectl apply -k ./kubernetes/swarm-converted/phases/setup
+
+k8s-up:
+	@echo "Applying Kubernetes up phase..."
+	kubectl apply -k ./kubernetes/swarm-converted/phases/up
 # git submodule update --init --recursive
