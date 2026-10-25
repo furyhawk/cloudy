@@ -314,6 +314,10 @@ deploy-nodepad: pull
 	docker stack deploy --compose-file ./swarm/nodepad.yml nodepad ;\
 	}
 
+k8s-provision:
+	@echo "Provisioning Kubernetes VMs on Proxmox..."
+	bash ./scripts/create-k8s-proxmox.sh
+
 k8s-setup:
 	@echo "Applying Kubernetes setup phase..."
 	kubectl apply -k ./kubernetes/swarm-converted/phases/setup
