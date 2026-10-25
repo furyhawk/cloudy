@@ -48,7 +48,7 @@ die() {
 PVE_HOST="${PVE_HOST:-}"                     # e.g. root@192.168.50.10 (remote mode)
 K8S_NAME="${K8S_NAME:-k8s}"                  # VM name prefix
 NODE_COUNT="${NODE_COUNT:-3}"                # node 1 = k3s server, rest = agents
-VMID_START="${VMID_START:-300}"              # first VMID, nodes count upwards
+VMID_START="${VMID_START:-600}"              # first VMID, nodes count upwards
 K8S_TAG="${K8S_TAG:-k8s}"                    # Proxmox tag applied to the VMs
 PVE_POOL="${PVE_POOL:-}"                     # optional resource pool
 
@@ -71,7 +71,7 @@ BRIDGE="${BRIDGE:-vmbr0}"
 VLAN_TAG="${VLAN_TAG:-}"                     # optional 802.1q tag
 
 IP_PREFIX="${IP_PREFIX:-192.168.50}"         # first three octets
-IP_START="${IP_START:-141}"                  # last octet of the first node
+IP_START="${IP_START:-161}"                  # last octet of the first node
 CIDR="${CIDR:-24}"
 GATEWAY="${GATEWAY:-192.168.50.1}"
 NAMESERVER="${NAMESERVER:-}"                 # defaults to GATEWAY
@@ -129,10 +129,10 @@ Environment (all optional):
   PVE_HOST=root@192.168.50.10  Run the Proxmox steps on a remote host
   K8S_NAME=k8s                 VM name prefix            (default: k8s)
   NODE_COUNT=3                 Number of nodes           (default: 3)
-  VMID_START=300               First Proxmox VMID        (default: 300)
+  VMID_START=600               First Proxmox VMID        (default: 600)
   TEMPLATE_ID=9000             Cloud-init template VMID  (default: 9000)
   IP_PREFIX=192.168.50         First three IP octets     (default: 192.168.50)
-  IP_START=141                 Last octet of first node  (default: 141)
+  IP_START=161                 Last octet of first node  (default: 161)
   GATEWAY=192.168.50.1         Default gateway           (default: 192.168.50.1)
   NAMESERVER=\$GATEWAY         DNS server handed to VMs
   DISK_STORAGE=local-lvm       Storage for VM disks      (default: local-lvm)
