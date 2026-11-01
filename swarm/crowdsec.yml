@@ -19,6 +19,8 @@ services:
         condition: any
     volumes:
       - /var/data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      # Local scenario: ban known AI crawlers/scrapers by User-Agent
+      - /var/data/crowdsec/scenarios/http-ai-crawler.yaml:/etc/crowdsec/scenarios/http-ai-crawler.yaml:ro
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
 

@@ -1,0 +1,40 @@
+# Local CrowdSec scenario: block AI / LLM crawlers and scrapers by User-Agent.
+#
+# Deployed to /var/data/crowdsec/scenarios/http-ai-crawler.yaml by `make setup-crowdsec`
+# and bind-mounted read-only into the crowdsec container at
+# /etc/crowdsec/scenarios/http-ai-crawler.yaml.
+#
+# Flow: Traefik access log -> crowdsec (docker acquisition) -> matching event ->
+# immediate decision for the source IP -> traefik-bouncer forwardAuth returns 403.
+#
+# The User-Agent list is intentionally AI/LLM focused and matches substrings.
+# *User agents are trivially spoofable - this stops compliant crawlers, not
+# determined scrapers. CrowdSec's built-in crowdsecurity/http-bad-user-agent
+# scenario (from crowdsecurity/base-http-scenarios) covers scanners separately.
+#
+# Notes:
+# - Google-Extended and Applebot-Extended are robots.txt tokens, not UA strings,
+#   so they cannot be matched here.
+# - Add or remove tokens in the alternation below; changes take effect after the
+#   crowdsec service restarts (`make deploy-crowdsec`).
+# - Optional SEO crawlers if wanted: AhrefsBot|SemrushBot|MJ12bot|DotBot
+# - Optional: remove ChatGPT-User / Claude-User / Perplexity-User / MistralAI-User
+#   to keep allowing user-initiated "open this link" fetches.
+type: trigger
+format: 2.0
+name: local/http-ai-crawler
+description: "Block AI crawlers and scrapers by User-Agent"
+filter: |
+  evt.Meta.log_type in ["http_access-log", "http_error-log"] &&
+  evt.Parsed.http_user_agent matches "(?i)(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-User|Claude-SearchBot|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|meta-externalagent|Amazonbot|cohere-ai|cohere-training-data-crawler|Diffbot|ImagesiftBot|Omgilibot|Omgili|Timpibot|YouBot|AI2Bot|Ai2Bot-Dolma|MistralAI-User|DuckAssistBot|PanguBot|Scrapy)"
+groupby: "evt.Meta.source_ip"
+blackhole: 24h
+labels:
+  remediation: true
+  classification:
+    - attack.T1595
+  behavior: "http:scan"
+  label: "AI crawler User-Agent"
+  spoofable: 3
+  service: http
+  confidence: 1
