@@ -26,7 +26,7 @@ name: local/http-ai-crawler
 description: "Block AI crawlers and scrapers by User-Agent"
 filter: |
   evt.Meta.log_type in ["http_access-log", "http_error-log"] &&
-  evt.Parsed.http_user_agent matches "(?i)(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-User|Claude-SearchBot|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|meta-externalagent|Amazonbot|cohere-ai|cohere-training-data-crawler|Diffbot|ImagesiftBot|Omgilibot|Omgili|Timpibot|YouBot|AI2Bot|Ai2Bot-Dolma|MistralAI-User|DuckAssistBot|PanguBot|Scrapy)"
+  evt.Parsed.http_user_agent matches "(?i)(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-User|Claude-SearchBot|anthropic-ai|Reflectionbot|CCBot|Bytespider|PerplexityBot|Perplexity-User|meta-externalagent|Amazonbot|cohere-ai|cohere-training-data-crawler|Diffbot|ImagesiftBot|Omgilibot|Omgili|Timpibot|YouBot|AI2Bot|Ai2Bot-Dolma|MistralAI-User|DuckAssistBot|PanguBot|Scrapy)"
 groupby: "evt.Meta.source_ip"
 blackhole: 24h
 labels:
