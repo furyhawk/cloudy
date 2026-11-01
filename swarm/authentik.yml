@@ -125,37 +125,32 @@ services:
     networks:
       - authentik
 
-  authentik-proxy:
-    image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG:-2026.8}
-    restart: unless-stopped
-    environment:
-      # Talk to the core over the overlay network instead of hairpinning back
-      # through https://authentik.${DOMAIN} (Traefik -> crowdsec -> server).
-      # Browsers are still redirected to the public URL.
-      AUTHENTIK_HOST: http://tasks.authentik_authentik-server:9000
-      AUTHENTIK_HOST_BROWSER: https://authentik.${DOMAIN}
-      AUTHENTIK_INSECURE: "false"
-      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:?generate in Authentik Admin Outposts}
-      AUTHENTIK_LOG_LEVEL: info
-    # The 2026.8 image healthcheck probes http://localhost/outpost.goauthentik.io/ping
-    # (port 80) while the outpost listens on 9000, so it never passes. Swarm then
-    # treats the task as failed, reschedules it, and the service loses its
-    # traefik-public endpoint -> forwardAuth 500s. Keep it disabled.
-    healthcheck:
-      disable: true
-    networks:
-      - authentik
-      - traefik-public
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.swarm.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.authentik-proxy-rtr.entrypoints=https
-        - traefik.http.routers.authentik-proxy-rtr.rule=Host(`authentik.${DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
-        - traefik.http.routers.authentik-proxy-rtr.tls.certresolver=le
-        - traefik.http.routers.authentik-proxy-rtr.service=authentik-proxy-svc
-        - traefik.http.services.authentik-proxy-svc.loadbalancer.server.port=9000
-        - traefik.http.middlewares.authentik.forwardauth.address=http://tasks.authentik_authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
-        - traefik.http.middlewares.authentik.forwardauth.trustForwardHeader=true
-        - traefik.http.middlewares.authentik.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
+  # Disabled: authentik-server already runs the embedded proxy outpost and it
+  # loads the "Domain Wide Forward Auth Catch All" provider successfully.
+  # The standalone proxy outpost never finished onboarding (it fetches its
+  # config from /api/v3/outposts/... and gets 404, so it never binds :9000).
+  # Forward auth now points at the embedded outpost in authentik-server.
+  #
+  # authentik-proxy:
+  #   image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG:-2026.8}
+  #   restart: unless-stopped
+  #   environment:
+  #     AUTHENTIK_HOST: https://authentik.${DOMAIN}
+  #     AUTHENTIK_INSECURE: "false"
+  #     AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:?generate in Authentik Admin Outposts}
+  #   networks:
+  #     - authentik
+  #     - traefik-public
+  #   deploy:
+  #     labels:
+  #       - traefik.enable=true
+  #       - traefik.swarm.network=traefik-public
+  #       - traefik.constraint-label=traefik-public
+  #       - traefik.http.routers.authentik-proxy-rtr.entrypoints=https
+  #       - traefik.http.routers.authentik-proxy-rtr.rule=Host(`authentik.${DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
+  #       - traefik.http.routers.authentik-proxy-rtr.tls.certresolver=le
+  #       - traefik.http.routers.authentik-proxy-rtr.service=authentik-proxy-svc
+  #       - traefik.http.services.authentik-proxy-svc.loadbalancer.server.port=9000
+  #       - traefik.http.middlewares.authentik.forwardauth.address=http://tasks.authentik_authentik-server:9000/outpost.goauthentik.io/auth/traefik
+  #       - traefik.http.middlewares.authentik.forwardauth.trustForwardHeader=true
+  #       - traefik.http.middlewares.authentik.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
