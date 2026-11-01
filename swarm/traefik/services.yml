@@ -172,6 +172,16 @@ http:
         certResolver: le
       service: ragflow@file
 
+    vscode:
+      entryPoints:
+        - https
+      rule: Host(`code.furyhawk.lol`)
+      middlewares:
+        - authentik-fwd
+      tls:
+        certResolver: le
+      service: vscode@file
+
   services:
 
     coco_desktop:
@@ -250,6 +260,11 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.239
+    
+    vscode:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.233:8680
 
   serversTransports:
       proxmox-transport:
