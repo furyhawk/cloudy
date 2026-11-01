@@ -18,7 +18,9 @@ http:
   middlewares:
     authentik-fwd:
       forwardAuth:
-        address: http://tasks.authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
+        # Swarm service is authentik_authentik-proxy (stack `authentik`), short
+        # names only resolve inside docker-compose, not across stacks.
+        address: http://tasks.authentik_authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - X-authentik-username
