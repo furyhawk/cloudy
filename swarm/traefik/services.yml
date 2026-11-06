@@ -175,6 +175,16 @@ http:
         certResolver: le
       service: ragflow@file
 
+    deerflow:
+      entryPoints:
+        - https
+      rule: Host(`deer.furyhawk.lol`)
+      middlewares:
+        - authentik-fwd
+      tls:
+        certResolver: le
+      service: deerflow@file
+
     vscode:
       entryPoints:
         - https
@@ -263,6 +273,11 @@ http:
       loadBalancer:
         servers:
           - url: http://192.168.50.239
+
+    deerflow:
+      loadBalancer:
+        servers:
+          - url: http://192.168.50.232:2026
     
     vscode:
       loadBalancer:
