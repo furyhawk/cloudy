@@ -34,14 +34,17 @@ if [[ $# -ge 2 ]]; then
   SSH_PUBLIC_KEY="$(cat "$SSH_PUBLIC_KEY_FILE")"
 fi
 
+if [[ -z "$SSH_PUBLIC_KEY" ]]; then
+  echo "Error: no SSH public key was provided. Pass a public key file or set SSH_PUBLIC_KEY." >&2
+  exit 1
+fi
+
 if ! command -v pct >/dev/null 2>&1; then
   echo "Error: pct is required and was not found in PATH. Run this on the Proxmox host." >&2
   exit 1
 fi
 
-if [[ -n "$SSH_PUBLIC_KEY" ]]; then
-  export SSH_PUBLIC_KEY
-fi
+export SSH_PUBLIC_KEY
 
 pct exec "$LXC_ID" -- env SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" ash -eu -c '
   if ! id -u system >/dev/null 2>&1; then
@@ -60,6 +63,10 @@ pct exec "$LXC_ID" -- env SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" ash -eu -c '
     printf "%s\n" "$SSH_PUBLIC_KEY" > /home/system/.ssh/authorized_keys
     chown system:system /home/system/.ssh/authorized_keys
     chmod 600 /home/system/.ssh/authorized_keys
+    ssh-keygen -lf /home/system/.ssh/authorized_keys >/dev/null
+  else
+    echo "Error: SSH public key is empty inside the LXC." >&2
+    exit 1
   fi
 
   if [ ! -f /etc/ssh/sshd_config ]; then
