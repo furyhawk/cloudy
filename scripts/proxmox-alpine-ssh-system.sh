@@ -39,9 +39,11 @@ if ! command -v pct >/dev/null 2>&1; then
   exit 1
 fi
 
-SSH_PUBLIC_KEY_ESCAPED="${SSH_PUBLIC_KEY//\'/\'\\'\'}"
+if [[ -n "$SSH_PUBLIC_KEY" ]]; then
+  export SSH_PUBLIC_KEY
+fi
 
-pct exec "$LXC_ID" -- ash -eu -c "
+pct exec "$LXC_ID" -- env SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" ash -eu -c '
   if ! id -u system >/dev/null 2>&1; then
     adduser -D -s /bin/ash system
   fi
@@ -54,32 +56,33 @@ pct exec "$LXC_ID" -- ash -eu -c "
   chown -R system:system /home/system
   chmod 700 /home/system/.ssh
 
-  if [ -n '${SSH_PUBLIC_KEY_ESCAPED}' ]; then
-    printf '%s\\n' '${SSH_PUBLIC_KEY_ESCAPED}' > /home/system/.ssh/authorized_keys
+  if [ -n "${SSH_PUBLIC_KEY:-}" ]; then
+    printf "%s\n" "$SSH_PUBLIC_KEY" > /home/system/.ssh/authorized_keys
     chown system:system /home/system/.ssh/authorized_keys
     chmod 600 /home/system/.ssh/authorized_keys
   fi
 
   if [ ! -f /etc/ssh/sshd_config ]; then
-    echo 'Error: /etc/ssh/sshd_config does not exist after installing OpenSSH.' >&2
+    echo "Error: /etc/ssh/sshd_config does not exist after installing OpenSSH." >&2
     exit 1
   fi
 
   mkdir -p /run/sshd
   ssh-keygen -A 2>/dev/null || true
+  sed -i -E "s/^#?PasswordAuthentication .*/PasswordAuthentication no/" /etc/ssh/sshd_config
+  sed -i -E "s/^#?PubkeyAuthentication .*/PubkeyAuthentication yes/" /etc/ssh/sshd_config
+  sed -i -E "s/^#?PermitRootLogin .*/PermitRootLogin no/" /etc/ssh/sshd_config
+  sed -i -E "s/^#?AllowUsers .*/AllowUsers system/" /etc/ssh/sshd_config
+  sed -i -E "/^#?UsePAM /d" /etc/ssh/sshd_config
 
-  sed -i -E 's/^#?PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
-  sed -i -E 's/^#?PubkeyAuthentication .*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
-  sed -i -E 's/^#?PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config
-  sed -i -E '/^#?UsePAM /d' /etc/ssh/sshd_config
-
-  grep -q '^PasswordAuthentication ' /etc/ssh/sshd_config || echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
-  grep -q '^PubkeyAuthentication ' /etc/ssh/sshd_config || echo 'PubkeyAuthentication yes' >> /etc/ssh/sshd_config
-  grep -q '^PermitRootLogin ' /etc/ssh/sshd_config || echo 'PermitRootLogin no' >> /etc/ssh/sshd_config
+  grep -q "^PasswordAuthentication " /etc/ssh/sshd_config || echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+  grep -q "^PubkeyAuthentication " /etc/ssh/sshd_config || echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+  grep -q "^PermitRootLogin " /etc/ssh/sshd_config || echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+  grep -q "^AllowUsers " /etc/ssh/sshd_config || echo "AllowUsers system" >> /etc/ssh/sshd_config
 
   sshd -t
   rc-update add sshd default 2>/dev/null || true
-  rc-service sshd start 2>/dev/null || true
-"
+  rc-service sshd restart 2>/dev/null || true
+'
 
 echo "OK: user 'system' is configured for SSH in LXC ${LXC_ID}."
