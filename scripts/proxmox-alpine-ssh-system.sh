@@ -56,6 +56,10 @@ pct exec "$LXC_ID" -- env SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" ash -eu -c '
     apk add --no-cache openssh
   fi
 
+  if ! command -v sudo >/dev/null 2>&1; then
+    apk add --no-cache sudo
+  fi
+
   mkdir -p /home/system/.ssh
   chown -R system:system /home/system
   chmod 700 /home/system/.ssh
@@ -100,6 +104,12 @@ PrintMotd no
 Subsystem sftp /usr/lib/ssh/sftp-server
 AllowUsers system
 EOF
+
+  if ! grep -Eq "^system ALL=\(ALL\) NOPASSWD:ALL$" /etc/sudoers.d/system 2>/dev/null; then
+    mkdir -p /etc/sudoers.d
+    printf "%s\n" "system ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/system
+    chmod 440 /etc/sudoers.d/system
+  fi
 
   sshd -t
   rc-update add sshd default 2>/dev/null || true
