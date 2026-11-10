@@ -65,15 +65,17 @@ pct exec "$LXC_ID" -- ash -eu -c "
     exit 1
   fi
 
+  mkdir -p /run/sshd
+  ssh-keygen -A 2>/dev/null || true
+
   sed -i -E 's/^#?PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
   sed -i -E 's/^#?PubkeyAuthentication .*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
   sed -i -E 's/^#?PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config
-  sed -i -E 's/^#?UsePAM .*/UsePAM yes/' /etc/ssh/sshd_config
+  sed -i -E '/^#?UsePAM /d' /etc/ssh/sshd_config
 
   grep -q '^PasswordAuthentication ' /etc/ssh/sshd_config || echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
   grep -q '^PubkeyAuthentication ' /etc/ssh/sshd_config || echo 'PubkeyAuthentication yes' >> /etc/ssh/sshd_config
   grep -q '^PermitRootLogin ' /etc/ssh/sshd_config || echo 'PermitRootLogin no' >> /etc/ssh/sshd_config
-  grep -q '^UsePAM ' /etc/ssh/sshd_config || echo 'UsePAM yes' >> /etc/ssh/sshd_config
 
   sshd -t
   rc-update add sshd default 2>/dev/null || true
