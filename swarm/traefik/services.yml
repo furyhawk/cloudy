@@ -252,7 +252,7 @@ http:
     bus_frontend:
       loadBalancer:
         servers:
-          - url: http://192.168.50.158:3001
+          - url: http://192.168.50.158:3000
 
     bus_api:
       loadBalancer:
