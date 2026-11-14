@@ -1,6 +1,6 @@
 services:
   cinder:
-    image: docker.io/cinder:latest
+    image: docker.io/furyhawk/cinder:latest
     restart: always
     networks:
       - traefik-public
