@@ -314,6 +314,14 @@ deploy-nodepad: pull
 	set +a ;\
 	docker stack deploy --compose-file ./swarm/nodepad.yml nodepad ;\
 	}
+deploy-cinder: pull
+	{ \
+	echo "Deploying the cinder stack..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	docker stack deploy --compose-file ./swarm/cinder.yml cinder ;\
+	}
 
 k8s-provision:
 	@echo "Provisioning Kubernetes VMs on Proxmox..."
