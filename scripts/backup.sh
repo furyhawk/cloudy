@@ -10,7 +10,7 @@
 ./vackup.sh export searxng_valkey_data2 searxng_valkey_data2.tar.gz
 ./vackup.sh export services_postgres_data services_postgres_data.tar.gz
 ./vackup.sh export services_minio_data services_minio_data.tar.gz
-./vackup.sh export nextcloud_db nextcloud_db.tar.gz
-./vackup.sh export nextcloud_nextcloud nextcloud_nextcloud.tar.gz
+# ./vackup.sh export nextcloud_db nextcloud_db.tar.gz
+# ./vackup.sh export nextcloud_nextcloud nextcloud_nextcloud.tar.gz
 ./vackup.sh export authentik_redis authentik_redis.tar.gz
 ./vackup.sh export esphome_esphome_config esphome_esphome_config.tar.gz
