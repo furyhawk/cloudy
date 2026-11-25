@@ -118,6 +118,23 @@ docker service logs --since 10m crowdsec_crowdsec
 
 5. Access the web UI at https://app.crowdsec.net (your instance should appear under your organization).
 
+### Running without CrowdSec
+`core_traefik` applies `crowdsec-bouncer@swarm` to the `https` entrypoint. If the
+bouncer is gone, every HTTPS router fails with
+`dial tcp: lookup tasks.crowdsec_traefik-bouncer ... no such host`.
+
+Remove the stack and disable the middleware together:
+
+```bash
+make remove-crowdsec
+# in swarm/.env
+TRAEFIK_HTTPS_MIDDLEWARES=
+make deploy-core
+```
+
+Re-enable by setting `TRAEFIK_HTTPS_MIDDLEWARES=crowdsec-bouncer@swarm` in `swarm/.env`
+and redeploying core after the bouncer is registered.
+
 ### Notes:
 ```yaml
 # Declaring the user list

@@ -136,7 +136,8 @@ services:
       # Create an entrypoint "https" listening on port 443
       - --entrypoints.https.address=:443
       # Apply CrowdSec bouncer globally to all HTTPS routers discovered by Traefik.
-      - --entrypoints.https.http.middlewares=crowdsec-bouncer@swarm
+      # Set TRAEFIK_HTTPS_MIDDLEWARES to an empty value in swarm/.env to run without it.
+      - --entrypoints.https.http.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES-crowdsec-bouncer@swarm}
       # Redirect HTTP to HTTPS
       - --entrypoints.http.http.redirections.entrypoint.to=https
       - --entrypoints.http.http.redirections.entrypoint.scheme=https
