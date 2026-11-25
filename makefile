@@ -49,6 +49,8 @@ setup-crowdsec:
 	echo "Setting up crowdsec config on host..." ;\
 	mkdir -p /var/data/crowdsec /var/data/crowdsec/scenarios ;\
 	cmp -s ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml 2>/dev/null || cp ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml ;\
+	cmp -s ./swarm/crowdsec/whitelists.yaml /var/data/crowdsec/whitelists.yaml 2>/dev/null || cp ./swarm/crowdsec/whitelists.yaml /var/data/crowdsec/whitelists.yaml ;\
+	cmp -s ./swarm/crowdsec/profiles.yaml /var/data/crowdsec/profiles.yaml 2>/dev/null || cp ./swarm/crowdsec/profiles.yaml /var/data/crowdsec/profiles.yaml ;\
 	cmp -s ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /var/data/crowdsec/scenarios/http-ai-crawler.yaml 2>/dev/null || cp ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /var/data/crowdsec/scenarios/http-ai-crawler.yaml ;\
 	}
 

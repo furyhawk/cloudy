@@ -118,6 +118,42 @@ docker service logs --since 10m crowdsec_crowdsec
 
 5. Access the web UI at https://app.crowdsec.net (your instance should appear under your organization).
 
+### Tuning: trusted IPs and ban length
+`make setup-crowdsec` syncs two extra files to the host and `swarm/crowdsec.yml`
+bind-mounts them into the `crowdsec` service:
+
+| Repo file | Host path | Container path |
+| --- | --- | --- |
+| `swarm/crowdsec/whitelists.yaml` | `/var/data/crowdsec/whitelists.yaml` | `/etc/crowdsec/parsers/s02-enrich/local-whitelists.yaml` |
+| `swarm/crowdsec/profiles.yaml` | `/var/data/crowdsec/profiles.yaml` | `/etc/crowdsec/profiles.yaml` |
+
+- Whitelist entries under `ip:` / `cidr:` never produce alerts, so they can never be
+  banned. Defaults are loopback plus RFC1918/ULA ranges. Only list ranges that reach
+  Traefik with their own source IP — if an upstream firewall SNATs internet traffic
+  into one of them, every client is effectively whitelisted.
+- The local profile bans for `1h` instead of the stock 4h, which limits the cost of a
+  false positive (aggressive crawl, auth retry loop, SPA 404s).
+
+Apply changes with:
+
+```bash
+make deploy-crowdsec
+docker service logs --since 5m crowdsec_crowdsec
+```
+
+Decisions created before the change keep their old duration; clear them so the shorter
+ban applies immediately:
+
+```bash
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli decisions delete --all
+```
+
+Confirm the whitelist loaded:
+
+```bash
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli parsers list | grep local-whitelist
+```
+
 ### Running without CrowdSec
 `core_traefik` applies `crowdsec-bouncer@swarm` to the `https` entrypoint. If the
 bouncer is gone, every HTTPS router fails with

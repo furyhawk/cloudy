@@ -1,0 +1,24 @@
+# Local CrowdSec remediation profiles.
+#
+# Copied to /var/data/crowdsec/profiles.yaml by `make setup-crowdsec` and mounted
+# read-only into the crowdsec container at /etc/crowdsec/profiles.yaml, the path
+# set by `api.server.profiles_path` in the image's config.yaml.
+#
+# The stock profiles ban for 4h. 1h keeps a false positive (aggressive crawl,
+# auth retry loop, SPA 404s) tolerable while still removing the offender. Raise
+# it here if the deployment sees sustained real attacks.
+name: default_ip_remediation
+filters:
+ - Alert.Remediation == true && Alert.GetScope() == "Ip"
+decisions:
+ - type: ban
+   duration: 1h
+on_success: break
+---
+name: default_range_remediation
+filters:
+ - Alert.Remediation == true && Alert.GetScope() == "Range"
+decisions:
+ - type: ban
+   duration: 1h
+on_success: break

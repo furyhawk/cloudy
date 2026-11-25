@@ -1,0 +1,27 @@
+# Local CrowdSec whitelist (enrichment parser).
+#
+# Copied to /var/data/crowdsec/whitelists.yaml by `make setup-crowdsec` and mounted
+# read-only into the crowdsec container at
+# /etc/crowdsec/parsers/s02-enrich/local-whitelists.yaml.
+#
+# Events whose source IP matches are dropped before any scenario runs, so trusted
+# clients can never trigger a ban. Local whitelists only suppress detections; bans
+# received from the CrowdSec community blocklist are still enforced by the bouncer.
+#
+# Only list ranges that reach Traefik with their own source IP. If an upstream
+# firewall SNATs internet traffic into one of these ranges, whitelisting it turns
+# detection off for everyone.
+name: local/whitelist-trusted
+description: "Skip detection for loopback and private networks"
+whitelist:
+  reason: "trusted internal network"
+  ip:
+    - "127.0.0.1"
+    - "::1"
+  cidr:
+    - "127.0.0.0/8"
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+    - "fc00::/7"
+    - "fe80::/10"
