@@ -72,6 +72,23 @@ register-crowdsec-bouncer:
 	bash ./scripts/register-crowdsec-bouncer.sh ;\
 	}
 
+enroll-crowdsec:
+	{ \
+	echo "Enrolling CrowdSec in the console..." ;\
+	set -a ;\
+	. ./swarm/.env ;\
+	set +a ;\
+	cid="$$(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1)" ;\
+	if [ -z "$$cid" ]; then \
+		echo "crowdsec_crowdsec is not running, deploy it first: make deploy-crowdsec" ;\
+		exit 1 ;\
+	fi ;\
+	docker exec "$$cid" cscli console enroll \
+		--name "$${CROWDSEC_ENROLL_INSTANCE_NAME:-swarm-edge-01}" \
+		--tags "$${CROWDSEC_ENROLL_TAGS:-swarm,traefik,production}" \
+		"$${CROWDSEC_ENROLL_KEY:?CROWDSEC_ENROLL_KEY is not set in swarm/.env}" ;\
+	}
+
 deploy-crowdsec-all: deploy-crowdsec register-crowdsec-bouncer deploy-core
 	@echo "CrowdSec + bouncer registration + core deploy completed."
 

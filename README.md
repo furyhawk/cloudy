@@ -104,19 +104,29 @@ CROWDSEC_ENROLL_INSTANCE_NAME=swarm-edge-01
 CROWDSEC_ENROLL_TAGS=swarm,traefik,production
 ```
 
-3. Redeploy CrowdSec:
+3. Enroll the running instance:
 
 ```bash
-make deploy-crowdsec
+make enroll-crowdsec
 ```
 
-4. Confirm enrollment from logs:
+Enrollment is deliberately not part of the service definition: the image entrypoint
+runs `cscli console enroll` under `set -e`, so a rejected key (expired, revoked,
+already used) kills the container and the service crash-loops. `make enroll-crowdsec`
+runs the same command against the live container, where a failure is reported without
+taking the agent down.
+
+4. Confirm enrollment:
 
 ```bash
-docker service logs --since 10m crowdsec_crowdsec
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec -q | head -n1) cscli console status
 ```
 
 5. Access the web UI at https://app.crowdsec.net (your instance should appear under your organization).
+
+If an older deployment is crash-looping with
+`cscli console enroll: ... API error: Forbidden`, remove `CROWDSEC_ENROLL_KEY` from
+`swarm/.env` (and from the shell running `make`) and run `make deploy-crowdsec`.
 
 ### Tuning: trusted IPs and ban length
 `make setup-crowdsec` syncs two extra files to the host and `swarm/crowdsec.yml`
