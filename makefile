@@ -2,6 +2,9 @@
 
 # Variables
 
+# Log window for `logs-traefik` / `logs-traefik-follow`, override with `make logs-traefik SINCE=30m`
+SINCE ?= 10m
+
 # Commands
 serve: pull
 	@echo "Serving the project..."
@@ -32,6 +35,14 @@ deploy-core: pull
 	}
 remove-core:
 	docker stack rm core
+
+logs-traefik:
+	@echo "Showing Traefik logs since $(SINCE)..."
+	docker service logs --since $(SINCE) core_traefik
+
+logs-traefik-follow:
+	@echo "Following Traefik logs (Ctrl+C to stop)..."
+	docker service logs -f --since $(SINCE) core_traefik
 
 setup-crowdsec:
 	{ \
