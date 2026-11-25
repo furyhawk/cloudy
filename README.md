@@ -79,6 +79,13 @@ docker service logs --since 10m core_traefik
 docker ps --filter label=com.docker.swarm.service.name=crowdsec_crowdsec
 ```
 
+CrowdSec runs in Swarm detection mode on a manager node and enumerates services, so
+`socket-proxy` must allow the `SERVICES` section (enabled in `swarm/crowdsec.yml`);
+without it the agent exits with `service list err: ... 403 Forbidden`. Logs are read
+from services that opt in via `deploy.labels`
+(`crowdsec.enable=true` + `crowdsec.labels.type=traefik`, see `swarm/core.yml`), not
+from container labels.
+
 ### 6) Verify decisions and blocking
 ```bash
 # Show parser/scenario metrics

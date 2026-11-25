@@ -1,10 +1,10 @@
 source: docker
-use_container_labels: true ## https://docs.crowdsec.net/docs/next/data_sources/docker#use_container_labels
-# Traefik service must set these docker labels so CrowdSec can classify logs correctly:
+# CrowdSec enumerates Swarm *services* on a manager node, so labels are read from the
+# service's `deploy.labels` (see the traefik service in swarm/core.yml), not from task
+# containers. `use_service_labels` cannot be combined with `service_name`.
+use_service_labels: true
+# Services opt in with these labels so CrowdSec can pick them up and classify logs:
 # - crowdsec.enable=true
 # - crowdsec.labels.type=traefik
-service_name:
-  - traefik
 labels:
   type: traefik
-check_interval: 10s ## How often to check for new containers https://docs.crowdsec.net/docs/next/appsec/quickstart/traefik

@@ -62,7 +62,10 @@ services:
       NETWORKS: 0
       NODES: 0
       PLUGINS: 0
-      SERVICES: 0
+      # CrowdSec runs in swarm detection mode on a manager and enumerates services
+      # (GET /services, /services/{id}, /services/{id}/logs) at startup; without this
+      # it exits with "service list err: ... 403 Forbidden". POST stays off.
+      SERVICES: 1
       SESSION: 0
       SWARM: 1
       SYSTEM: 0
