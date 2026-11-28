@@ -18,7 +18,7 @@ services:
       - '--web.enable-lifecycle'
     volumes:
       - prometheus_data:/prometheus
-      - /var/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /mnt/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       - traefik-public
     ports:
@@ -51,9 +51,9 @@ services:
       - GF_SERVER_ROOT_URL=https://grafana.${DOMAIN}
     volumes:
       - grafana_data:/var/lib/grafana
-      - /var/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-      - /var/data/grafana/provisioning:/etc/grafana/provisioning:ro
-      - /var/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - /mnt/data/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - /mnt/data/grafana/provisioning:/etc/grafana/provisioning:ro
+      - /mnt/data/grafana/dashboards:/var/lib/grafana/dashboards:ro
     networks:
       - traefik-public
     deploy:

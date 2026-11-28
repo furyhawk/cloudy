@@ -12,8 +12,8 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - /var/data/registry/registry-mirror-data:/var/lib/registry
-      - /var/data/registry/registry-mirror-config.yml:/etc/docker/registry/config.yml
+      - /mnt/data/registry/registry-mirror-data:/var/lib/registry
+      - /mnt/data/registry/registry-mirror-config.yml:/etc/docker/registry/config.yml
 
 networks:
   traefik-public:

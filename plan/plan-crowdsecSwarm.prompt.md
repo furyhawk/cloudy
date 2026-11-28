@@ -27,7 +27,7 @@ All HTTPS traffic passes through the bouncer; the bouncer checks each request's 
    - Change network to `overlay` (name: `crowdsec-internal`, attachable: true)
    - Change `COLLECTIONS: "crowdsecurity/nginx"` → `"crowdsecurity/traefik"`
    - Remove host port binding (`127.0.0.1:8080:8080`) — LAPI only needs to be reachable internally by the bouncer
-   - Change bind mount `./crowdsec/acquis.yaml:...` to absolute host path `/var/data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml`
+   - Change bind mount `./crowdsec/acquis.yaml:...` to absolute host path `/mnt/data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml`
    - Add `CUSTOM_CS_LAPI_KEY=${CROWDSEC_LAPI_KEY:?Variable not set}` env var for deterministic API key
    - Keep named volumes `crowdsec-db` and `crowdsec-config` (Swarm supports named volumes)
 
@@ -74,7 +74,7 @@ All HTTPS traffic passes through the bouncer; the bouncer checks each request's 
 
 #### Phase C — Config files
 
-8. **Create `/var/data/crowdsec/` config directory** (documented, can be a setup make target):
+8. **Create `/mnt/data/crowdsec/` config directory** (documented, can be a setup make target):
    - `acquis.yaml` already exists at `swarm/crowdsec/acquis.yaml` — it uses `source: docker` and `use_container_labels: true` which is correct for Traefik log acquisition
    - Add Traefik container label expectations as comments in acquis.yaml (Traefik needs label `crowdsec.enable=true`)
    - No additional parser config needed — `crowdsecurity/traefik` collection includes the Traefik parser
@@ -156,5 +156,5 @@ All HTTPS traffic passes through the bouncer; the bouncer checks each request's 
 ### Further Considerations
 
 1. **Bouncer key registration:** Will use manual `cscli bouncers add` post-deploy. Could automate later with an init container or a swarm cronjob.
-2. **Host config directory:** `/var/data/crowdsec/` needs to exist on the Swarm node before deploy. Will add a `setup-crowdsec` make target or document as prerequisite.
+2. **Host config directory:** `/mnt/data/crowdsec/` needs to exist on the Swarm node before deploy. Will add a `setup-crowdsec` make target or document as prerequisite.
 3. **Local/development env:** There's also `local.yml` and `swarm/local_core.yml` — should crowdsec be added to those too? Skipping for now unless the user asks.

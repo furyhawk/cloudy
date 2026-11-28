@@ -23,7 +23,7 @@ services:
       - 3000
     restart: unless-stopped
     volumes:
-      - /var/data/docmost_data:/app/data/storage
+      - /mnt/data/docmost_data:/app/data/storage
     networks:
       - net
       - traefik-public
@@ -46,7 +46,7 @@ services:
   #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   #   restart: unless-stopped
   #   volumes:
-  #     - /var/data/db_data:/var/lib/postgresql/data
+  #     - /mnt/data/db_data:/var/lib/postgresql/data
   #   networks:
   #     - net
 

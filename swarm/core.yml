@@ -117,7 +117,7 @@ services:
       # Mount the volume to store the certificates
       - traefik-public-certificates:/certificates
       # Mount the configuration file for Traefik
-      - /var/data/config/traefik/services.yml:/etc/traefik/services.yml:ro
+      - /mnt/data/config/traefik/services.yml:/etc/traefik/services.yml:ro
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker

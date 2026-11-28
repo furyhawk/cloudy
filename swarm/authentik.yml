@@ -63,8 +63,8 @@ services:
       AUTHENTIK_POSTGRESQL__CONN_MAX_AGE: 60
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/data/authentik/media:/data
-      - /var/data/authentik/custom-templates:/templates
+      - /mnt/data/authentik/media:/data
+      - /mnt/data/authentik/custom-templates:/templates
     # env_file:
     #   - .env
     shm_size: 512mb
@@ -113,9 +113,9 @@ services:
     # user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/data/authentik/media:/data
-      - /var/data/authentik/certs:/certs
-      - /var/data/authentik/custom-templates:/templates
+      - /mnt/data/authentik/media:/data
+      - /mnt/data/authentik/certs:/certs
+      - /mnt/data/authentik/custom-templates:/templates
     shm_size: 512mb
     # env_file:
     #   - .env

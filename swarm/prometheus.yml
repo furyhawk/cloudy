@@ -17,7 +17,7 @@ services:
       - '--web.enable-lifecycle'
     volumes:
       - prometheus_data:/prometheus
-      - /var/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /mnt/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       - traefik-public
     ports:

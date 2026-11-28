@@ -1,6 +1,6 @@
 # Local CrowdSec scenario: block AI / LLM crawlers and scrapers by User-Agent.
 #
-# Deployed to /var/data/crowdsec/scenarios/http-ai-crawler.yaml by `make setup-crowdsec`
+# Deployed to /mnt/data/crowdsec/scenarios/http-ai-crawler.yaml by `make setup-crowdsec`
 # and bind-mounted read-only into the crowdsec container at
 # /etc/crowdsec/scenarios/http-ai-crawler.yaml.
 #

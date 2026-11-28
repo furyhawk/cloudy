@@ -15,7 +15,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - /var/data/ghost_mysql:/var/lib/mysql
+      - /mnt/data/ghost_mysql:/var/lib/mysql
     expose:
       - 3306
     networks:
@@ -39,7 +39,7 @@ services:
       database__connection__database: ghost
       DOMAIN: ${DOMAIN}
     volumes:
-      - /var/data/ghost_content:/var/lib/ghost/content
+      - /mnt/data/ghost_content:/var/lib/ghost/content
     expose:
       - 2368
     networks:

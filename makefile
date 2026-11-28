@@ -47,11 +47,11 @@ logs-traefik-follow:
 setup-crowdsec:
 	{ \
 	echo "Setting up crowdsec config on host..." ;\
-	mkdir -p /var/data/crowdsec /var/data/crowdsec/scenarios ;\
-	cmp -s ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml 2>/dev/null || cp ./swarm/crowdsec/acquis.yaml /var/data/crowdsec/acquis.yaml ;\
-	cmp -s ./swarm/crowdsec/whitelists.yaml /var/data/crowdsec/whitelists.yaml 2>/dev/null || cp ./swarm/crowdsec/whitelists.yaml /var/data/crowdsec/whitelists.yaml ;\
-	cmp -s ./swarm/crowdsec/profiles.yaml /var/data/crowdsec/profiles.yaml 2>/dev/null || cp ./swarm/crowdsec/profiles.yaml /var/data/crowdsec/profiles.yaml ;\
-	cmp -s ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /var/data/crowdsec/scenarios/http-ai-crawler.yaml 2>/dev/null || cp ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /var/data/crowdsec/scenarios/http-ai-crawler.yaml ;\
+	mkdir -p /mnt/data/crowdsec /mnt/data/crowdsec/scenarios ;\
+	cmp -s ./swarm/crowdsec/acquis.yaml /mnt/data/crowdsec/acquis.yaml 2>/dev/null || cp ./swarm/crowdsec/acquis.yaml /mnt/data/crowdsec/acquis.yaml ;\
+	cmp -s ./swarm/crowdsec/whitelists.yaml /mnt/data/crowdsec/whitelists.yaml 2>/dev/null || cp ./swarm/crowdsec/whitelists.yaml /mnt/data/crowdsec/whitelists.yaml ;\
+	cmp -s ./swarm/crowdsec/profiles.yaml /mnt/data/crowdsec/profiles.yaml 2>/dev/null || cp ./swarm/crowdsec/profiles.yaml /mnt/data/crowdsec/profiles.yaml ;\
+	cmp -s ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /mnt/data/crowdsec/scenarios/http-ai-crawler.yaml 2>/dev/null || cp ./swarm/crowdsec/scenarios/http-ai-crawler.yaml /mnt/data/crowdsec/scenarios/http-ai-crawler.yaml ;\
 	}
 
 deploy-crowdsec: pull setup-crowdsec
@@ -146,7 +146,7 @@ deploy-secondary: pull
 	set -a ;\
 	. ./swarm/.env ;\
 	set +a ;\
-	cp ./swarm/glance/glance.yml /var/data/glance.yml ;\
+	cp ./swarm/glance/glance.yml /mnt/data/glance.yml ;\
 	docker stack deploy --compose-file ./swarm/secondary.yml secondary ;\
 	}
 deploy-adguardhome: pull
@@ -296,13 +296,13 @@ deploy-gitea: pull
 setup-grafana:
 	{ \
 	echo "Setting up grafana config on host..." ;\
-	mkdir -p /var/data/grafana/provisioning/datasources /var/data/grafana/provisioning/dashboards /var/data/grafana/dashboards ;\
-	cmp -s ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini 2>/dev/null || cp ./swarm/grafana/grafana.ini /var/data/grafana/grafana.ini ;\
-	cmp -s ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || cp ./swarm/grafana/provisioning/datasources/prometheus.yml /var/data/grafana/provisioning/datasources/prometheus.yml ;\
-	cmp -s ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml 2>/dev/null || cp ./swarm/grafana/provisioning/dashboards/default.yml /var/data/grafana/provisioning/dashboards/default.yml ;\
-	cmp -s ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/prometheus-overview.json /var/data/grafana/dashboards/prometheus-overview.json ;\
-	cmp -s ./swarm/grafana/dashboards/crowdsec-overview.json /var/data/grafana/dashboards/crowdsec-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/crowdsec-overview.json /var/data/grafana/dashboards/crowdsec-overview.json ;\
-	cmp -s ./swarm/grafana/dashboards/traefik-overview.json /var/data/grafana/dashboards/traefik-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/traefik-overview.json /var/data/grafana/dashboards/traefik-overview.json ;\
+	mkdir -p /mnt/data/grafana/provisioning/datasources /mnt/data/grafana/provisioning/dashboards /mnt/data/grafana/dashboards ;\
+	cmp -s ./swarm/grafana/grafana.ini /mnt/data/grafana/grafana.ini 2>/dev/null || cp ./swarm/grafana/grafana.ini /mnt/data/grafana/grafana.ini ;\
+	cmp -s ./swarm/grafana/provisioning/datasources/prometheus.yml /mnt/data/grafana/provisioning/datasources/prometheus.yml 2>/dev/null || cp ./swarm/grafana/provisioning/datasources/prometheus.yml /mnt/data/grafana/provisioning/datasources/prometheus.yml ;\
+	cmp -s ./swarm/grafana/provisioning/dashboards/default.yml /mnt/data/grafana/provisioning/dashboards/default.yml 2>/dev/null || cp ./swarm/grafana/provisioning/dashboards/default.yml /mnt/data/grafana/provisioning/dashboards/default.yml ;\
+	cmp -s ./swarm/grafana/dashboards/prometheus-overview.json /mnt/data/grafana/dashboards/prometheus-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/prometheus-overview.json /mnt/data/grafana/dashboards/prometheus-overview.json ;\
+	cmp -s ./swarm/grafana/dashboards/crowdsec-overview.json /mnt/data/grafana/dashboards/crowdsec-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/crowdsec-overview.json /mnt/data/grafana/dashboards/crowdsec-overview.json ;\
+	cmp -s ./swarm/grafana/dashboards/traefik-overview.json /mnt/data/grafana/dashboards/traefik-overview.json 2>/dev/null || cp ./swarm/grafana/dashboards/traefik-overview.json /mnt/data/grafana/dashboards/traefik-overview.json ;\
 	}
 deploy-grafana: pull setup-grafana
 	{ \
@@ -323,8 +323,8 @@ deploy-prometheus: pull setup-prometheus
 setup-prometheus:
 	{ \
 	echo "Setting up prometheus config on host..." ;\
-	mkdir -p /var/data/prometheus ;\
-	cmp -s ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml 2>/dev/null || cp ./swarm/prometheus/prometheus.yml /var/data/prometheus/prometheus.yml ;\
+	mkdir -p /mnt/data/prometheus ;\
+	cmp -s ./swarm/prometheus/prometheus.yml /mnt/data/prometheus/prometheus.yml 2>/dev/null || cp ./swarm/prometheus/prometheus.yml /mnt/data/prometheus/prometheus.yml ;\
 	}
 deploy-monitoring: pull setup-grafana setup-prometheus
 	{ \

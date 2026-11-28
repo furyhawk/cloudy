@@ -29,7 +29,7 @@ services:
       DOMAIN: ${DOMAIN}
       ADMINER_DESIGN: pepa-linha-dark
     volumes:
-      - /var/data/adminer_data:/var/lib/pgadmin
+      - /mnt/data/adminer_data:/var/lib/pgadmin
     restart: unless-stopped
     # depends_on:
     #   - postgres_db
@@ -153,9 +153,9 @@ services:
     image: docker.io/privatebin/nginx-fpm-alpine:latest
     read_only: true
     volumes:
-      - /var/data/privatebin_data:/srv/data # data volume for pastes allows pastes
+      - /mnt/data/privatebin_data:/srv/data # data volume for pastes allows pastes
       # to persist after container stop or restart
-      - "/var/data/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
+      - "/mnt/data/config/conf.php:/srv/cfg/conf.php:ro" # second volume for custom configuration file
     restart: unless-stopped
     networks:
       - traefik-public
@@ -180,7 +180,7 @@ services:
     restart: unless-stopped
     command: streamlit run --server.port=$STREAMLIT_BAI_SERVER_PORT --server.address=0.0.0.0 --server.baseUrlPath=$BAI_LOCATION src/app.py
     volumes:
-      - /var/data/bai_cache:/app/cache
+      - /mnt/data/bai_cache:/app/cache
     networks:
       - traefik-public
     deploy:
@@ -216,7 +216,7 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
-      - /var/data/site:/usr/share/nginx/html:ro
+      - /mnt/data/site:/usr/share/nginx/html:ro
     networks:
       - traefik-public
     deploy:

@@ -12,17 +12,17 @@ Edit [swarm/mailserver/docker-mailserver.env](swarm/mailserver/docker-mailserver
 
 ## 2) Sync Traefik cert for mailserver
 
-Traefik stores certificates in `/var/data/config/traefik/acme.json`.
+Traefik stores certificates in `/mnt/data/config/traefik/acme.json`.
 Mailserver needs cert files (`fullchain.pem` and `privkey.pem`).
 
 Run:
 
-`./scripts/mailserver-sync-traefik-cert.sh /var/data/config/traefik/acme.json mail.example.com`
+`./scripts/mailserver-sync-traefik-cert.sh /mnt/data/config/traefik/acme.json mail.example.com`
 
 This writes:
 
-- `/var/data/docker-mailserver/ssl/fullchain.pem`
-- `/var/data/docker-mailserver/ssl/privkey.pem`
+- `/mnt/data/docker-mailserver/ssl/fullchain.pem`
+- `/mnt/data/docker-mailserver/ssl/privkey.pem`
 
 ## 3) DNS records (required)
 

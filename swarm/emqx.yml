@@ -10,8 +10,8 @@ services:
       timeout: 25s
       retries: 5
     volumes:
-      - /var/data/emqx-data1:/opt/emqx/data
-      # - /var/data/emqx-etc1:/opt/emqx/etc
+      - /mnt/data/emqx-data1:/opt/emqx/data
+      # - /mnt/data/emqx-etc1:/opt/emqx/etc
     networks:
       - traefik-public
     # ports:

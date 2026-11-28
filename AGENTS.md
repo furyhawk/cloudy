@@ -51,7 +51,7 @@
 - Confirm service converged after update: `docker service ps <service>`
 - Validate compose syntax and env interpolation before deploy: `docker compose -f compose.yml config`
 - Render a Swarm stack file locally for sanity checks: `docker compose -f swarm/<stack>.yml config`
-- For SearXNG specifically, runtime config is host-mounted at `/var/data/config/searxng`; repo edits in `swarm/searxng/` require syncing to host path before restart.
+- For SearXNG specifically, runtime config is host-mounted at `/mnt/data/config/searxng`; repo edits in `swarm/searxng/` require syncing to host path before restart.
 - For Traefik/router issues, verify labels and entrypoints first, then check `traefik` service logs before changing domains or ports.
 - Prefer `--since 5m` or `--since 10m` during incident response to avoid scanning stale logs.
 

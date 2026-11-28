@@ -2,8 +2,8 @@ services:
   adguardhome:
     image: adguard/adguardhome
     volumes:
-      - /var/data/adguardhome_conf:/opt/adguardhome/conf
-      - /var/data/adguardhome_work:/opt/adguardhome/work
+      - /mnt/data/adguardhome_conf:/opt/adguardhome/conf
+      - /mnt/data/adguardhome_work:/opt/adguardhome/work
     # ports:
       # DNS
         # - 53:53

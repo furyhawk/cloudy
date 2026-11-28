@@ -46,7 +46,7 @@ services:
       - redis
     user: "${UID}:${GID}"
     volumes:
-      - /var/data/outline_data:/var/lib/outline/data
+      - /mnt/data/outline_data:/var/lib/outline/data
     expose:
       - 3000
     networks:

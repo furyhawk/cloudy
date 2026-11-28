@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-ACME_JSON_PATH="${1:-/var/data/config/traefik/acme.json}"
+ACME_JSON_PATH="${1:-/mnt/data/config/traefik/acme.json}"
 MAIL_DOMAIN="${2:-mail.furyhawk.lol}"
-TARGET_DIR="/var/data/docker-mailserver/ssl"
+TARGET_DIR="/mnt/data/docker-mailserver/ssl"
 
 if [ ! -f "$ACME_JSON_PATH" ]; then
   echo "ACME file not found: $ACME_JSON_PATH"

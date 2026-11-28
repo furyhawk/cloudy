@@ -20,7 +20,7 @@ services:
     networks:
       - traefik-public
     volumes:
-      - /var/data/glance:/app/config
+      - /mnt/data/glance:/app/config
       # - /etc/timezone:/etc/timezone:ro
       # - /etc/localtime:/etc/localtime:ro
     deploy:
@@ -79,9 +79,9 @@ services:
     command: -config /data/linx-server.conf
     user: "1000:1000"
     volumes:
-      - /var/data/files:/data/files
-      - /var/data/meta:/data/meta
-      - /var/data/config/linx/linx-server.conf:/data/linx-server.conf:ro
+      - /mnt/data/files:/data/files
+      - /mnt/data/meta:/data/meta
+      - /mnt/data/config/linx/linx-server.conf:/data/linx-server.conf:ro
     networks:
       - traefik-public
     deploy:

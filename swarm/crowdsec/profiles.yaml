@@ -1,6 +1,6 @@
 # Local CrowdSec remediation profiles.
 #
-# Copied to /var/data/crowdsec/profiles.yaml by `make setup-crowdsec` and mounted
+# Copied to /mnt/data/crowdsec/profiles.yaml by `make setup-crowdsec` and mounted
 # read-only into the crowdsec container at /etc/crowdsec/profiles.yaml, the path
 # set by `api.server.profiles_path` in the image's config.yaml.
 #
@@ -12,7 +12,7 @@ filters:
  - Alert.Remediation == true && Alert.GetScope() == "Ip"
 decisions:
  - type: ban
-   duration: 1h
+   duration: 4h
 on_success: break
 ---
 name: default_range_remediation
@@ -20,5 +20,5 @@ filters:
  - Alert.Remediation == true && Alert.GetScope() == "Range"
 decisions:
  - type: ban
-   duration: 1h
+   duration: 4h
 on_success: break

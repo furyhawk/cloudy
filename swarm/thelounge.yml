@@ -2,7 +2,7 @@ services:
   thelounge:
     image: thelounge/thelounge:latest
     volumes:
-      - /var/data/thelounge-data:/var/opt/thelounge
+      - /mnt/data/thelounge-data:/var/opt/thelounge
     networks:
       - traefik-public
     deploy:

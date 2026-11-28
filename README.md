@@ -141,8 +141,8 @@ bind-mounts them into the `crowdsec` service:
 
 | Repo file | Host path | Container path |
 | --- | --- | --- |
-| `swarm/crowdsec/whitelists.yaml` | `/var/data/crowdsec/whitelists.yaml` | `/etc/crowdsec/parsers/s02-enrich/local-whitelists.yaml` |
-| `swarm/crowdsec/profiles.yaml` | `/var/data/crowdsec/profiles.yaml` | `/etc/crowdsec/profiles.yaml` |
+| `swarm/crowdsec/whitelists.yaml` | `/mnt/data/crowdsec/whitelists.yaml` | `/etc/crowdsec/parsers/s02-enrich/local-whitelists.yaml` |
+| `swarm/crowdsec/profiles.yaml` | `/mnt/data/crowdsec/profiles.yaml` | `/etc/crowdsec/profiles.yaml` |
 
 - Whitelist entries under `ip:` / `cidr:` never produce alerts, so they can never be
   banned. Defaults are loopback plus RFC1918/ULA ranges. Only list ranges that reach

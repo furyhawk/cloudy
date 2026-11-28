@@ -1,7 +1,7 @@
 services:
   mail:
     image: mailserver/docker-mailserver:latest
-    env_file: /var/data/docker-mailserver/docker-mailserver.env
+    env_file: /mnt/data/docker-mailserver/docker-mailserver.env
     hostname: mail
     restart: unless-stopped
     volumes:
@@ -9,7 +9,7 @@ services:
       - mail_state:/var/mail-state
       - mail_logs:/var/log/mail
       - mail_config:/tmp/docker-mailserver
-      - /var/data/docker-mailserver/ssl:/tmp/docker-mailserver/ssl:ro
+      - /mnt/data/docker-mailserver/ssl:/tmp/docker-mailserver/ssl:ro
     networks:
       - internal
       - traefik-public
@@ -43,7 +43,7 @@ services:
   # rainloop:
   #   image: nerzhul/rainloop-arm64
   #   volumes:
-  #     - /var/data/docker-mailserver/rainloop:/rainloop/data
+  #     - /mnt/data/docker-mailserver/rainloop:/rainloop/data
   #   networks:
   #     - internal
   #     - traefik-public
