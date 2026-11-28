@@ -3,7 +3,7 @@ services:
   # https://hub.docker.com/_/postgres
   db:
     # Note: Check the recommend version here: https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html#server
-    image: postgres:alpine
+    image: postgres:17-alpine
     restart: always
     volumes:
       - db:/var/lib/postgresql/data:Z
